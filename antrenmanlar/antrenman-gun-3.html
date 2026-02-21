@@ -33,6 +33,12 @@
             margin: 0 auto;
         }
 
+        /* Yana açılır menü için kapsayıcı */
+        .card-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
         .topic-card {
             background: rgb(38, 84, 129);
             border: 1px solid rgba(255, 255, 255, 0.3);
@@ -44,6 +50,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            position: relative;
+            z-index: 2;
         }
 
         .topic-card:hover {
@@ -52,19 +60,59 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
 
-        .arabic-text {
-            font-family: 'Amiri', serif;
-            font-size: 28px;
-            direction: rtl;
+        /* Yana Açılan Alt Menü Stilleri */
+        .sub-menu-container {
+            position: absolute;
+            top: 0;
+            left: 100%; /* Kartın hemen sağına hizalar */
+            padding-left: 15px; /* Fare geçerken menü kapanmasın diye görünmez köprü */
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 100;
         }
 
-        .turkish-text {
-            font-size: 20px;
-            font-weight: 400;
+        /* Fare karta veya menüye geldiğinde alt menüyü göster */
+        .card-wrapper:hover .sub-menu-container {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(10px); /* Karta uyumlu kayma efekti */
         }
 
+        .sub-menu {
+            background: rgb(38, 84, 129);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            width: 220px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        .sub-menu a {
+            color: white;
+            text-decoration: none;
+            padding: 15px 20px;
+            font-size: 16px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: 0.3s;
+        }
+
+        .sub-menu a:last-child {
+            border-bottom: none;
+        }
+
+        .sub-menu a:hover {
+            background: rgb(0, 0, 0);
+            color: #3498db;
+            padding-left: 25px; /* Hover anında metni hafif sağa kaydırır */
+        }
+
+        .arabic-text { font-family: 'Amiri', serif; font-size: 28px; direction: rtl; }
+        .turkish-text { font-size: 20px; font-weight: 400; }
         .icon-small { font-size: 24px; margin-right: 15px; }
-
         h1 { margin-bottom: 40px; }
     </style>
 </head>
@@ -90,23 +138,35 @@
                 <span class="icon-small">⚔️</span>
                 <span class="turkish-text">Düzenli Dişil Çoğul</span>
             </div>
-            <span class="arabic-text">جَمْعُ الْمُؤَنَّثِ السَّالِمُ</span>
+            <span class="arabic-text">جَمْعُ الْمُؤَنَّثِ السَّالِمُ</span>
         </a>
 
-        <a href="10-antrenman-izafet.html" class="topic-card">
-            <div style="display: flex; align-items: center;">
-                <span class="icon-small">⚔️</span>
-                <span class="turkish-text">İzafet (İsim Tamlaması)</span>
+        <div class="card-wrapper">
+            <a href="../tafsilatli-antrenmanlar/3-tafsilatlı-antrenmanlar/10-antrenman-izafet-1.html" class="topic-card">
+                <div style="display: flex; align-items: center;">
+                    <span class="icon-small">⚔️</span>
+                    <span class="turkish-text">İzafet (İsim Tamlaması)</span>
+                </div>
+                <span class="arabic-text">الْإِضَافَةُ</span>
+            </a>
+            
+            <div class="sub-menu-container">
+                <div class="sub-menu">
+                    <a href="../tafsilatli-antrenmanlar/3-tafsilatlı-antrenmanlar/10-antrenman-izafet-1.html">1. Antrenman</a>
+                    <a href="../tafsilatli-antrenmanlar/3-tafsilatlı-antrenmanlar/10-antrenman-izafet-2.html">2. Antrenman</a>
+                    <a href="../tafsilatli-antrenmanlar/3-tafsilatlı-antrenmanlar/10-antrenman-izafet-3.html">3. Antrenman</a>
+                    <a href="../tafsilatli-antrenmanlar/3-tafsilatlı-antrenmanlar/10-antrenman-izafet-ezber.html">Ezber</a>
+                    <a href="../tafsilatli-antrenmanlar/3-tafsilatlı-antrenmanlar/10-antrenman-izafet-ev-ödevi.html">Ev Ödevi</a>
+                </div>
             </div>
-            <span class="arabic-text">الْإِضَافَةُ</span>
-        </a>
+        </div>
 
-        <a href="11-antrenman-iyelik-zamirleri.html" class="topic-card">
+        <a href="/Users/azizavci/Desktop/arapca calisma portali/tafsilatli-antrenmanlar/3-tafsilatlı-antrenmanlar/11-bitisik zamirler-1.html" class="topic-card">
             <div style="display: flex; align-items: center;">
                 <span class="icon-small">⚔️</span>
                 <span class="turkish-text">İyelik Zamirleri</span>
             </div>
-            <span class="arabic-text">ضَمَائِرُ الْمِلْكِيَّةِ</span>
+            <span class="arabic-text">ضَمَائِرُ الْمِلْكِيَّةِ</span>
         </a>
     </div>
 
