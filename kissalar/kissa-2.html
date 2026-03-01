@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>2. Kıssa - Arapça Portalı</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Amiri&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: linear-gradient(to right, #ffffff, #2c3e50); 
+            background-attachment: fixed;
+            min-height: 100vh;
+            margin: 0; padding: 20px; text-align: center; color: #333;
+        }
+
+        nav { 
+            background-color: #2c3e50; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            display: inline-block; 
+            width: 100%; 
+            max-width: 1000px; 
+            margin-bottom: 20px; 
+            overflow: hidden; 
+        }
+        nav a { float: left; color: white; padding: 16px 20px; text-decoration: none; transition: 0.3s; }
+        nav a:hover { background-color: #34495e; color: #3498db; }
+
+        h1 { color: #18395b; margin-bottom: 20px; }
+
+        .story-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            margin: 0 auto 30px auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: right;
+            direction: rtl;
+        }
+
+        .instruction {
+            font-size: 16px;
+            color: #7f8c8d;
+            text-align: center;
+            margin-bottom: 30px;
+            font-style: italic;
+            direction: ltr;
+        }
+
+        .sentence-group {
+            margin-bottom: 25px;
+            border-bottom: 1px dashed #ecf0f1;
+            padding-bottom: 15px;
+        }
+        .sentence-group:last-child { border-bottom: none; }
+
+        .sentence-row {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .arabic-text {
+            font-family: 'Amiri', serif;
+            font-size: 45px;
+            color: #18395b;
+            line-height: 1.8;
+        }
+
+        .word {
+            cursor: pointer;
+            padding: 0 5px;
+            border-radius: 8px;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .word:hover { background-color: #eaf2f8; color: #2193b0; }
+        .word.active { background-color: #2193b0; color: white; }
+
+        .word.active::after {
+            content: attr(data-tr); 
+            position: absolute;
+            top: 100%; left: 50%; transform: translateX(-50%);
+            background-color: #2c3e50; color: white;
+            font-family: 'Poppins', sans-serif; font-size: 16px;
+            padding: 8px 12px; border-radius: 8px; white-space: nowrap;
+            z-index: 100; box-shadow: 0 5px 15px rgba(0,0,0,0.2); margin-top: 10px;
+            direction: ltr;
+        }
+
+        .word.active::before {
+            content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+            border-width: 8px; border-style: solid; border-color: transparent transparent #2c3e50 transparent;
+            z-index: 100; margin-top: -5px;
+        }
+
+        .translate-btn {
+            background: #ecf0f1; border: none; border-radius: 50%;
+            width: 45px; height: 45px; cursor: pointer; font-size: 22px;
+            transition: 0.3s; margin-right: 15px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .translate-btn:hover { background: #bdc3c7; transform: scale(1.1); }
+
+        .sentence-translation {
+            display: none;
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 18px;
+            color: #2c3e50;
+            border-left: 5px solid #3498db;
+            direction: ltr;
+            text-align: left;
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="../kissalar.html">← Kıssalara Dön</a>
+    </nav>
+
+    <h1>2. Kıssa</h1>
+
+    <div class="story-container">
+        <div class="instruction">Anlamını bilmediğiniz kelimenin üzerine tıklayın. Cümlenin tamamı için 🇹🇷 butonuna basın.</div>
+        
+        <div class="arabic-text" id="storyText">
+            
+            <div class="sentence-group">
+                <div class="sentence-row">
+                    <span class="word" data-tr="Yaşıyor (Oturuyor)">يَسْكُنُ</span>
+                    <span class="word" data-tr="Çiftçi">الْمُزَارِعُ</span>
+                    <span class="word" data-tr="Ali">عَلِيٌّ</span>
+                    <span class="word" data-tr="içinde / -de">فِي</span>
+                    <span class="word" data-tr="köyde">الْقَرْيَةِ.</span>
+                    <button class="translate-btn" onclick="toggleTranslation(this)">🇹🇷</button>
+                </div>
+                <div class="sentence-translation">Çiftçi Ali köyde yaşıyor.</div>
+            </div>
+
+            <div class="sentence-group">
+                <div class="sentence-row">
+                    <span class="word" data-tr="O">هُوَ</span>
+                    <span class="word" data-tr="çalışıyor">يَعْمَلُ</span>
+                    <span class="word" data-tr="her">كُلَّ</span>
+                    <span class="word" data-tr="gün">يَوْمٍ</span>
+                    <span class="word" data-tr="içinde / -de">فِي</span>
+                    <span class="word" data-tr="tarlada">الْحَقْلِ.</span>
+                    <button class="translate-btn" onclick="toggleTranslation(this)">🇹🇷</button>
+                </div>
+                <div class="sentence-translation">Her gün tarlada çalışıyor.</div>
+            </div>
+
+            <div class="sentence-group">
+                <div class="sentence-row">
+                    <span class="word" data-tr="içinde / -de">فِي</span>
+                    <span class="word" data-tr="sabahleyin">الصَّبَاحِ،</span>
+                    <span class="word" data-tr="oturdu">جَلَسَ</span>
+                    <span class="word" data-tr="üzerine">عَلَى</span>
+                    <span class="word" data-tr="masaya">الْمِنْضَدَةِ</span>
+                    <span class="word" data-tr="ve okudu">وَقَرَأَ</span>
+                    <span class="word" data-tr="gazeteyi">الْجَرِيدَةَ</span>
+                    <span class="word" data-tr="ve dergiyi">وَالْمَجَلَّةَ.</span>
+                    <button class="translate-btn" onclick="toggleTranslation(this)">🇹🇷</button>
+                </div>
+                <div class="sentence-translation">Sabahleyin masaya oturdu; gazeteyi ve dergiyi okudu.</div>
+            </div>
+
+            <div class="sentence-group">
+                <div class="sentence-row">
+                    <span class="word" data-tr="Sonra">ثُمَّ</span>
+                    <span class="word" data-tr="buldu">وَجَدَ</span>
+                    <span class="word" data-tr="bir mektup">رِسَالَةً</span>
+                    <span class="word" data-tr="hakkında">عَنِ</span>
+                    <span class="word" data-tr="bir toplantı">اجْتِمَاعٍ</span>
+                    <span class="word" data-tr="ve konferans">وَمُحَاضَرَةٍ</span>
+                    <span class="word" data-tr="içinde / -de">فِي</span>
+                    <span class="word" data-tr="şehirde">الْمَدِينَةِ.</span>
+                    <button class="translate-btn" onclick="toggleTranslation(this)">🇹🇷</button>
+                </div>
+                <div class="sentence-translation">Sonra şehirdeki bir toplantı ve konferans hakkında bir mektup buldu.</div>
+            </div>
+
+            <div class="sentence-group">
+                <div class="sentence-row">
+                    <span class="word" data-tr="Gitti">ذَهَبَ</span>
+                    <span class="word" data-tr="Ali">عَلِيٌّ</span>
+                    <span class="word" data-tr="-e / -a">إِلَى</span>
+                    <span class="word" data-tr="durağa">الْمَحَطَّةِ</span>
+                    <span class="word" data-tr="ve bindi">وَرَكِبَ</span>
+                    <span class="word" data-tr="otobüse">الْحَافِلَةَ</span>
+                    <span class="word" data-tr="sonra">ثُمَّ</span>
+                    <span class="word" data-tr="trene">الْقِطَارَ.</span>
+                    <button class="translate-btn" onclick="toggleTranslation(this)">🇹🇷</button>
+                </div>
+                <div class="sentence-translation">Ali durağa gitti; otobüse sonra da trene bindi.</div>
+            </div>
+
+            <div class="sentence-group">
+                <div class="sentence-row">
+                    <span class="word" data-tr="içinde / -de">فِي</span>
+                    <span class="word" data-tr="caddede">الشَّارِعِ ،</span>
+                    <span class="word" data-tr="karşılaştı">لَقِيَ</span>
+                    <span class="word" data-tr="komşularıyla">جِيرَانَهُ :</span>
+                    <span class="word" data-tr="marangoz">النَّجَّارَ</span>
+                    <span class="word" data-tr="ve demirci">وَالْحَدَّادَ</span>
+                    <span class="word" data-tr="ve terzi">وَالْخَيَّاطَ.</span>
+                    <button class="translate-btn" onclick="toggleTranslation(this)">🇹🇷</button>
+                </div>
+                <div class="sentence-translation">Caddede komşularıyla karşılaştı: marangoz, demirci ve terzi.</div>
+            </div>
+
+            <div class="sentence-group">
+                <div class="sentence-row">
+                    <span class="word" data-tr="Gittiler">ذَهَبُوا</span>
+                    <span class="word" data-tr="birlikte">مَعًا</span>
+                    <span class="word" data-tr="-e / -a">إِلَى</span>
+                    <span class="word" data-tr="oyun yerine">الْمَلْعَبِ.</span>
+                    <button class="translate-btn" onclick="toggleTranslation(this)">🇹🇷</button>
+                </div>
+                <div class="sentence-translation">Birlikte oyun yerine (stadyuma) gittiler.</div>
+            </div>
+
+            <div class="sentence-group">
+                <div class="sentence-row">
+                    <span class="word" data-tr="Vardı">كَانَ</span>
+                    <span class="word" data-tr="yanında">بِجَانِبِهِ</span>
+                    <span class="word" data-tr="fabrika">مَصْنَعٌ</span>
+                    <span class="word" data-tr="büyük">كَبِيرٌ</span>
+                    <span class="word" data-tr="-den / -dan">مِنَ</span>
+                    <span class="word" data-tr="camdan">الزُّجَاجِ.</span>
+                    <button class="translate-btn" onclick="toggleTranslation(this)">🇹🇷</button>
+                </div>
+                <div class="sentence-translation">Yanında camdan yapılmış büyük bir fabrika vardı.</div>
+            </div>
+
+            <div class="sentence-group">
+                <div class="sentence-row">
+                    <span class="word" data-tr="Hissetti">شَعَرَ</span>
+                    <span class="word" data-tr="Ali">عَلِيٌّ</span>
+                    <span class="word" data-tr="yorgunluk">بِالتَّعَبِ،</span>
+                    <span class="word" data-tr="ve gitti">فَذَهَبَ</span>
+                    <span class="word" data-tr="-e / -a">إِلَى</span>
+                    <span class="word" data-tr="hastaneye">الْمُسْتَشْفَى</span>
+                    <span class="word" data-tr="almak için">لِأَخْذِ</span>
+                    <span class="word" data-tr="ilaç">الدَّوَاءِ.</span>
+                    <button class="translate-btn" onclick="toggleTranslation(this)">🇹🇷</button>
+                </div>
+                <div class="sentence-translation">Ali yorgunluk hissetti ve ilaç almak için hastaneye gitti.</div>
+            </div>
+
+            <div class="sentence-group">
+                <div class="sentence-row">
+                    <span class="word" data-tr="Orada">هُنَاكَ</span>
+                    <span class="word" data-tr="gördü">رَأَى</span>
+                    <span class="word" data-tr="başkanı">الرَّئِيسَ.</span>
+                    <button class="translate-btn" onclick="toggleTranslation(this)">🇹🇷</button>
+                </div>
+                <div class="sentence-translation">Orada başkanı gördü.</div>
+            </div>
+
+            <div class="sentence-group">
+                <div class="sentence-row">
+                    <span class="word" data-tr="Sonra">بَعْدَ</span>
+                    <span class="word" data-tr="bundan">ذَلِكَ،</span>
+                    <span class="word" data-tr="gitti">ذَهَبَ</span>
+                    <span class="word" data-tr="-e / -a">إِلَى</span>
+                    <span class="word" data-tr="bakkala">الْبَقَّالِ</span>
+                    <span class="word" data-tr="satın almak için">لِيَشْتَرِيَ</span>
+                    <span class="word" data-tr="peynir">الْجُبْنَ</span>
+                    <span class="word" data-tr="içinde / -de">فِي</span>
+                    <span class="word" data-tr="bir kutu">عُلْبَةٍ.</span>
+                    <button class="translate-btn" onclick="toggleTranslation(this)">🇹🇷</button>
+                </div>
+                <div class="sentence-translation">Bundan sonra, bakkala bir kutu içinde peynir almak için gitti.</div>
+            </div>
+
+            <div class="sentence-group">
+                <div class="sentence-row">
+                    <span class="word" data-tr="Gitmedi">لَمْ يَذْهَبْ</span>
+                    <span class="word" data-tr="-e / -a">إِلَى</span>
+                    <span class="word" data-tr="kasaba">الْقَصَّابِ</span>
+                    <span class="word" data-tr="çünkü o">لِأَنَّهُ</span>
+                    <span class="word" data-tr="yemez">لَا يَأْكُلُ</span>
+                    <span class="word" data-tr="etini">لَحْمَ</span>
+                    <span class="word" data-tr="domuz">الْخِنْزِيرِ.</span>
+                    <button class="translate-btn" onclick="toggleTranslation(this)">🇹🇷</button>
+                </div>
+                <div class="sentence-translation">Kasaba gitmedi çünkü domuz eti yemez.</div>
+            </div>
+
+            <div class="sentence-group">
+                <div class="sentence-row">
+                    <span class="word" data-tr="içinde / -de">فِي</span>
+                    <span class="word" data-tr="sonunda">النِّهَايَةِ،</span>
+                    <span class="word" data-tr="satın aldı">اشْتَرَى</span>
+                    <span class="word" data-tr="bir hediye">هَدِيَّةً</span>
+                    <span class="word" data-tr="oğlu için">لِابْنِهِ،</span>
+                    <span class="word" data-tr="ve o">وَهِيَ</span>
+                    <span class="word" data-tr="bir halı">بِسَاطٌ</span>
+                    <span class="word" data-tr="güzel">جَمِيلٌ.</span>
+                    <button class="translate-btn" onclick="toggleTranslation(this)">🇹🇷</button>
+                </div>
+                <div class="sentence-translation">Sonunda oğlu için bir hediye satın aldı, o da güzel bir halıdır (kilimdir).</div>
+            </div>
+
+            <div class="sentence-group">
+                <div class="sentence-row">
+                    <span class="word" data-tr="Döndü">رَجَعَ</span>
+                    <span class="word" data-tr="-e / -a">إِلَى</span>
+                    <span class="word" data-tr="evine">بَيْتِهِ،</span>
+                    <span class="word" data-tr="ve oturdu">وَجَلَسَ</span>
+                    <span class="word" data-tr="uzağa">بَعِيدًا</span>
+                    <span class="word" data-tr="-den / -dan">عَنْ</span>
+                    <span class="word" data-tr="hava akımı (cereyan)">مَجْرَى الْهَوَاءِ ،</span>
+                    <span class="word" data-tr="ve anlattı">وَحَكَى</span>
+                    <span class="word" data-tr="çocuklarına">لِأَطْفَالِهِ</span>
+                    <span class="word" data-tr="bir hikaye">قِصَّةً</span>
+                    <span class="word" data-tr="harika">رَائِعَةً.</span>
+                    <button class="translate-btn" onclick="toggleTranslation(this)">🇹🇷</button>
+                </div>
+                <div class="sentence-translation">Evine döndü, hava akımından (cereyandan) uzağa oturdu ve çocuklarına harika bir hikaye anlattı.</div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const words = document.querySelectorAll('.word');
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.classList.contains('word')) {
+                words.forEach(w => w.classList.remove('active'));
+            }
+        });
+
+        words.forEach(word => {
+            word.addEventListener('click', function(e) {
+                e.stopPropagation(); 
+                const isActive = this.classList.contains('active');
+                words.forEach(w => w.classList.remove('active'));
+                
+                if (!isActive) {
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        function toggleTranslation(button) {
+            const translationBox = button.parentElement.nextElementSibling;
+            
+            if (translationBox.style.display === "block") {
+                translationBox.style.display = "none";
+            } else {
+                translationBox.style.display = "block";
+            }
+        }
+    </script>
+</body>
+</html>

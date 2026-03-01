@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Kıssalar - Arapça Portalı</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: #f0f4f8; 
+            min-height: 100vh; 
+            margin: 0; 
+            padding: 20px; 
+            text-align: center; 
+            color: #333;
+        }
+
+        nav { 
+            background-color: #2c3e50; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            display: inline-block; 
+            width: 100%; 
+            max-width: 1000px; 
+            margin-bottom: 30px; 
+            overflow: hidden; 
+        }
+        nav a { float: left; color: white; padding: 16px 20px; text-decoration: none; transition: 0.3s; }
+        nav a:hover { background-color: #34495e; color: #3498db; }
+
+        .banner-container {
+            width: 100%;
+            max-width: 1000px;
+            height: 300px;
+            margin: 0 auto 30px auto;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .banner-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        h1 { color: #18395b; margin-bottom: 40px; }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .story-card {
+            background: white;
+            border: 2px solid transparent;
+            border-radius: 15px;
+            padding: 25px;
+            text-decoration: none;
+            color: #333;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .story-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.15);
+            border-color: #2193b0;
+        }
+
+        .icon-small { font-size: 32px; margin-right: 15px; }
+        .turkish-text { font-size: 24px; font-weight: 600; color: #2c3e50; letter-spacing: 1px; }
+
+        @media (max-width: 600px) { 
+            .grid-container { grid-template-columns: 1fr; } 
+            .banner-container { height: 200px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html">← Anasayfaya Dön</a>
+    </nav>
+
+    <div class="banner-container">
+        <img src="görseller/kissalar-anasayfa.png" alt="Kıssalar Kapak Fotoğrafı">
+    </div>
+
+    <h1>Arapça Kıssalar</h1>
+
+    <div class="grid-container">
+        <a href="kissalar/kissa-1.html" class="story-card"><span class="icon-small">📖</span><span class="turkish-text">1. Kıssa</span></a>
+        <a href="kissalar/kissa-2.html" class="story-card"><span class="icon-small">📖</span><span class="turkish-text">2. Kıssa</span></a>
+        <a href="kissalar/kissa-3.html" class="story-card"><span class="icon-small">📖</span><span class="turkish-text">3. Kıssa</span></a>
+        <a href="kissalar/kissa-4.html" class="story-card"><span class="icon-small">📖</span><span class="turkish-text">4. Kıssa</span></a>
+        <a href="kissalar/kissa-5.html" class="story-card"><span class="icon-small">📖</span><span class="turkish-text">5. Kıssa</span></a>
+        <a href="kissalar/kissa-6.html" class="story-card"><span class="icon-small">📖</span><span class="turkish-text">6. Kıssa</span></a>
+        <a href="kissalar/kissa-7.html" class="story-card"><span class="icon-small">📖</span><span class="turkish-text">7. Kıssa</span></a>
+        <a href="kissalar/kissa-8.html" class="story-card"><span class="icon-small">📖</span><span class="turkish-text">8. Kıssa</span></a>
+        <a href="kissalar/kissa-9.html" class="story-card"><span class="icon-small">📖</span><span class="turkish-text">9. Kıssa</span></a>
+        <a href="kissalar/kissa-10.html" class="story-card"><span class="icon-small">📖</span><span class="turkish-text">10. Kıssa</span></a>
+        <a href="kissalar/kissa-11.html" class="story-card"><span class="icon-small">📖</span><span class="turkish-text">11. Kıssa</span></a>
+        <a href="kissalar/kissa-12.html" class="story-card"><span class="icon-small">📖</span><span class="turkish-text">12. Kıssa</span></a>
+        <a href="kissalar/kissa-13.html" class="story-card"><span class="icon-small">📖</span><span class="turkish-text">13. Kıssa</span></a>
+    </div>
+
+</body>
+</html>
