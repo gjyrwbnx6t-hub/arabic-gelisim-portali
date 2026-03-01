@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Kelime Seti 3 - Arapça Çalışma Portalı</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Amiri&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f0f4f8; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        
+        /* Kartın Genel Alanı - 2.5 Kat Büyütüldü (875x625px) */
+        .card-container { width: 875px; height: 625px; perspective: 2500px; cursor: pointer; }
+        
+        /* Kartın İç Kısmı ve Animasyonu */
+        .card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; box-shadow: 0 25px 75px rgba(0,0,0,0.1); border-radius: 50px; }
+        .card-container.flipped .card-inner { transform: rotateY(180deg); }
+
+        /* Ön ve Arka Yüzler - Font 80px */
+        .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; border-radius: 50px; font-size: 80px; font-weight: 600; padding: 40px; box-sizing: border-box; }
+        .card-front { background-color: white; color: #18395b; font-family: 'Amiri', serif; direction: rtl; }
+        .card-back { background: linear-gradient(135deg, #2193b0, #6dd5ed); color: white; transform: rotateY(180deg); }
+
+        /* Kontrol Butonları - Dev Boyut */
+        .controls { margin-top: 50px; display: flex; gap: 40px; }
+        button { 
+            padding: 30px 60px; 
+            font-size: 35px; 
+            border: none; 
+            background-color: #2c3e50; 
+            color: white; 
+            border-radius: 20px; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            font-family: 'Poppins'; 
+        }
+        button:hover { background-color: #34495e; transform: scale(1.05); }
+        
+        .counter { margin-top: 25px; font-size: 35px; color: #7f8c8d; }
+    </style>
+</head>
+<body>
+
+    <div class="card-container" onclick="this.classList.toggle('flipped')">
+        <div class="card-inner">
+            <div class="card-front" id="arabicText">رَبَّةُ الْبَيْتِ</div>
+            <div class="card-back" id="turkishText">Ev hanımı</div>
+        </div>
+    </div>
+
+    <div class="counter" id="counter">1 / 33</div>
+
+    <div class="controls">
+        <button onclick="prevCard()">Geri</button>
+        <button onclick="nextCard()">İleri</button>
+    </div>
+
+    <script>
+        const words = [
+            { ar: "رَبَّةُ الْبَيْتِ", tr: "Ev hanımı" },
+            { ar: "مُسِنٌّ", tr: "Yaşlı" },
+            { ar: "شَابٌّ", tr: "Genç" },
+            { ar: "مِحْفَظَةٌ", tr: "Çanta / Cüzdan" },
+            { ar: "حَقِيبَةٌ", tr: "Bavul" },
+            { ar: "قَمِيصٌ", tr: "Gömlek" },
+            { ar: "فُسْتَانٌ", tr: "Entâri / Elbise" },
+            { ar: "قَرْيَةٌ", tr: "Köy" },
+            { ar: "ثَقِيلَةٌ", tr: "Ağır" },
+            { ar: "غَالِيَةٌ", tr: "Pahalı" },
+            { ar: "مِسْطَرَةٌ", tr: "Cetvel" },
+            { ar: "مُغْلَقٌ", tr: "Kapalı" },
+            { ar: "مَفْتُوحَةٌ", tr: "Açık" },
+            { ar: "قَائِمٌ", tr: "Ayakta duran" },
+            { ar: "أَمَامَ", tr: "Önünde" },
+            { ar: "رَقِيقٌ", tr: "İnce" },
+            { ar: "سَمِيكٌ", tr: "Kalın" },
+            { ar: "نَظَّارَةٌ", tr: "Gözlük" },
+            { ar: "غَسَّالَةٌ", tr: "Çamaşır makinesi" },
+            { ar: "ضَيِّقَةٌ", tr: "Dar" },
+            { ar: "سَقْفٌ", tr: "Tavan" },
+            { ar: "مُرْتَفِعٌ", tr: "Yüksek" },
+            { ar: "شَاحِبٌ", tr: "Solgun" },
+            { ar: "عَرِيضَةٌ", tr: "Enli / Geniş" },
+            { ar: "عُلْبَةٌ", tr: "Kutu" },
+            { ar: "مُرِيحٌ", tr: "Rahat" },
+            { ar: "رَخِيصٌ", tr: "Ucuz" },
+            { ar: "مِصْبَاحٌ", tr: "Lamba" },
+            { ar: "حِصَانٌ", tr: "At" },
+            { ar: "مُزَارِعٌ", tr: "Çiftçi" },
+            { ar: "طَاعَةٌ", tr: "İtaat" },
+            { ar: "مَعْصِيَةٌ", tr: "İsyan" },
+            { ar: "جِدَارٌ", tr: "Duvar" }
+        ];
+
+        let currentIndex = 0;
+
+        function updateCard() {
+            const card = document.querySelector('.card-container');
+            card.classList.remove('flipped'); 
+            
+            setTimeout(() => {
+                document.getElementById('arabicText').innerText = words[currentIndex].ar;
+                document.getElementById('turkishText').innerText = words[currentIndex].tr;
+                document.getElementById('counter').innerText = `${currentIndex + 1} / ${words.length}`;
+            }, 200);
+        }
+
+        function nextCard() {
+            if (currentIndex < words.length - 1) {
+                currentIndex++;
+                updateCard();
+            }
+        }
+
+        function prevCard() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        }
+    </script>
+</body>
+</html>

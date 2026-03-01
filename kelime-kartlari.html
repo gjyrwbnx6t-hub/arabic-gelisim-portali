@@ -12,12 +12,30 @@
         nav a { float: left; color: white; padding: 16px 20px; text-decoration: none; transition: 0.3s; }
         nav a:hover { color: #3498db; }
 
+        /* KAPAK FOTOĞRAFI STİLLERİ */
+        .banner-container {
+            width: 100%;
+            max-width: 1000px;
+            height: 300px; /* Görselin yüksekliğini buradan ayarlayabilirsin */
+            margin: 0 auto 30px auto;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .banner-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Görseli ezmeden alanı kaplamasını sağlar */
+            display: block;
+        }
+
         h1 { color: #18395b; margin-bottom: 40px; }
 
         /* İkişerli Izgara (Grid) Yapısı */
         .sets-grid { 
             display: grid; 
-            grid-template-columns: repeat(2, 1fr); /* Tam olarak yan yana 2 tane */
+            grid-template-columns: repeat(2, 1fr); 
             gap: 25px; 
             max-width: 800px; 
             margin: 0 auto; 
@@ -32,11 +50,10 @@
             text-decoration: none; 
             color: #333; 
             box-shadow: 0 5px 15px rgba(0,0,0,0.05); 
-            transition: all 0.3s ease; /* Yumuşak geçiş */
+            transition: all 0.3s ease; 
             border: 2px solid transparent;
         }
 
-        /* İstediğin Havaya Kalkma Efekti */
         .set-box:hover { 
             transform: translateY(-12px); 
             box-shadow: 0 15px 30px rgba(0,0,0,0.15); 
@@ -49,6 +66,7 @@
         /* Mobilde (telefonlarda) tekli sıraya düşmesi için */
         @media (max-width: 600px) {
             .sets-grid { grid-template-columns: 1fr; }
+            .banner-container { height: 200px; } /* Mobilde görsel yüksekliği azalır */
         }
     </style>
 </head>
@@ -57,6 +75,10 @@
     <nav>
         <a href="index.html">← Anasayfaya Dön</a>
     </nav>
+
+    <div class="banner-container">
+        <img src="kelime-kartlari-anasayfa.WebP" alt="Kelime Kartları Kapak Fotoğrafı">
+    </div>
 
     <h1>Kelime Kartları Setleri</h1>
 
