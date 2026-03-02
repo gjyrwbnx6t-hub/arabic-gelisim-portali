@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>C Alıştırmaları - Arapça Portalı</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Amiri&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f0f4f8; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 40px 20px; }
+        
+        .exercise-container { width: 100%; max-width: 1100px; background: white; padding: 50px; border-radius: 30px; box-shadow: 0 15px 50px rgba(0,0,0,0.1); text-align: center; }
+        
+        .section-header { font-size: 24px; color: #e74c3c; margin: 0 0 20px 0; font-weight: 600; text-align: left; }
+
+        /* Kelime Havuzu */
+        .words-box {
+            background: #f8f9fa;
+            border: 2px dashed #3498db;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            font-size: 32px;
+            font-family: 'Amiri', serif;
+            color: #2c3e50;
+            direction: rtl;
+            line-height: 2;
+            word-spacing: 20px;
+        }
+
+        .list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            direction: rtl; 
+        }
+
+        .list-row {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            padding: 15px 25px;
+            border-radius: 15px;
+            font-family: 'Amiri', serif;
+            font-size: 35px;
+            color: #18395b;
+            border: 2px solid #ecf0f1;
+            transition: 0.3s;
+            text-align: right;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .list-row:hover { border-color: #bdc3c7; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+
+        .row-number { font-size: 24px; color: #7f8c8d; font-family: 'Poppins', sans-serif; min-width: 40px; }
+
+        /* Boşluk Doldurma Kutucukları */
+        input { 
+            width: 180px; padding: 5px 10px; font-size: 32px; font-family: 'Amiri', serif; 
+            text-align: center; border: none; border-bottom: 3px dashed #3498db; 
+            background: transparent; outline: none; transition: 0.3s; direction: rtl;
+            color: #e74c3c; font-weight: bold;
+        }
+        input:focus { border-bottom-color: #27ae60; background: #f0f8ff; border-radius: 10px 10px 0 0; }
+        input.correct { color: #27ae60; border-bottom-color: #27ae60; }
+        input.wrong { color: #e74c3c; border-bottom-color: #e74c3c; }
+
+        .hint-text {
+            display: none;
+            color: #27ae60;
+            font-size: 24px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        /* Gramer Notu */
+        .grammar-note {
+            background-color: #fdedec;
+            border-left: 5px solid #e74c3c;
+            color: #c0392b;
+            padding: 15px 20px;
+            font-size: 16px;
+            text-align: left;
+            direction: ltr;
+            border-radius: 0 10px 10px 0;
+            margin: 20px 0 50px 0;
+            font-weight: 600;
+        }
+
+        .buttons-container { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 50px; }
+
+        button { 
+            padding: 20px 40px; font-size: 24px; border: none; 
+            background-color: #2c3e50; color: white; border-radius: 15px; 
+            cursor: pointer; transition: 0.3s; font-family: 'Poppins'; 
+        }
+        button:hover { transform: scale(1.05); }
+
+        .btn-check { background-color: #27ae60; }
+        .btn-check:hover { background-color: #2ecc71; }
+        .btn-skip { background-color: #3498db; }
+        .btn-skip:hover { background-color: #2980b9; }
+        .btn-retry { background-color: #7f8c8d; }
+
+        #results { display: none; margin-top: 30px; }
+        .score-text { font-size: 40px; color: #18395b; font-weight: 600; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="exercise-container">
+        
+        <div class="section-header">C- Sütundan kelime seçip Mef'ûlun bih olarak boş yerlere koyunuz:</div>
+        
+        <div class="words-box">
+            الشَّايَ - الْفُطُورَ - الْكَوْنَ - الْبَابَ - الثِّيَابَ - الدَّرْسَ - الْوَاجِبَ - الرِّسَالَةَ
+        </div>
+
+        <div class="list-container">
+            <div class="list-row"><span class="row-number">1-</span> أَكَلَ كَامِلٌ <input type="text" data-answer="الْفُطُورَ" autocomplete="off"> <span class="hint-text">(الْفُطُورَ)</span></div>
+            <div class="list-row"><span class="row-number">2-</span> لَبِسَ الرَّجُلُ <input type="text" data-answer="الثِّيَابَ" autocomplete="off"> <span class="hint-text">(الثِّيَابَ)</span></div>
+            <div class="list-row"><span class="row-number">3-</span> كَتَبَ التِّلْمِيذُ <input type="text" data-answer="الْوَاجِبَ|الدَّرْسَ|الرِّسَالَةَ" autocomplete="off"> <span class="hint-text">(الْوَاجِبَ/الدَّرْسَ)</span></div>
+            <div class="list-row"><span class="row-number">4-</span> فَهِمَ طَاهِرٌ <input type="text" data-answer="الدَّرْسَ|الْوَاجِبَ" autocomplete="off"> <span class="hint-text">(الدَّرْسَ)</span></div>
+            <div class="list-row"><span class="row-number">5-</span> شَرِبَ كَامِلٌ <input type="text" data-answer="الشَّايَ" autocomplete="off"> <span class="hint-text">(الشَّايَ)</span></div>
+            <div class="list-row"><span class="row-number">6-</span> قَرَأَ مَحْمُودٌ <input type="text" data-answer="الرِّسَالَةَ|الدَّرْسَ|الْوَاجِبَ" autocomplete="off"> <span class="hint-text">(الرِّسَالَةَ)</span></div>
+            <div class="list-row"><span class="row-number">7-</span> خَلَقَ اللهُ <input type="text" data-answer="الْكَوْنَ" autocomplete="off"> <span class="hint-text">(الْكَوْنَ)</span></div>
+            <div class="list-row"><span class="row-number">8-</span> فَتَحَ صَادِقٌ <input type="text" data-answer="الْبَابَ" autocomplete="off"> <span class="hint-text">(الْبَابَ)</span></div>
+        </div>
+        
+        <div class="grammar-note">
+            📌 Muteaddî Fiil, Mef'ûlun bih alır (Yukarıdaki misallerde görüldüğü gibi).
+        </div>
+
+        <div class="section-header">C- Sütundan kelime seçerek boş yerlere Fiil (yüklem) olarak koyunuz:</div>
+        
+        <div class="words-box">
+            أَكَلَ - شَرِبَ - لَبِسَ - قَبَّلَ - تَوَضَّأَ - دَخَلَ - خَرَجَ - كَتَبَ 
+        </div>
+
+        <div class="list-container">
+            <div class="list-row"><span class="row-number">1-</span> <input type="text" data-answer="تَوَضَّأَ" autocomplete="off"> <span class="hint-text">(تَوَضَّأَ)</span> كَامِلٌ وَ صَلَّى صَلَاةَ الْفَجْرِ.</div>
+            <div class="list-row"><span class="row-number">2-</span> <input type="text" data-answer="أَكَلَ" autocomplete="off"> <span class="hint-text">(أَكَلَ)</span> كَامِلٌ الْجُبْنَ.</div>
+            <div class="list-row"><span class="row-number">3-</span> <input type="text" data-answer="أَكَلَ" autocomplete="off"> <span class="hint-text">(أَكَلَ)</span> كَامِلٌ الْخُبْزَ.</div>
+            <div class="list-row"><span class="row-number">4-</span> <input type="text" data-answer="أَكَلَ" autocomplete="off"> <span class="hint-text">(أَكَلَ)</span> كَامِلٌ الزُّبْدَةَ.</div>
+            <div class="list-row"><span class="row-number">5-</span> <input type="text" data-answer="أَكَلَ" autocomplete="off"> <span class="hint-text">(أَكَلَ)</span> كَامِلٌ الزَّيْتُونَ.</div>
+            <div class="list-row"><span class="row-number">6-</span> <input type="text" data-answer="شَرِبَ" autocomplete="off"> <span class="hint-text">(شَرِبَ)</span> كَامِلٌ الْحَلِيبَ.</div>
+            <div class="list-row"><span class="row-number">7-</span> <input type="text" data-answer="لَبِسَ" autocomplete="off"> <span class="hint-text">(لَبِسَ)</span> كَامِلٌ الثِّيَابَ.</div>
+            <div class="list-row"><span class="row-number">8-</span> <input type="text" data-answer="قَبَّلَ" autocomplete="off"> <span class="hint-text">(قَبَّلَ)</span> كَامِلٌ يَدَ أُمِّهِ.</div>
+            <div class="list-row"><span class="row-number">9-</span> <input type="text" data-answer="خَرَجَ" autocomplete="off"> <span class="hint-text">(خَرَجَ)</span> كَامِلٌ مِنَ الْبَيْتِ.</div>
+            <div class="list-row"><span class="row-number">10-</span> <input type="text" data-answer="ذَهَبَ|خَرَجَ" autocomplete="off"> <span class="hint-text">(خَرَجَ/ذَهَبَ)</span> كَامِلٌ إِلَى الْمَدْرَسَةِ.</div>
+            <div class="list-row"><span class="row-number">11-</span> <input type="text" data-answer="دَخَلَ" autocomplete="off"> <span class="hint-text">(دَخَلَ)</span> كَامِلٌ الصَّفَّ.</div>
+            <div class="list-row"><span class="row-number">12-</span> <input type="text" data-answer="كَتَبَ" autocomplete="off"> <span class="hint-text">(كَتَبَ)</span> كَامِلٌ الدَّرْسَ.</div>
+        </div>
+
+        <div class="grammar-note">
+            📌 Lâzım Fiil, Mef'ûlun Bih almaz.
+        </div>
+
+        <div class="buttons-container">
+            <button id="check-btn" class="btn-check" onclick="checkAllAnswers()">Cevapları Kontrol Et</button>
+            <button class="btn-skip" onclick="location.href='16-antrenman-fiil-cumlesi-4.html'">Sonraki Antrenmana Geç</button>
+        </div>
+
+        <div id="results">
+            <div class="score-text" id="final-score"></div>
+            <button class="btn-retry" onclick="location.reload()">Tekrar Dene</button>
+        </div>
+    </div>
+
+    <script>
+        function normalizeArabic(text) {
+            return text.replace(/[\u064B-\u0652]/g, "").trim();
+        }
+
+        function checkAllAnswers() {
+            const inputs = document.querySelectorAll('input[type="text"]');
+            let correctCount = 0;
+
+            inputs.forEach(input => {
+                const rawUserAnswer = input.value.trim();
+                const userAnswer = normalizeArabic(rawUserAnswer);
+                
+                // Birden fazla doğru cevabı desteklemek için
+                const correctAnswersRaw = input.getAttribute('data-answer').split('|');
+                const correctAnswers = correctAnswersRaw.map(ans => normalizeArabic(ans));
+                
+                const hintSpan = input.nextElementSibling;
+
+                if (rawUserAnswer === "") {
+                    input.className = "wrong";
+                    if (hintSpan) hintSpan.style.display = "inline";
+                }
+                else if (correctAnswers.includes(userAnswer)) {
+                    input.className = "correct";
+                    if (hintSpan) hintSpan.style.display = "none";
+                    correctCount++;
+                } else {
+                    input.className = "wrong";
+                    if (hintSpan) hintSpan.style.display = "inline"; 
+                }
+                
+                input.readOnly = true; 
+            });
+
+            document.getElementById('check-btn').style.display = "none";
+            document.getElementById('results').style.display = "block";
+            
+            let scoreText = document.getElementById('final-score');
+            if(correctCount === inputs.length) {
+                scoreText.innerHTML = `Mükemmel! Skor: ${correctCount} / ${inputs.length} 🏆`;
+            } else {
+                scoreText.innerHTML = `Skor: ${correctCount} / ${inputs.length}`;
+            }
+        }
+    </script>
+</body>
+</html>

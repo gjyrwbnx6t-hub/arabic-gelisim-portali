@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>C Alıştırması: İsim Cümlesi - Arapça Portalı</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Amiri&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: #f0f4f8; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            padding: 40px 20px; 
+        }
+        
+        /* Navigasyon Çubuğu */
+        nav { 
+            background-color: #2c3e50; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            display: inline-block; 
+            width: 100%; 
+            max-width: 1000px; 
+            margin-bottom: 20px; 
+            overflow: hidden; 
+        }
+        nav a { float: left; color: white; padding: 16px 20px; text-decoration: none; transition: 0.3s; font-weight: 600; }
+        nav a:hover { background-color: #34495e; color: #3498db; }
+
+        .exercise-container { 
+            width: 100%; 
+            max-width: 1000px; 
+            background: white; 
+            padding: 50px; 
+            border-radius: 30px; 
+            box-shadow: 0 15px 50px rgba(0,0,0,0.1); 
+            text-align: center; 
+        }
+        
+        .main-title { color: #e74c3c; font-size: 32px; font-weight: 600; margin-bottom: 10px; }
+        .instruction { font-size: 20px; color: #7f8c8d; margin-bottom: 40px; font-weight: 600; }
+
+        /* Kelime Tablosu (Grid) Tasarımı */
+        .vocab-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            direction: rtl; /* Arapça sağdan sola dizilim için */
+        }
+
+        .vocab-card {
+            background: #fff0f0; 
+            border: 2px solid #ffeaea;
+            border-radius: 15px;
+            padding: 20px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: 0.3s;
+        }
+
+        .vocab-card:hover {
+            border-color: #e74c3c;
+            background: #fff;
+            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.15);
+            transform: translateY(-3px);
+        }
+
+        .vocab-ar {
+            font-family: 'Amiri', serif;
+            font-size: 45px;
+            color: #18395b;
+        }
+
+        .vocab-tr {
+            font-family: 'Poppins', sans-serif;
+            font-size: 18px;
+            color: #2c3e50;
+            font-weight: 600;
+            direction: ltr; /* Türkçe soldan sağa */
+        }
+
+        /* Yönlendirme Butonları */
+        .nav-buttons { 
+            display: flex; 
+            justify-content: center; 
+            gap: 20px; 
+            margin-top: 50px; 
+        }
+        .action-btn { 
+            padding: 15px 30px; 
+            font-size: 20px; 
+            border: none; 
+            background-color: #2c3e50; 
+            color: white; 
+            border-radius: 15px; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            font-family: 'Poppins'; 
+            text-decoration: none;
+        }
+        .action-btn:hover { transform: scale(1.05); }
+        .btn-prev { background-color: #7f8c8d; }
+        .btn-prev:hover { background-color: #95a5a6; }
+        .btn-next { background-color: #3498db; }
+        .btn-next:hover { background-color: #2980b9; }
+
+        @media (max-width: 800px) {
+            .vocab-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 500px) {
+            .vocab-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="4-gun-antrenmanlari.html">← 4. Güne Dön</a>
+    </nav>
+
+    <div class="exercise-container">
+        <div class="main-title">C- ALIŞTIRMASI</div>
+        <div class="instruction">Şu isimleri, cümlelerde Haber olarak kullanınız:</div>
+        
+        <div class="vocab-grid">
+            <div class="vocab-card">
+                <span class="vocab-ar">مُرِيحٌ</span>
+                <span class="vocab-tr">rahat ettirici</span>
+            </div>
+            <div class="vocab-card">
+                <span class="vocab-ar">كَبِيرَةٌ</span>
+                <span class="vocab-tr">büyük</span>
+            </div>
+            <div class="vocab-card">
+                <span class="vocab-ar">وَاسِعٌ</span>
+                <span class="vocab-tr">geniş</span>
+            </div>
+
+            <div class="vocab-card">
+                <span class="vocab-ar">مُجِدٌّ</span>
+                <span class="vocab-tr">çalışkan</span>
+            </div>
+            <div class="vocab-card">
+                <span class="vocab-ar">قَصِيرَةٌ</span>
+                <span class="vocab-tr">kısa</span>
+            </div>
+            <div class="vocab-card">
+                <span class="vocab-ar">طَوِيلٌ</span>
+                <span class="vocab-tr">uzun</span>
+            </div>
+
+            <div class="vocab-card">
+                <span class="vocab-ar">فَقِيرَةٌ</span>
+                <span class="vocab-tr">yoksul</span>
+            </div>
+            <div class="vocab-card">
+                <span class="vocab-ar">عَالِيَةٌ</span>
+                <span class="vocab-tr">yüksek</span>
+            </div>
+            <div class="vocab-card">
+                <span class="vocab-ar">صَغِيرَةٌ</span>
+                <span class="vocab-tr">kısa</span>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="15-antrenman-isim-cumlesi-2.html" class="action-btn btn-prev">Önceki Antrenman</a>
+            <a href="15-antrenman-isim-cumlesi-4.html" class="action-btn btn-next">Sonraki Antrenmana Geç</a>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Görünür Öğrenme - Arapça Portalı</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* BASE SETUP */
+        body { font-family: 'Poppins', sans-serif; background-color: #f0f4f8; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; }
+        nav { background-color: #2c3e50; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 1300px; margin-bottom: 20px; overflow: hidden; display: flex; }
+        nav a { color: white; padding: 15px 20px; text-decoration: none; transition: 0.3s; font-weight: 600; }
+        nav a:hover { background-color: #34495e; color: #3498db; }
+        .slider-wrapper { width: 100%; max-width: 1300px; background: white; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); overflow: hidden; position: relative; display: flex; flex-direction: column; }
+        .slider-track { display: flex; transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); align-items: stretch; }
+        .slide { min-width: 100%; padding: 20px 30px 80px 30px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+        /* MINDMAP SPECIFIC (SLAYT 1) */
+        .mindmap-container { display: flex; align-items: center; justify-content: center; gap: 20px; width: 100%; }
+        .mm-column { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+        .mm-center { background-color: #245c75; color: white; padding: 20px 30px; border-radius: 15px; font-size: 26px; font-weight: 700; text-align: center; box-shadow: 0 10px 20px rgba(36, 92, 117, 0.3); z-index: 2; width: 220px; flex-shrink: 0; }
+        .mm-card { padding: 12px 15px; border-radius: 12px; color: white; text-align: left; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: 0.3s; cursor: pointer; font-size: 13px; font-weight: 600; display: flex; align-items: center; min-height: 40px; }
+        .mm-card:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 15px rgba(0,0,0,0.15); }
+        
+        .c-l1 { background-color: #2b76a6; } .c-l2 { background-color: #cd6738; } .c-l3 { background-color: #c34952; } .c-l4 { background-color: #9e3b6a; } .c-l5 { background-color: #723c7c; } .c-l6 { background-color: #394184; } .c-l7 { background-color: #1c629f; }
+        .c-r1 { background-color: #256598; } .c-r2 { background-color: #5f3c83; } .c-r3 { background-color: #863e7c; } .c-r4 { background-color: #ac365b; } .c-r5 { background-color: #c6474b; } .c-r6 { background-color: #ce6436; }
+
+        /* ========================================================
+           GLOBAL COMPACT DESIGN SYSTEM (TÜM SLAYTLAR İÇİN ORTAK)
+           ======================================================== */
+        .sl2-container { display: flex; align-items: stretch; justify-content: flex-start; width: 100%; gap: 15px; direction: ltr; }
+        .sl2-main-node { background-color: #245c75; color: white; padding: 20px 10px; border-radius: 12px; font-size: 16px; font-weight: 700; text-align: center; min-width: 140px; box-shadow: 0 10px 25px rgba(36, 92, 117, 0.3); display: flex; align-items: center; justify-content: center; line-height: 1.3; }
+        .sl2-note-box { background-color: #245c75; color: white; padding: 15px; border-radius: 12px; max-width: 140px; font-size: 10.5px; line-height: 1.5; text-align: center; position: relative; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .sl2-note-box::before { content: '⭐'; position: absolute; right: -10px; top: 50%; transform: translateY(-50%); background: #f1c40f; width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; font-size: 12px; }
+        
+        .c-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; flex: 1; }
+        .c-stack { display: flex; flex-direction: column; gap: 8px; width: 100%; flex: 1; }
+        .c-full { grid-column: 1 / -1; }
+        
+        .c-box { background: white; border-radius: 12px; border: 2px solid; padding: 8px 12px; display: flex; flex-direction: column; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); height: 100%; box-sizing: border-box; justify-content: flex-start; }
+        .c-box-row { flex-direction: row; align-items: center; }
+        
+        .c-header { padding: 5px 10px; font-size: 11.5px; margin-bottom: 2px; width: 100%; box-sizing: border-box; font-weight: bold; border-radius: 6px; color: white; display: flex; justify-content: space-between; align-items: center; }
+        .c-text { font-size: 9.5px; line-height: 1.4; color: #333; padding: 0 4px; }
+        
+        .c-sub-cont { display: flex; flex-direction: column; gap: 5px; margin-top: 0; padding-left: 0; border: none; width: 100%; }
+        .c-sub { background: #f9f9f9; border-radius: 6px; padding: 5px 8px; font-size: 9.5px; line-height: 1.4; display: flex; align-items: flex-start; gap: 6px; border: 1px solid #eee; border-left-width: 3px; }
+        
+        .c-table { width: 100%; border-collapse: collapse; font-size: 9px; margin-top: 4px; background: white; }
+        .c-table th, .c-table td { padding: 4px 6px; border: 1px solid #c7d2fe; text-align: left; }
+        .c-table th { background: #eef2ff; color: #312e81; font-weight: bold; text-align: center; }
+        .c-table .row-title { font-weight: bold; background: #faf5ff; color: #4c1d95; width: 25%; }
+        .c-table .center-col { text-align: center; font-weight: bold; width: 15%; }
+        
+        /* Renk Temaları */
+        .c-blue { border-color: #2b76a6; } .bg-blue { background-color: #2b76a6; color: white; } .b-blue { border-left-color: #2b76a6 !important; }
+        .c-purple { border-color: #5f3c83; } .bg-purple { background-color: #5f3c83; color: white; } .b-purple { border-left-color: #5f3c83 !important; }
+        .c-magenta { border-color: #9e3b6a; } .bg-magenta { background-color: #9e3b6a; color: white; } .b-magenta { border-left-color: #9e3b6a !important; }
+        .c-red { border-color: #c34952; } .bg-red { background-color: #c34952; color: white; } .b-red { border-left-color: #c34952 !important; }
+        .c-coral { border-color: #cd6738; } .bg-coral { background-color: #cd6738; color: white; } .b-coral { border-left-color: #cd6738 !important; }
+        .c-orange { border-color: #f59e0b; } .bg-orange { background-color: #f59e0b; color: white; } .b-orange { border-left-color: #f59e0b !important; }
+        
+        /* Özel Modüller */
+        .kritik-not-box { background-color: #1f4b5b; color: white; padding: 10px; border-radius: 8px; font-size: 9.5px; line-height: 1.4; text-align: center; display: flex; align-items: center; gap: 8px; border-left: 4px solid #f1c40f; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        
+        /* Kontroller */
+        .controls { position: absolute; bottom: 20px; left: 30px; right: 30px; display: flex; justify-content: space-between; align-items: center; pointer-events: none; z-index: 10; }
+        .ctrl-btn { background: rgba(44, 62, 80, 0.85); color: white; border: 1px solid rgba(255, 255, 255, 0.2); padding: 10px 20px; border-radius: 12px; font-size: 14px; font-family: 'Poppins'; cursor: pointer; font-weight: 600; transition: 0.3s; pointer-events: auto; backdrop-filter: blur(5px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .ctrl-btn:hover:not(:disabled) { background: rgba(52, 152, 219, 0.95); transform: translateY(-2px); }
+        .ctrl-btn:disabled { opacity: 0; visibility: hidden; }
+        .slide-counter { font-size: 14px; font-weight: 600; color: #2c3e50; background: rgba(255, 255, 255, 0.9); padding: 6px 15px; border-radius: 20px; pointer-events: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        
+        @media (max-width: 1100px) {
+            .mindmap-container, .sl2-container, .c-box-row { flex-direction: column; }
+            .c-grid { grid-template-columns: 1fr; }
+            .mm-center, .sl2-main-node { order: -1; margin-bottom: 20px; width: 100%; box-sizing: border-box; }
+            .sl2-note-box { max-width: 100%; width: 100%; box-sizing: border-box; margin-top: 15px; }
+            .controls { left: 15px; right: 15px; bottom: 15px; }
+            .slide { padding: 20px 15px 70px 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="pusula-anasayfa.html">← Pusula'ya Dön</a>
+    </nav>
+
+    <div class="slider-wrapper">
+        <div class="slider-track" id="sliderTrack">
+            
+            <div class="slide">
+                <div class="mindmap-container">
+                    <div class="mm-column">
+                        <div class="mm-card c-r6" onclick="goToSlide(13)">11. Bölüm: Büyük Sentez ve Mükemmellik İçin 6 İşaret Levhası</div>
+                        <div class="mm-card c-r5" onclick="goToSlide(12)">10. Bölüm: Öğretim Yaklaşımları - II (Stratejiler ve Uygulama)</div>
+                        <div class="mm-card c-r4" onclick="goToSlide(11)">9. Bölüm: Öğretim Yaklaşımları - I (Hedefler, Kriterler ve Katılım)</div>
+                        <div class="mm-card c-r3" onclick="goToSlide(10)">8. Bölüm: Müfredatın Katkıları (Curricula Contributions)</div>
+                        <div class="mm-card c-r2" onclick="goToSlide(9)">7. Bölüm: Öğretmenden Gelen Katkılar (Teacher Contributions)</div>
+                        <div class="mm-card c-r1" onclick="goToSlide(8)">6. Bölüm: Okulun Katkıları (School Contributions)</div>
+                    </div>
+                    <div class="mm-center">
+                        Görünür<br>Öğrenme
+                    </div>
+                    <div class="mm-column">
+                        <div class="mm-card c-l6" onclick="goToSlide(1)">Temel Felsefe ve Giriş Özeti</div>
+                        <div class="mm-card c-l5" onclick="goToSlide(3)">1. Bölüm: Meydan Okuma – Genel Şema</div>
+                        <div class="mm-card c-l4" onclick="goToSlide(4)">2. Bölüm: Kanıtın Doğası – Meta-Analizlerin Sentezi</div>
+                        <div class="mm-card c-l3" onclick="goToSlide(5)">3. Bölüm: Argüman: Görünür Öğretim ve Görünür Öğrenme</div>
+                        <div class="mm-card c-l2" onclick="goToSlide(6)">4. Bölüm: Öğrencinin Katkıları (The Contributions from the Student)</div>
+                        <div class="mm-card c-l1" onclick="goToSlide(7)">5. Bölüm: Evden Gelen Katkılar (Home Contributions)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide">
+                <div class="sl2-container">
+                    <div class="sl2-main-node" style="background-color: #245c75;">
+                        <div>Temel Felsefe ve<br>Giriş Özeti</div>
+                    </div>
+                    <div class="c-grid">
+                        <div class="c-box c-blue">
+                            <div class="c-header bg-blue">🚑 1. Elliott Metaforu</div>
+                            <div class="c-text">Tıp dünyasının bir hastalığa yaklaşımı (doğru teşhis, anında müdahale, sürekli izleme ve geri bildirim), eğitimde de uygulanmalıdır. Başarı kriterlerinin netliği ve <b>sürekli veri toplama</b> disiplini bu modelin temelidir.</div>
+                        </div>
+                        <div class="c-box c-purple">
+                            <div class="c-header bg-purple">2. Bu Kitap "Ne Değildir?"</div>
+                            <div class="c-sub-cont">
+                                <div class="c-sub b-purple">🔗 <div><b>Sınıf içi detaylar:</b> Sadece "ana etkilere" odaklanır.</div></div>
+                                <div class="c-sub b-purple">🦠 <div><b>Okul dışı:</b> Yoksulluk ve sağlık vb. kapsam dışıdır.</div></div>
+                                <div class="c-sub b-purple">📊 <div><b>Nitel çalışmalar:</b> Sadece istatistiksel veri kullanır.</div></div>
+                            </div>
+                        </div>
+                        <div class="c-box c-magenta">
+                            <div class="c-header bg-magenta">☄️ 3. Muazzam Bir Veri Seti</div>
+                            <div class="c-text">15 yıl süren bu yolculuğun sonucu olarak 50.000'den fazla çalışmayı ve milyonlarca öğrenciyi kapsayan bir sentez oluşturuldu. Bu sadece bir "sayı sayma" egzersizi değil, verilerin içinden anlamlı bir "hikaye" çıkarma çabasıdır.</div>
+                        </div>
+                        <div class="c-box c-red">
+                            <div class="c-header bg-red">🖐️ 4. "Mükemmellik Ulaşılabilirdir"</div>
+                            <div class="c-text">Kitabın ana mesajı: Mükemmellik sadece seçilmiş birkaç kişiye özgü değildir; her gün, her okulda gerçekleşebilir. Sadece eğitimin neyin "en iyi" çalıştığını gösteren bir barometreye ihtiyacı olduğunu bulmamız gerekiyor.</div>
+                        </div>
+                        <div class="c-full">
+                            <div class="c-box c-coral">
+                                <div class="c-header bg-coral" style="justify-content: center;">Kitabın Yol Haritası (İçindekiler Analizi)</div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;">
+                                    <div class="c-sub b-coral" style="justify-content: center;">👥 <b>1. Öğrenci (Student)</b></div>
+                                    <div class="c-sub b-coral" style="justify-content: center;">🏠 <b>2. Ev (Home)</b></div>
+                                    <div class="c-sub b-coral" style="justify-content: center;">🏫 <b>3. Okul (School)</b></div>
+                                    <div class="c-sub b-coral" style="justify-content: center;">👨‍🚀 <b>4. Öğretmen (Teacher)</b></div>
+                                    <div class="c-sub b-coral" style="justify-content: center;">📄 <b>5. Müfredat (Curricula)</b></div>
+                                    <div class="c-sub b-coral" style="justify-content: center;">💡 <b>6. Yaklaşımlar</b></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sl2-note-box">
+                        <b style="font-size: 11.5px;">Altın Not:</b><br><br>Hattie'ye göre en büyük etki; öğretmenler öğrenmeyi öğrencilerin gözünden gördüğünde ve öğrenciler kendilerini kendi öğretmenleri olarak gördüğünde ortaya çıkar.
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide">
+                <div class="sl2-container">
+                    <div class="sl2-main-node" style="background-color: #1c629f;">
+                        <div>Bölüm 1:<br>Meydan Okuma<br>Genel Şema</div>
+                    </div>
+                    <div class="c-grid">
+                        <div class="c-box c-blue">
+                            <div class="c-header bg-blue">1. "Her Şey İşe Yarıyor" Paradoksu</div>
+                            <div class="c-sub-cont">
+                                <div class="c-sub b-blue">🔍 <div>Hemen hemen her müdahale pozitif bir etki yaratır.</div></div>
+                                <div class="c-sub b-blue">📊 <div><b>Yanılgı:</b> Çoğu öğretmen ortalama altı olduğunu düşünmez.</div></div>
+                                <div class="c-sub b-blue">🚧 <div><b>Özel Alan:</b> Öğretmenler sınıf kapısını kapatır, sorgulamaz.</div></div>
+                            </div>
+                        </div>
+                        <div class="c-box c-purple">
+                            <div class="c-header bg-purple">2. Kanıt Bolluğu ve Etki Eksikliği</div>
+                            <div class="c-sub-cont">
+                                <div class="c-sub b-purple">🗑️ <div>Binlerce "iyi fikir" vardır ancak parça parça uygulandığı için gelişim sağlamaz.</div></div>
+                                <div class="c-sub b-purple">📅 <div><b>Kopukluk:</b> Sınıflar 200 yıl önceki hallerinden çok farklı değil.</div></div>
+                                <div class="c-sub b-purple">✂️ <div><b>Bağlam Sorunu:</b> Öğretmenler bağlamına uymayan veriyi reddeder.</div></div>
+                            </div>
+                        </div>
+                        <div class="c-box c-magenta">
+                            <div class="c-header bg-magenta">3. Meta-Analiz Çözümü</div>
+                            <div class="c-sub-cont">
+                                <div class="c-sub b-magenta">🩸 <div><b>Etki Büyüklüğü:</b> Farklı çalışmaları ortak bir ölçüye dönüştürür.</div></div>
+                                <div class="c-sub b-magenta">🎯 <div><b>Hedef:</b> Başarının nedenini açıklayan bir teori sunmaktır.</div></div>
+                            </div>
+                        </div>
+                        <div class="c-box c-coral">
+                            <div class="c-header bg-coral">5. Çözüm: Görünür Öğretim</div>
+                            <div class="c-sub-cont">
+                                <div class="c-sub b-coral">👩‍🏫 <div><b>Yorumlama:</b> Asıl başarı öğrencinin içeriği nasıl yorumladığındadır.</div></div>
+                                <div class="c-sub b-coral">📢 <div><b>Geri Bildirim:</b> Başarısızlık anındaki müdahale kaderi belirler.</div></div>
+                            </div>
+                        </div>
+                        <div class="c-full">
+                            <div class="c-box c-red c-box-row" style="gap: 10px;">
+                                <div style="flex: 1.2;">
+                                    <div class="c-header bg-red" style="margin-bottom: 5px;">4. Eksiklik Odaklı Düşünce</div>
+                                    <div class="c-text">Öğretmenlerin, başarısızlığı kendi yöntemlerinde aramak yerine <b>öğrencide, ev ortamında veya okul yapısında</b> aramasıdır.</div>
+                                    <div class="c-text" style="margin-top: 5px; color: #9f1239;"><i>Öğrenciler başarı için "ilişki kurmayı" seçerken; öğretmenler kendi rollerini ikinci plana itmektedir.</i></div>
+                                </div>
+                                <div style="flex: 2;">
+                                    <table class="c-table" style="margin: 0; border-color: #fca5a5;">
+                                        <thead>
+                                            <tr><th style="background: #fef2f2; color: #7f1d1d; border-color: #fca5a5;">Algılanan Etki</th><th style="background: #fef2f2; color: #7f1d1d; border-color: #fca5a5;">Öğrenciler</th><th style="background: #fef2f2; color: #7f1d1d; border-color: #fca5a5;">Ebeveynler</th><th style="background: #fef2f2; color: #7f1d1d; border-color: #fca5a5;">Öğretmenler</th></tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td class="row-title" style="background: #fff1f2; color: #9f1239; border-color: #fca5a5;">İlişkiler (Öğr.-Öğr.)</td><td class="center-col" style="border-color: #fca5a5;">%81</td><td class="center-col" style="border-color: #fca5a5;">%71</td><td class="center-col" style="font-weight:bold; border-color: #fca5a5;">%46</td></tr>
+                                            <tr><td class="row-title" style="background: #fff1f2; color: #9f1239; border-color: #fca5a5;">Çocuk (Eksiklik)</td><td class="center-col" style="border-color: #fca5a5;">%35</td><td class="center-col" style="border-color: #fca5a5;">%27</td><td class="center-col" style="border-color: #fca5a5;">%20</td></tr>
+                                            <tr><td class="row-title" style="background: #fff1f2; color: #9f1239; border-color: #fca5a5;">Yapı (Okul)</td><td class="center-col" style="border-color: #fca5a5;">%9</td><td class="center-col" style="border-color: #fca5a5;">%9</td><td class="center-col" style="border-color: #fca5a5;">%12</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sl2-note-box">
+                        <b style="font-size: 11.5px;">Strateji:</b><br><br>Asıl başarı, fiziksel yapıları değiştirmek değil; öğretmenin kendi etkisini değerlendirebildiği bir <b>"görünürlük"</b> sağlamaktır.
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide">
+                <div class="sl2-container">
+                    <div class="sl2-main-node" style="background-color: #5f3c83;">
+                        <div>Bölüm 2:<br>Kanıtın<br>Doğası</div>
+                    </div>
+                    <div class="c-grid">
+                        <div class="c-box c-blue">
+                            <div class="c-header bg-blue">1. Etki Büyüklüğü (Effect Size - d)</div>
+                            <div class="c-text">Farklı sonuçları tek ortak ölçeğe dönüştürür.</div>
+                            <div class="c-sub-cont" style="margin-top: 4px;">
+                                <div class="c-sub b-blue">📊 <div><b>d = 1.0:</b> 2-3 yıllık ilerleme veya %50 hız artışı demektir.</div></div>
+                            </div>
+                        </div>
+                        <div class="c-box c-purple">
+                            <div class="c-header bg-purple">2. Eşik Noktası: d = 0.40</div>
+                            <div class="c-text">Eğitimde neredeyse her şey başarıyı artırır. Çıtayı "0"a koymak anlamsızdır.</div>
+                            <div class="c-sub-cont" style="margin-top: 4px;">
+                                <div class="c-sub b-purple">🎚️ <div><b>Kritik Sınır (0.40):</b> Yeniliğin başarılı sayılması için bu ortalamayı aşması gerekir.</div></div>
+                            </div>
+                        </div>
+                        <div class="c-box c-red">
+                            <div class="c-header bg-red">4. Katkı Sağlayanlar (Özet)</div>
+                            <table class="c-table" style="margin-top: 4px; border-color: #fca5a5;">
+                                <thead><tr><th style="background: #fef2f2; color: #7f1d1d; border-color: #fca5a5;">Faktör</th><th style="background: #fef2f2; color: #7f1d1d; border-color: #fca5a5;">Ortalama Etki (d)</th></tr></thead>
+                                <tbody>
+                                    <tr><td class="row-title" style="background: #fff1f2; color: #9f1239; border-color: #fca5a5;">Öğretmen / Müfredat</td><td class="center-col" style="font-weight:bold; border-color: #fca5a5;">0.49 / 0.45</td></tr>
+                                    <tr><td class="row-title" style="background: #fff1f2; color: #9f1239; border-color: #fca5a5;">Öğrenci</td><td class="center-col" style="border-color: #fca5a5;">0.40</td></tr>
+                                    <tr><td class="row-title" style="background: #fff1f2; color: #9f1239; border-color: #fca5a5;">Ev Ortamı / Okul</td><td class="center-col" style="border-color: #fca5a5;">0.31 / 0.23</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="c-box c-coral">
+                            <div class="c-header bg-coral">5. Önemli Kavramlar</div>
+                            <div class="c-sub-cont" style="margin-top: 4px;">
+                                <div class="c-sub b-coral">📈 <div><b>CLE (Ortak Dil Etkisi):</b> Rastgele bir öğrencide pozitif fark yaratma olasılığı.</div></div>
+                                <div class="c-sub b-coral">📉 <div><b>Huni Grafiği:</b> Araştırmalarda "yayın yanlılığı" olup olmadığını kontrol eder.</div></div>
+                            </div>
+                        </div>
+                        <div class="c-full">
+                            <div class="c-box c-magenta">
+                                <div class="c-header bg-magenta" style="justify-content: center;">3. Etki Barometresi (Şema)</div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px;">
+                                    <div class="c-sub" style="border-left-color: #ef4444; flex-direction:column; text-align:center;"><b>A. Negatif (d < 0):</b><br><span style="opacity: 0.8">Başarıyı düşüren (sınıf tekrarı).</span></div>
+                                    <div class="c-sub" style="border-left-color: #f97316; flex-direction:column; text-align:center;"><b>B. Gelişimsel (0 - 0.15):</b><br><span style="opacity: 0.8">Zamanla oluşan doğal gelişim.</span></div>
+                                    <div class="c-sub" style="border-left-color: #eab308; flex-direction:column; text-align:center;"><b>C. Öğretmen (0.15 - 0.40):</b><br><span style="opacity: 0.8">Standart sınıftaki gelişim.</span></div>
+                                    <div class="c-sub" style="border-left-color: #22c55e; flex-direction:column; text-align:center; background:#f0fdf4;"><b>D. Arzulanan (d > 0.40):</b><br><span style="opacity: 0.8">Fark yaratan asıl hedefler.</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sl2-note-box">
+                        <b style="font-size: 11.5px;">Strateji:</b><br><br>Eğitimciler için asıl soru "işe yarıyor mu?" değil, "ortalamadan (0.40) daha mı fazla işe yarıyor?" olmalıdır.
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide">
+                <div class="sl2-container">
+                    <div class="sl2-main-node" style="background-color: #1c629f;">
+                        <div>3. Bölüm:<br>Argüman:<br>Görünür<br>Öğrenme</div>
+                    </div>
+                    <div class="c-stack">
+                        <div class="c-box c-blue c-box-row" style="gap: 15px;">
+                            <div style="flex: 1.2;">
+                                <div class="c-header bg-blue">1. Temel Argüman: Görünürlük Nedir?</div>
+                                <div class="c-text" style="display: flex; gap: 5px; align-items: center;">
+                                    <span style="font-size: 16px;">👁️</span> "Görünür" öğretim ve öğrenim, öğrenmenin <b>açık bir hedef</b> olduğu, uygun şekilde zorlayıcı olduğu ve hem öğretmenin hem de öğrencinin bu hedefe ne kadar ulaşıldığını bizzat <b>takip ettiği</b> durumlarda gerçekleşir.
+                                </div>
+                            </div>
+                            <div class="c-sub-cont" style="flex: 1; border-left: 2px dashed #bbdefb; padding-left: 15px; justify-content: center;">
+                                <div class="c-sub b-blue"><span style="font-size: 12px;">🔄</span> <div><b>Rol Değişimi:</b> Öğretmenler kendi öğretimlerinin öğrencisi, öğrenciler ise kendi öğrenimlerinin öğretmeni haline geldiğinde ortaya çıkar.</div></div>
+                                <div class="c-sub b-blue"><span style="font-size: 12px;">🤩</span> <div><b>Öğrenci Gözü:</b> Öğretmen, öğrenmeyi öğrencinin gözünden görebilmelidir.</div></div>
+                            </div>
+                        </div>
+
+                        <div class="c-box c-purple c-box-row" style="gap: 15px; align-items: center;">
+                            <div style="flex: 1;">
+                                <div class="c-header bg-purple">2. Öğretmen Bir "Aktivatör" Olmalıdır</div>
+                                <div class="c-text">Hattie, öğretmenin sadece bir "kolaylaştırıcı" (facilitator) olduğu pasif modelleri reddeder. Başarı için öğretmenin bir <b>"aktivatör"</b> olması gerekir. 🔒</div>
+                            </div>
+                            <table class="c-table" style="flex: 1.5; margin: 0; border-color: #d8b4fe;">
+                                <thead>
+                                    <tr><th style="background: #faf5ff; color: #4c1d95; border-color: #d8b4fe;">Özellik</th><th style="background: #faf5ff; color: #4c1d95; border-color: #d8b4fe;">Kolaylaştırıcı</th><th style="background: #faf5ff; color: #4c1d95; border-color: #d8b4fe;">Aktivatör</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td class="row-title" style="background: #faf5ff; color: #4c1d95; border-color: #d8b4fe;">Yöntem</td><td class="center-col" style="border-color: #d8b4fe; font-weight: normal;">Kendi başına keşif</td><td class="center-col" style="border-color: #d8b4fe; font-weight: normal;">Kasıtlı öğretim</td></tr>
+                                    <tr><td class="row-title" style="background: #faf5ff; color: #4c1d95; border-color: #d8b4fe;">Geri Bildirim</td><td class="center-col" style="border-color: #d8b4fe; font-weight: normal;">Düşük / Pasif</td><td class="center-col" style="border-color: #d8b4fe; font-weight: normal;">Aktif / Yüksek</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="c-box-row" style="gap: 8px;">
+                            <div class="c-box c-magenta c-box-row" style="flex: 2; align-items: center; gap: 10px;">
+                                <div style="flex: 1;">
+                                    <div class="c-header bg-magenta">3. Üç Dünyalı Anlama Modeli</div>
+                                    <div class="c-text">Öğrenme süreci üç farklı katmandan oluşur ve dengeli olmalıdır:</div>
+                                </div>
+                                <div class="c-sub-cont" style="flex: 1.5;">
+                                    <div class="c-sub b-magenta">🍃 <b>Yüzeysel Bilgi:</b> Olguları bilmek.</div>
+                                    <div class="c-sub b-magenta">🧠 <b>Derin Anlama:</b> Fikirleri bağlama.</div>
+                                    <div class="c-sub b-magenta">🏗️ <b>İnşa Edilen Anlama:</b> Gerçeklik teorisi oluşturma.</div>
+                                </div>
+                            </div>
+                            <div class="kritik-not-box" style="flex: 0.8;">
+                                <div style="text-align: left;"><b>Kritik Not:</b> Yüzeysel bilgi "kötü" değildir; derin anlama ulaşmak için bir <b>basamaktır</b>.</div>
+                                <span style="font-size: 18px;">⚡</span>
+                            </div>
+                        </div>
+
+                        <div class="c-box c-red c-box-row" style="gap: 15px; align-items: center;">
+                            <div style="flex: 1;">
+                                <div class="c-header bg-red">4. Başarıyı Etkileyen Altı Faktör</div>
+                                <div class="c-text">Çoğu tartışılan konu aslında en düşük etkiye sahiptir.</div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; flex: 2.5;">
+                                <div class="c-sub b-red">🧒 <b>Çocuk:</b> Öğrencinin kendi beklentisi.</div>
+                                <div class="c-sub b-red">👨‍🏫 <b>Öğretmen:</b> Öğretmenin "yanılmaya" açık olması.</div>
+                                <div class="c-sub b-red">🏠 <b>Ev:</b> Ailenin "okul dilini" bilmesi.</div>
+                                <div class="c-sub b-red">📄 <b>Müfredat:</b> Yüzeysel/derin öğrenme dengesi.</div>
+                                <div class="c-sub b-red">🏫 <b>Okul:</b> Hatanın hoş karşılandığı ortam.</div>
+                                <div class="c-sub b-red">💬 <b>Yaklaşım:</b> Hedeflerin netliği ve geri bildirim.</div>
+                            </div>
+                        </div>
+
+                        <div class="c-box c-coral c-box-row" style="gap: 15px; align-items: center;">
+                            <div style="flex: 1;">
+                                <div class="c-header bg-coral">5. Üç Temel Geri Bildirim Sorusu</div>
+                                <div class="c-text">Sürecin görünür kalması için sorulmalıdır:</div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; flex: 2.5;">
+                                <div class="c-sub" style="border-left-color: #ef4444; flex-direction: column; text-align: center; justify-content: center;">📍 <b>Nereye gidiyorum?</b><br><span style="opacity: 0.8;">(Hedefler)</span></div>
+                                <div class="c-sub" style="border-left-color: #f97316; flex-direction: column; text-align: center; justify-content: center;">📈 <b>Nasıl gidiyorum?</b><br><span style="opacity: 0.8;">(Mevcut durum)</span></div>
+                                <div class="c-sub" style="border-left-color: #eab308; flex-direction: column; text-align: center; justify-content: center;">📎 <b>Sırada ne var?</b><br><span style="opacity: 0.8;">(Sonraki adım)</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sl2-note-box">
+                        <b style="font-size: 11.5px;">Altın Not:</b><br><br>Eğitimde mükemmellik; hata yapmanın hoş karşılandığı, öğretmenin kendi etkisini sürekli ölçtüğü iklimde gizlidir.
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide">
+                <div class="sl2-container">
+                    <div class="sl2-main-node" style="background-color: #cd6738;">
+                        <div>4. Bölüm:<br>Öğrencinin<br>Katkıları</div>
+                    </div>
+                    <div class="c-grid">
+                        <div class="c-full">
+                            <div class="c-box c-blue">
+                                <div class="c-header bg-blue">1. Öğrenci Katkılarının Özeti (Tablo 4.1)</div>
+                                <table class="c-table">
+                                    <thead>
+                                        <tr><th>Faktör</th><th>Etki (d)</th><th>Başarı</th><th>Açıklama</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td class="row-title">Öz-Bildirim Notları</td><td class="center-col">1.44</td><td class="center-col">%102</td><td>Öğrencinin kendi başarı beklentisidir. En güçlü faktör.</td></tr>
+                                        <tr><td class="row-title">Piaget Evreleri</td><td class="center-col">1.28</td><td class="center-col">%91</td><td>Zihinsel gelişim aşamasına göre materyal seçimi.</td></tr>
+                                        <tr><td class="row-title">Önceki Başarı</td><td class="center-col">0.67</td><td class="center-col">%48</td><td>Geçmiş birikim, gelecekteki başarının güçlü göstergesidir.</td></tr>
+                                        <tr><td class="row-title">Motivasyon</td><td class="center-col">0.48</td><td class="center-col">%34</td><td>Öğrenmeye yatırım yapma isteği.</td></tr>
+                                        <tr><td class="row-title">Erken Müdahale</td><td class="center-col">0.47</td><td class="center-col">%33</td><td>Okul öncesi sağlanan akademik destek.</td></tr>
+                                        <tr><td class="row-title">Cinsiyet (Gender)</td><td class="center-col">0.12</td><td class="center-col">%9</td><td>Başarı üzerindeki etkisi ihmal edilecek kadar düşüktür.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="c-box c-purple">
+                            <div class="c-header bg-purple">2. Öz-Bildirim Notları (d = 1.44)</div>
+                            <div class="c-sub-cont">
+                                <div class="c-sub b-purple">🎯 <div><b>Performans Tavanı:</b> Tahmin, gelişimi sınırlayan bir çapa görevi görür. Öğretmen bu tavanı yıkmalıdır.</div></div>
+                                <div class="c-sub b-purple">🔄 <div><b>Ters Pygmalion:</b> "Ben C alırım" diyen öğrenci C alır.</div></div>
+                            </div>
+                        </div>
+
+                        <div class="c-box c-magenta">
+                            <div class="c-header bg-magenta">3. Arka Plan ve Zihinsel Gelişim</div>
+                            <div class="c-sub-cont">
+                                <div class="c-sub b-magenta">📈 <div><b>Matthew Etkisi:</b> Bilgi bilgiyi doğurur, geride kalan çocukların arayı kapatması zorlaşır.</div></div>
+                                <div class="c-sub b-magenta">🧠 <div><b>Piagetyen Programlar (d = 1.28):</b> Bilişsel evreye göre eğitim tasarlamak devasa etkilidir.</div></div>
+                            </div>
+                        </div>
+
+                        <div class="c-box c-red">
+                            <div class="c-header bg-red">4. Tutumlar ve Kişilik Özellikleri</div>
+                            <div class="c-sub-cont">
+                                <div class="c-sub b-red">✅ <div><b>Sorumluluk (d = 0.44):</b> Düzenli çalışma meyvesini verir.</div></div>
+                                <div class="c-sub b-red">😎 <div><b>Öğrenci İtibarı:</b> Akranlar arasında "öğrenen biri" olarak tanınma isteği.</div></div>
+                                <div class="c-sub b-red">🧘 <div><b>Kaygıyı Azaltma (d = 0.40):</b> Bilişsel kapasiteyi serbest bırakır.</div></div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <div class="c-box c-coral" style="flex: 1;">
+                                <div class="c-header bg-coral">5. Fiziksel Etkiler ve Yaygın Mitler</div>
+                                <div class="c-sub-cont">
+                                    <div class="c-sub b-coral" style="padding: 2px 4px; background: transparent; border: none;">⚧️ <b>Cinsiyet (d = 0.12):</b> İhmal edilebilir fark.</div>
+                                    <div class="c-sub b-coral" style="padding: 2px 4px; background: transparent; border: none;">🥗 <b>Diyet/Egzersiz (d = 0.28):</b> Başarıya doğrudan etkisi düşük.</div>
+                                    <div class="c-sub b-coral" style="padding: 2px 4px; background: transparent; border: none;">💊 <b>İlaç Kullanımı:</b> Davranışa çok, başarıya az etkili.</div>
+                                </div>
+                            </div>
+                            <div class="c-box c-orange" style="flex: 0.5;">
+                                <div class="c-header bg-orange">6. Okul Öncesi Deneyimler</div>
+                                <div class="c-text">🧸 Kazanımlar ilkokulda desteklenmezse zamanla sönümlenir.</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide">
+                <div class="sl2-container">
+                    <div class="sl2-main-node" style="background-color: #2b76a6;">
+                        <div>5. Bölüm:<br>Evden Gelen<br>Katkılar</div>
+                    </div>
+                    <div class="c-grid">
+                        
+                        <div class="c-box c-blue">
+                            <div class="c-header bg-blue">1. Sosyoekonomik Statü (SES) (d = 0.57)</div>
+                            <div class="c-sub-cont">
+                                <div class="c-sub b-blue">👨‍👩‍👧‍👦 <div><b>Etkenler:</b> Gelir, eğitim, meslek.</div></div>
+                                <div class="c-sub b-blue">🗣️ <div><b>Kelime Dağarcığı:</b> Üst SES okula 4.5 milyon, alt SES 2.5 milyon kelime duyarak başlar.</div></div>
+                                <div class="c-sub b-blue">🏫 <div><b>Okul SES Etkisi (d = 0.73):</b> Okulun genel SES durumu bireysel olandan daha etkilidir.</div></div>
+                            </div>
+                        </div>
+
+                        <div class="c-box c-purple">
+                            <div class="c-header bg-purple">2. Aile Yapısı ve Boşanma (d = 0.17)</div>
+                            <div class="c-text">"Parçalanmış aile" etkisi sanılanın aksine oldukça düşüktür.</div>
+                            <div class="c-sub-cont">
+                                <div class="c-sub b-purple">⚖️ <div><b>Boşanma Etkisi (d = -0.16):</b> Zamanla dengelenir.</div></div>
+                                <div class="c-sub b-purple">💼 <div><b>Çalışan Anne (d = 0.03):</b> Sıfıra yakın etki.</div></div>
+                                <div class="c-sub b-purple">👨‍👧 <div><b>Baba Varlığı (d = 0.26):</b> Pozitif ama küçük katkı.</div></div>
+                            </div>
+                        </div>
+
+                        <div class="c-box c-magenta">
+                            <div class="c-header bg-magenta">3. Ev Ortamı ve TV (d = 0.57 ve d = -0.18)</div>
+                            <div class="c-sub-cont">
+                                <div class="c-sub b-magenta">📚 <div><b>Entelektüel Uyaran (d = 0.57):</b> Evdeki kitap sayısı ve zihinsel etkileşim çok güçlüdür.</div></div>
+                                <div class="c-sub b-magenta" style="flex-direction: column;">
+                                    📺 <b>Televizyon İzleme:</b> Haftada 10 saate kadar nötr/hafif pozitif. 10-35 saat arası hızla artan negatif etki.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="c-box c-coral">
+                            <div class="c-header bg-coral">5. "Okul Dili" (The Language of Schooling)</div>
+                            <div class="c-text">Düşük SES'teki asıl engel para değil, iletişim kopukluğudur.</div>
+                            <div class="c-sub-cont">
+                                <div class="c-sub b-coral">🎭 <div><b>İki Dünya:</b> Çocuk ev dili ile "başarı dili" arasında bocalar.</div></div>
+                                <div class="c-sub b-coral">🌤️ <div><b>Çözüm:</b> Ailelere "okulun nasıl işlediği" öğretildiğinde başarıda devasa artış olur.</div></div>
+                            </div>
+                        </div>
+
+                        <div class="c-full">
+                            <div class="c-box c-red">
+                                <div class="c-header bg-red" style="justify-content: space-between;">
+                                    <span>4. Ebeveyn Katılımı: En Büyük Güç (d = 0.51)</span>
+                                    <span style="font-weight: normal; font-size: 10px;">"Nasıl" dahil olduğu kaderi belirler.</span>
+                                </div>
+                                <table class="c-table" style="border-color: #fca5a5;">
+                                    <thead>
+                                        <tr><th style="background: #fef2f2; color: #7f1d1d; border-color: #fca5a5;">Katılım Türü</th><th style="background: #fef2f2; color: #7f1d1d; border-color: #fca5a5;">Etki (d)</th><th style="background: #fef2f2; color: #7f1d1d; border-color: #fca5a5;">Not</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td class="row-title" style="background: #fff1f2; color: #9f1239; border-color: #fca5a5;">Ebeveyn Beklentileri/Aspirasyonları</td><td class="center-col" style="border-color: #fca5a5;">0.80</td><td style="border-color: #fca5a5;">En yüksek etki. Ailenin çocuktan yüksek beklentisi başarıyı ateşler.</td></tr>
+                                        <tr><td class="row-title" style="background: #fff1f2; color: #9f1239; border-color: #fca5a5;">Özel Okuma/Okuryazarlık Öğretimi</td><td class="center-col" style="border-color: #fca5a5;">1.15</td><td style="border-color: #fca5a5;">Ailenin çocuğa doğrudan bir beceri öğretmesi çok etkilidir.</td></tr>
+                                        <tr><td class="row-title" style="background: #fff1f2; color: #9f1239; border-color: #fca5a5;">Ev Ziyaretleri (Öğretmen tarafından)</td><td class="center-col" style="border-color: #fca5a5;">0.29</td><td style="border-color: #fca5a5;">Sosyal uyumu artırır ama akademik başarıya etkisi sınırlıdır.</td></tr>
+                                        <tr><td class="row-title" style="background: #fff1f2; color: #9f1239; border-color: #fca5a5;">Ödev Kontrolü/Gözetim</td><td class="center-col" style="border-color: #fca5a5;">-0.09</td><td style="border-color: #fca5a5;">Sıkı denetim ve baskı genellikle ters teper.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slide"><div style="text-align: center; color: #7f8c8d;"><h2>6. Bölüm İçeriği</h2><p>(Görsel bekleniyor...)</p></div></div>
+            <div class="slide"><div style="text-align: center; color: #7f8c8d;"><h2>7. Bölüm İçeriği</h2><p>(Görsel bekleniyor...)</p></div></div>
+            <div class="slide"><div style="text-align: center; color: #7f8c8d;"><h2>8. Bölüm İçeriği</h2><p>(Görsel bekleniyor...)</p></div></div>
+            <div class="slide"><div style="text-align: center; color: #7f8c8d;"><h2>9. Bölüm İçeriği</h2><p>(Görsel bekleniyor...)</p></div></div>
+            <div class="slide"><div style="text-align: center; color: #7f8c8d;"><h2>10. Bölüm İçeriği</h2><p>(Görsel bekleniyor...)</p></div></div>
+            <div class="slide"><div style="text-align: center; color: #7f8c8d;"><h2>11. Bölüm İçeriği</h2><p>(Görsel bekleniyor...)</p></div></div>
+
+        </div>
+
+        <div class="controls">
+            <button class="ctrl-btn" id="prevBtn" onclick="changeSlide(-1)" disabled>◀ Önceki</button>
+            <div class="slide-counter"><span id="currentNum">1</span> / 14</div>
+            <button class="ctrl-btn" id="nextBtn" onclick="changeSlide(1)">Sonraki ▶</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 14; 
+        const track = document.getElementById('sliderTrack');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const currentNum = document.getElementById('currentNum');
+
+        function changeSlide(direction) {
+            goToSlide(currentSlide + direction);
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            if (currentSlide < 0) currentSlide = 0;
+            if (currentSlide >= totalSlides) currentSlide = totalSlides - 1;
+
+            track.style.transform = `translateX(-${currentSlide * 100}%)`;
+            currentNum.innerText = currentSlide + 1;
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === totalSlides - 1;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

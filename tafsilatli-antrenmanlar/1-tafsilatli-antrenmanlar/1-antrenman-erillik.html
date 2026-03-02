@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Alıştırma 1: Müennes Yapma - Arapça Portalı</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Amiri&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f0f4f8; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        
+        .exercise-container { width: 900px; background: white; padding: 50px; border-radius: 50px; box-shadow: 0 25px 75px rgba(0,0,0,0.1); text-align: center; }
+        
+        .header { color: #d63031; font-size: 35px; font-weight: 600; margin-bottom: 40px; }
+        
+        .question-box { font-family: 'Amiri', serif; font-size: 90px; color: #18395b; margin-bottom: 10px; }
+        
+        /* Kelime Manası Alanı */
+        .meaning-box { font-size: 35px; color: #2980b9; font-weight: 600; min-height: 50px; margin-bottom: 20px; opacity: 0; transition: 0.3s; }
+        .meaning-box.show { opacity: 1; }
+
+        input { 
+            width: 80%; padding: 25px; font-size: 50px; font-family: 'Amiri', serif; 
+            text-align: center; border: 4px solid #f0f4f8; border-radius: 25px; 
+            margin-bottom: 30px; outline: none; transition: 0.3s;
+        }
+        input:focus { border-color: #2193b0; }
+        input.correct { border-color: #27ae60; background-color: #eafaf1; }
+        input.wrong { border-color: #e74c3c; background-color: #fdedec; }
+
+        .feedback { font-size: 24px; min-height: 60px; margin-bottom: 30px; padding: 0 20px; }
+        .explanation { color: #e67e22; font-weight: 600; display: none; }
+        
+        button { 
+            padding: 25px 70px; font-size: 35px; border: none; 
+            background-color: #2c3e50; color: white; border-radius: 20px; 
+            cursor: pointer; transition: 0.3s; font-family: 'Poppins'; 
+        }
+        button:hover { background-color: #34495e; transform: scale(1.05); }
+
+        #results { display: none; }
+        .score-text { font-size: 60px; color: #18395b; margin-bottom: 30px; }
+        .counter { margin-top: 25px; font-size: 30px; color: #7f8c8d; }
+    </style>
+</head>
+<body>
+
+    <div class="exercise-container" id="game-area">
+        <div class="header">A- Şu isimleri muennes yapınız:</div>
+        
+        <div id="quiz-part">
+            <div class="counter" id="progress">1 / 10</div>
+            <div class="question-box" id="masculine-word">مُؤْمِنٌ</div>
+            
+            <div class="meaning-box" id="word-meaning"></div>
+            
+            <input type="text" id="user-input" placeholder="Cevabı buraya yazın..." autocomplete="off">
+            
+            <div class="feedback">
+                <div class="explanation" id="exp-text"></div>
+            </div>
+            
+            <button id="action-btn" onclick="checkAnswer()">Kontrol Et</button>
+        </div>
+
+        <div id="results">
+            <div class="score-text">Tebrikler!</div>
+            <div class="score-text" id="final-score">Skor: 0 / 0</div>
+            <button onclick="location.href='/tafsilatli-antrenmanlar/1-tafsilatlı-antrenmanlar/1-antrenman-erillik-2.html'">2. Alıştırmaya Devam Et</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { m: "مُؤْمِنٌ", f: "مُؤْمِنَةٌ", tr: "İnanan / Mümin" },
+            { m: "رَاكِعٌ", f: "رَاكِعَةٌ", tr: "Rükû eden" },
+            { m: "سَاجِدٌ", f: "سَاجِدَةٌ", tr: "Secde eden" },
+            { m: "صَائِمٌ", f: "صَائِمَةٌ", tr: "Oruç tutan" },
+            { m: "عَادِلٌ", f: "عَادِلَةٌ", tr: "Adaletli" },
+            { m: "ظَالِمٌ", f: "ظَالِمَةٌ", tr: "Zulmeden" },
+            { m: "طَبَّاخٌ", f: "طَبَّاخَةٌ", tr: "Aşçı" },
+            { m: "كَاتِبٌ", f: "كَاتِبَةٌ", tr: "Yazar" },
+            { m: "سَارِقٌ", f: "سَارِقَةٌ", tr: "Hırsız" },
+            { m: "مُتَرْجِمٌ", f: "مُتَرْجِمَةٌ", tr: "Tercüman" },
+            { m: "طَبِيبٌ", f: "طَبِيبَةٌ", tr: "Doktor" }
+        ];
+
+        let currentIndex = 0;
+        let score = 0;
+        const ruleExplanation = "Müzekker ismin sonuna 'tâ-i marbûta' (ة) eklenerek müennes yapılır.";
+
+        function checkAnswer() {
+            const input = document.getElementById('user-input');
+            const expText = document.getElementById('exp-text');
+            const meaningBox = document.getElementById('word-meaning');
+            const btn = document.getElementById('action-btn');
+            
+            // Manayı her durumda göster
+            meaningBox.innerText = `Anlamı: ${questions[currentIndex].tr}`;
+            meaningBox.classList.add('show');
+
+            if (input.value.trim() === questions[currentIndex].f) {
+                input.className = "correct";
+                score++;
+                expText.style.display = "none";
+                btn.innerText = "Sıradaki";
+                btn.onclick = nextQuestion;
+            } else {
+                input.className = "wrong";
+                expText.innerText = `Yanlış! Doğru cevap: ${questions[currentIndex].f}. ${ruleExplanation}`;
+                expText.style.display = "block";
+                btn.innerText = "Anladım, Devam Et";
+                btn.onclick = nextQuestion;
+            }
+        }
+
+        function nextQuestion() {
+            currentIndex++;
+            if (currentIndex < questions.length) {
+                const input = document.getElementById('user-input');
+                input.value = "";
+                input.className = "";
+                document.getElementById('exp-text').style.display = "none";
+                document.getElementById('word-meaning').classList.remove('show'); // Manayı gizle
+                document.getElementById('masculine-word').innerText = questions[currentIndex].m;
+                document.getElementById('progress').innerText = `${currentIndex + 1} / ${questions.length}`;
+                
+                const btn = document.getElementById('action-btn');
+                btn.innerText = "Kontrol Et";
+                btn.onclick = checkAnswer;
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quiz-part').style.display = "none";
+            document.getElementById('results').style.display = "block";
+            document.getElementById('final-score').innerText = `Skor: ${score} / ${questions.length}`;
+        }
+    </script>
+</body>
+</html>

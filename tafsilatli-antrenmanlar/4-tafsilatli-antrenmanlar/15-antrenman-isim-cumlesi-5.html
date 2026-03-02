@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>E Alıştırması: Olumsuz İsim Cümlesi - Arapça Portalı</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Amiri&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f0f4f8; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 40px 20px; }
+        
+        nav { 
+            background-color: #2c3e50; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            display: inline-block; width: 100%; max-width: 1200px; margin-bottom: 20px; overflow: hidden; 
+        }
+        nav a { float: left; color: white; padding: 16px 20px; text-decoration: none; transition: 0.3s; font-weight: 600; }
+        nav a:hover { background-color: #34495e; color: #3498db; }
+
+        .exercise-container { width: 100%; max-width: 1200px; background: white; padding: 50px; border-radius: 30px; box-shadow: 0 15px 50px rgba(0,0,0,0.1); text-align: center; }
+        
+        .main-title { color: #e74c3c; font-size: 32px; font-weight: 600; margin-bottom: 10px; }
+        .instruction { font-size: 18px; color: #7f8c8d; margin-bottom: 40px; font-weight: 600; }
+
+        .list-container {
+            display: flex; flex-direction: column; gap: 20px; width: 100%; direction: rtl; 
+        }
+
+        .list-row {
+            display: flex; flex-direction: column; gap: 15px;
+            background: #fff; padding: 25px; border-radius: 15px;
+            border: 2px solid #ecf0f1; transition: 0.3s; text-align: right;
+        }
+
+        .list-row:hover { border-color: #bdc3c7; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+
+        .info-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px dashed #ecf0f1; padding-bottom: 15px;
+        }
+
+        .ar-original { font-family: 'Amiri', serif; font-size: 40px; color: #18395b; }
+        .tr-original { font-family: 'Poppins', sans-serif; font-size: 18px; color: #7f8c8d; direction: ltr; font-weight: 600; }
+        .row-number { font-size: 24px; color: #bdc3c7; font-weight: bold; margin-left: 15px; }
+
+        .input-area {
+            display: flex; align-items: center; gap: 15px; width: 100%;
+        }
+
+        input { 
+            flex: 1; padding: 15px 20px; font-size: 35px; font-family: 'Amiri', serif; 
+            text-align: right; border: 2px solid #dcdde1; border-radius: 12px; 
+            background: #f8f9fa; outline: none; transition: 0.3s; direction: rtl;
+            color: #2c3e50;
+        }
+        input::placeholder { font-family: 'Poppins', sans-serif; font-size: 16px; color: #bdc3c7; }
+        input:focus { border-color: #3498db; background: #fff; box-shadow: 0 0 10px rgba(52,152,219,0.1); }
+        
+        input.correct { border-color: #27ae60; background-color: #eafaf1; color: #27ae60; }
+        input.wrong { border-color: #e74c3c; background-color: #fdedec; color: #c0392b; }
+
+        .hint-text {
+            display: none; font-family: 'Amiri', serif; font-size: 32px; color: #27ae60; 
+            margin-top: 10px; font-weight: bold; text-align: right;
+        }
+
+        /* Yönlendirme ve Kontrol Butonları */
+        .controls-wrapper { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 50px; }
+        .action-btn { 
+            padding: 15px 30px; font-size: 20px; border: none; 
+            background-color: #2c3e50; color: white; border-radius: 15px; 
+            cursor: pointer; transition: 0.3s; font-family: 'Poppins'; text-decoration: none;
+        }
+        .action-btn:hover { transform: scale(1.05); }
+        .btn-check { background-color: #27ae60; padding: 15px 50px; font-size: 22px; }
+        .btn-check:hover { background-color: #2ecc71; }
+        .btn-prev { background-color: #7f8c8d; }
+        .btn-prev:hover { background-color: #95a5a6; }
+        .btn-next { background-color: #3498db; }
+        .btn-next:hover { background-color: #2980b9; }
+
+        #results { display: none; margin-top: 30px; font-size: 35px; color: #18395b; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="4-gun-antrenmanlari.html">← 4. Güne Dön</a>
+    </nav>
+
+    <div class="exercise-container">
+        <div class="main-title">E- ALIŞTIRMASI: İSİM CÜMLESİNİ OLUMSUZ YAPMA</div>
+        <div class="instruction">Aşağıdaki cümleleri klavyenizi kullanarak Arapça olumsuz hale (لَيْسَ / لَيْسَتْ vb. ile) çevirip kutucuklara yazınız. <br><span style="font-size: 14px; color:#e74c3c;">(Harekeleri yazmanıza gerek yoktur. Sadece harfleri doğru girmeniz yeterlidir.)</span></div>
+        
+        <div class="list-container" id="quiz-list">
+            </div>
+
+        <div class="controls-wrapper" id="check-wrapper">
+            <button class="action-btn btn-check" onclick="checkAllAnswers()">Cevapları Kontrol Et</button>
+        </div>
+
+        <div id="results"></div>
+
+        <div class="controls-wrapper">
+            <a href="15-antrenman-isim-cumlesi-4.html" class="action-btn btn-prev">Önceki Antrenman</a>
+            <a href="15-antrenman-isim-cumlesi-6.html" class="action-btn btn-next">Sonraki Antrenmana Geç</a>
+        </div>
+    </div>
+
+    <script>
+        // Veri tablosu (Harekeli Orjinal - Harekeli Hedef - Harekesiz Hedef (Kontrol için))
+        const sentences = [
+            { original: "اَلْأَبُ كَبِيرٌ.", tr: "Baba büyüktür.", correct_ar: "لَيْسَ الْأَبُ كَبِيرًا.", check_str: "ليس الأب كبيرا", alt_check: "ما الأب كبيرا" },
+            { original: "اَلْكُتُبُ غَالِيَةٌ.", tr: "Kitaplar pahalıdır.", correct_ar: "لَيْسَتِ الْكُتُبُ غَالِيَةً.", check_str: "ليست الكتب غالية", alt_check: "ما الكتب غالية" },
+            { original: "اَلْقَمِيصُ نَظِيفٌ.", tr: "Gömlek temizdir.", correct_ar: "لَيْسَ الْقَمِيصُ نَظِيفًا.", check_str: "ليس القميص نظيفا", alt_check: "ما القميص نظيفا" },
+            { original: "اَلْقَلَمُ رَخِيصٌ.", tr: "Kalem ucuzdur.", correct_ar: "لَيْسَ الْقَلَمُ رَخِيصًا.", check_str: "ليس القلم رخيصا", alt_check: "ما القلم رخيصا" },
+            { original: "اَلْمَجَلَّةُ رَخِيصَةٌ.", tr: "Dergi ucuzdur.", correct_ar: "لَيْسَتِ الْمَجَلَّةُ رَخِيصَةً.", check_str: "ليست المجلة رخيصة", alt_check: "ما المجلة رخيصة" },
+            { original: "اَلْكِتَابُ قَيِّمٌ.", tr: "Kitap değerlidir.", correct_ar: "لَيْسَ الْكِتَابُ قَيِّمًا.", check_str: "ليس الكتاب قيما", alt_check: "ما الكتاب قيما" },
+            { original: "اَلْقَلَمُ طَوِيلٌ.", tr: "Kalem uzundur.", correct_ar: "لَيْسَ الْقَلَمُ طَوِيلًا.", check_str: "ليس القلم طويلا", alt_check: "ما القلم طويلا" },
+            { original: "اَلْجَرِيدَةُ غَالِيَةٌ.", tr: "Gazete pahalıdır.", correct_ar: "لَيْسَتِ الْجَرِيدَةُ غَالِيَةً.", check_str: "ليست الجريدة غالية", alt_check: "ما الجريدة غالية" },
+            { original: "اَلسَّبُّورَةُ عَرِيضَةٌ.", tr: "Yazı tahtası enlidir.", correct_ar: "لَيْسَتِ السَّبُّورَةُ عَرِيضَةً.", check_str: "ليست السبورة عريضة", alt_check: "ما السبورة عريضة" },
+            { original: "اَلْمِنْضَدَةُ ثَقِيلَةٌ.", tr: "Masa ağırdır.", correct_ar: "لَيْسَتِ الْمِنْضَدَةُ ثَقِيلَةً.", check_str: "ليست المنضدة ثقيلة", alt_check: "ما المنضدة ثقيلة" }
+        ];
+
+        const grid = document.getElementById('quiz-list');
+
+        sentences.forEach((item, index) => {
+            const row = document.createElement('div');
+            row.className = 'list-row';
+            
+            row.innerHTML = `
+                <div class="info-bar">
+                    <div style="display:flex; align-items:center;">
+                        <span class="row-number">${index + 1}-</span>
+                        <span class="ar-original">${item.original}</span>
+                    </div>
+                    <span class="tr-original">${item.tr}</span>
+                </div>
+                <div class="input-area">
+                    <input type="text" id="input-${index}" placeholder="Arapça olumsuz halini yazınız..." autocomplete="off">
+                </div>
+                <div class="hint-text" id="hint-${index}">${item.correct_ar}</div>
+            `;
+            grid.appendChild(row);
+        });
+
+        // Arapça metni standardize eden fonksiyon (Harekeleri ve noktalama işaretlerini siler)
+        function normalizeArabic(text) {
+            if (!text) return "";
+            return text
+                .replace(/[\u064B-\u065F\u0670]/g, "") // Harekeleri sil
+                .replace(/[.,!?،؛]/g, "") // Noktalama işaretlerini sil
+                .replace(/أ|إ|آ/g, "ا") // Hemzeli elifleri düz elife çevir (yazım kolaylığı için)
+                .replace(/ة/g, "ه") // Kapalı ta'yı açık he'ye çevir (genel bir yazım toleransı)
+                .trim()
+                .replace(/\s+/g, " "); // Fazla boşlukları tek boşluğa düşür
+        }
+
+        function checkAllAnswers() {
+            let correctCount = 0;
+
+            sentences.forEach((item, index) => {
+                const inputElement = document.getElementById(`input-${index}`);
+                const hintElement = document.getElementById(`hint-${index}`);
+                
+                const rawUserAnswer = inputElement.value;
+                const normalizedUserAnswer = normalizeArabic(rawUserAnswer);
+                
+                const normalizedCorrect = normalizeArabic(item.check_str);
+                const normalizedAlt = normalizeArabic(item.alt_check);
+
+                if (rawUserAnswer.trim() === "") {
+                    inputElement.className = "wrong";
+                    hintElement.style.display = "block";
+                }
+                else if (normalizedUserAnswer === normalizedCorrect || normalizedUserAnswer === normalizedAlt) {
+                    inputElement.className = "correct";
+                    hintElement.style.display = "none";
+                    correctCount++;
+                } else {
+                    inputElement.className = "wrong";
+                    hintElement.style.display = "block"; 
+                }
+                
+                inputElement.readOnly = true; 
+            });
+
+            document.getElementById('check-wrapper').style.display = "none";
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.style.display = "block";
+            
+            if(correctCount === sentences.length) {
+                resultsDiv.innerHTML = `Mükemmel! Skor: ${correctCount} / ${sentences.length} 🏆`;
+            } else {
+                resultsDiv.innerHTML = `Skor: ${correctCount} / ${sentences.length}`;
+            }
+
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

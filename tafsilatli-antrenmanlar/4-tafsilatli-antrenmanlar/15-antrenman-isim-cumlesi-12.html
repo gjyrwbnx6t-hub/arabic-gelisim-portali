@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>K Alıştırması: Çoğul Yapma - Arapça Portalı</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Amiri&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f0f4f8; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 40px 20px; }
+        
+        nav { 
+            background-color: #2c3e50; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            display: inline-block; width: 100%; max-width: 1200px; margin-bottom: 20px; overflow: hidden; 
+        }
+        nav a { float: left; color: white; padding: 16px 20px; text-decoration: none; transition: 0.3s; font-weight: 600; }
+        nav a:hover { background-color: #34495e; color: #3498db; }
+
+        .exercise-container { width: 100%; max-width: 1200px; background: white; padding: 50px; border-radius: 30px; box-shadow: 0 15px 50px rgba(0,0,0,0.1); text-align: center; }
+        
+        .main-title { color: #e74c3c; font-size: 32px; font-weight: 600; margin-bottom: 10px; }
+        .instruction { font-size: 18px; color: #7f8c8d; margin-bottom: 30px; font-weight: 600; }
+
+        .grammar-note {
+            background-color: #eafaf1; border-left: 5px solid #27ae60; color: #27ae60;
+            padding: 15px 20px; font-size: 16px; margin: 0 auto 30px auto; border-radius: 8px;
+            display: inline-block; font-weight: 600; text-align: left; max-width: 800px; line-height: 1.6;
+        }
+
+        .grid-container {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; width: 100%; direction: rtl; 
+        }
+
+        .vocab-card {
+            background: #fff; padding: 25px; border-radius: 15px; border: 2px solid #ecf0f1; 
+            display: flex; flex-direction: column; align-items: center; gap: 15px;
+            transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+        }
+
+        .vocab-card:hover { border-color: #bdc3c7; box-shadow: 0 8px 20px rgba(0,0,0,0.08); transform: translateY(-3px); }
+
+        .ar-sg { font-family: 'Amiri', serif; font-size: 45px; color: #18395b; margin: 0; }
+        .tr-word { font-family: 'Poppins', sans-serif; font-size: 16px; color: #7f8c8d; direction: ltr; font-weight: 600; }
+
+        input { 
+            width: 80%; padding: 10px 15px; font-size: 30px; font-family: 'Amiri', serif; 
+            text-align: center; border: 2px dashed #dcdde1; border-radius: 10px; 
+            background: #f8f9fa; outline: none; transition: 0.3s; direction: rtl;
+            color: #27ae60; font-weight: bold;
+        }
+        input::placeholder { font-family: 'Poppins', sans-serif; font-size: 14px; color: #bdc3c7; font-weight: normal; }
+        input:focus { border-color: #3498db; background: #fff; }
+        
+        input.correct { border-style: solid; border-color: #27ae60; background-color: #eafaf1; color: #27ae60; }
+        input.wrong { border-style: solid; border-color: #e74c3c; background-color: #fdedec; color: #c0392b; }
+
+        .correct-answer-text {
+            display: none; font-family: 'Amiri', serif; font-size: 26px; color: #e74c3c; 
+            font-weight: bold; margin-top: -5px;
+        }
+
+        /* Yönlendirme ve Kontrol Butonları */
+        .controls-wrapper { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 50px; }
+        .action-btn { 
+            padding: 15px 30px; font-size: 20px; border: none; 
+            background-color: #2c3e50; color: white; border-radius: 15px; 
+            cursor: pointer; transition: 0.3s; font-family: 'Poppins'; text-decoration: none;
+        }
+        .action-btn:hover { transform: scale(1.05); }
+        .btn-check { background-color: #27ae60; padding: 15px 50px; font-size: 22px; }
+        .btn-check:hover { background-color: #2ecc71; }
+        .btn-prev { background-color: #7f8c8d; }
+        .btn-prev:hover { background-color: #95a5a6; }
+        .btn-next { background-color: #3498db; }
+        .btn-next:hover { background-color: #2980b9; }
+
+        #results { display: none; margin-top: 30px; font-size: 35px; color: #18395b; font-weight: 600; }
+
+        @media (max-width: 900px) { .grid-container { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 600px) { .grid-container { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="4-gun-antrenmanlari.html">← 4. Güne Dön</a>
+    </nav>
+
+    <div class="exercise-container">
+        <div class="main-title">K- ALIŞTIRMASI: ÇOĞUL YAPMA</div>
+        
+        <div class="grammar-note">
+            📌 <b>İPUCU:</b> Müennes (dişil) kelimeleri düzenli çoğul yapmak (Cem-i Müennes Salim) için sondaki kapalı ta (ة) harfini atıp yerine <b>elif ve açık ta (ات)</b> eklemeliyiz. <br><i>Örnek: طَالِبَةٌ -> طَالِبَاتٌ</i>
+        </div>
+
+        <div class="instruction">
+            Aşağıdaki isimleri kurala uygun olarak klavyenizle çoğul (Cem-i) yapınız:<br>
+            <span style="font-size: 14px; color:#e74c3c;">(Harekeleri yazmanıza gerek yoktur. Harfleri doğru girmeniz yeterlidir.)</span>
+        </div>
+        
+        <div class="grid-container" id="quiz-grid">
+            </div>
+
+        <div class="controls-wrapper" id="check-wrapper">
+            <button class="action-btn btn-check" onclick="checkAllAnswers()">Cevapları Kontrol Et</button>
+        </div>
+
+        <div id="results"></div>
+
+        <div class="controls-wrapper">
+            <a href="15-antrenman-isim-cumlesi-11.html" class="action-btn btn-prev">Önceki Antrenman</a>
+            <a href="16-antrenman-fiil-cumlesi-1.html" class="action-btn btn-next">Fiil Cümlesi Antrenmanlarına Geç</a>
+        </div>
+    </div>
+
+    <script>
+        const words = [
+            { tr: "mêmûre", sg: "مُوَظَّفَةٌ", pl: "مُوَظَّفَاتٌ" },
+            { tr: "hanım başkan", sg: "رَئِيسَةٌ", pl: "رَئِيسَاتٌ" },
+            { tr: "hanım hekim", sg: "طَبِيبَةٌ", pl: "طَبِيبَاتٌ" },
+            { tr: "saat", sg: "سَاعَةٌ", pl: "سَاعَاتٌ" },
+            { tr: "hostes", sg: "مُضِيفَةٌ", pl: "مُضِيفَاتٌ" },
+            { tr: "hanım müslüman", sg: "مُسْلِمَةٌ", pl: "مُسْلِمَاتٌ" },
+            { tr: "teyp", sg: "مُسَجِّلَةٌ", pl: "مُسَجِّلَاتٌ" },
+            { tr: "hemşire", sg: "مُمَرِّضَةٌ", pl: "مُمَرِّضَاتٌ" },
+            { tr: "çamaşır makinesi", sg: "غَسَّالَةٌ", pl: "غَسَّالَاتٌ" }
+        ];
+
+        const grid = document.getElementById('quiz-grid');
+
+        words.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'vocab-card';
+            
+            card.innerHTML = `
+                <div class="tr-word">${item.tr}</div>
+                <div class="ar-sg">${item.sg}</div>
+                <input type="text" id="input-${index}" placeholder="Çoğulu yazınız..." autocomplete="off">
+                <div class="correct-answer-text" id="hint-${index}">${item.pl}</div>
+            `;
+            grid.appendChild(card);
+        });
+
+        // Harekeleri silip standartlaştıran fonksiyon
+        function normalizeArabic(text) {
+            if (!text) return "";
+            return text
+                .replace(/[\u064B-\u065F\u0670]/g, "") // Harekeleri sil
+                .replace(/[.,!?،؛]/g, "") // Noktalama işaretlerini sil
+                .replace(/أ|إ|آ/g, "ا") // Yazım toleransı
+                .replace(/ة/g, "ه") // Yazım toleransı
+                .trim()
+                .replace(/\s+/g, " ");
+        }
+
+        function checkAllAnswers() {
+            let correctCount = 0;
+
+            words.forEach((item, index) => {
+                const inputElement = document.getElementById(`input-${index}`);
+                const hintElement = document.getElementById(`hint-${index}`);
+                
+                const rawUserAnswer = inputElement.value;
+                const normalizedUserAnswer = normalizeArabic(rawUserAnswer);
+                const normalizedCorrect = normalizeArabic(item.pl);
+
+                if (rawUserAnswer.trim() === "") {
+                    inputElement.className = "wrong";
+                    hintElement.style.display = "block";
+                }
+                else if (normalizedUserAnswer === normalizedCorrect) {
+                    inputElement.className = "correct";
+                    hintElement.style.display = "none";
+                    correctCount++;
+                } else {
+                    inputElement.className = "wrong";
+                    hintElement.style.display = "block"; 
+                }
+                
+                inputElement.readOnly = true; 
+            });
+
+            document.getElementById('check-wrapper').style.display = "none";
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.style.display = "block";
+            
+            if(correctCount === words.length) {
+                resultsDiv.innerHTML = `Mükemmel! Skor: ${correctCount} / ${words.length} 🏆`;
+                resultsDiv.style.color = "#27ae60";
+            } else {
+                resultsDiv.innerHTML = `Skor: ${correctCount} / ${words.length}`;
+                resultsDiv.style.color = "#e74c3c";
+            }
+
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Fiil Cümlesi Alıştırmaları (B) - Arapça Portalı</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Amiri&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f0f4f8; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 40px 0; }
+        
+        .exercise-container { width: 1100px; background: white; padding: 50px; border-radius: 50px; box-shadow: 0 25px 75px rgba(0,0,0,0.1); text-align: center; }
+        
+        .header { color: #e74c3c; font-size: 32px; font-weight: 600; margin-bottom: 10px; }
+        .sub-header { font-size: 20px; color: #e74c3c; margin-bottom: 30px; font-weight: 600; }
+
+        /* Kelime Havuzu */
+        .words-box {
+            background: #f8f9fa;
+            border: 2px dashed #3498db;
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            font-size: 38px;
+            font-family: 'Amiri', serif;
+            color: #2c3e50;
+            direction: rtl;
+            line-height: 1.8;
+            word-spacing: 20px;
+        }
+
+        .list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            direction: rtl; 
+        }
+
+        .list-row {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            padding: 15px 25px;
+            border-radius: 15px;
+            font-family: 'Amiri', serif;
+            font-size: 38px;
+            color: #18395b;
+            border: 2px solid #ecf0f1;
+            transition: 0.3s;
+            text-align: right;
+            gap: 15px;
+        }
+
+        .list-row:hover {
+            border-color: #bdc3c7;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .row-number { font-size: 28px; color: #7f8c8d; font-family: 'Poppins', sans-serif; min-width: 40px; }
+
+        /* Boşluk Doldurma Kutucukları */
+        input { 
+            width: 160px; padding: 5px 10px; font-size: 35px; font-family: 'Amiri', serif; 
+            text-align: center; border: none; border-bottom: 3px dashed #3498db; 
+            background: transparent; outline: none; transition: 0.3s; direction: rtl;
+            color: #e74c3c; font-weight: bold;
+        }
+        input:focus { border-bottom-color: #27ae60; background: #f0f8ff; border-radius: 10px 10px 0 0; }
+        input.correct { color: #27ae60; border-bottom-color: #27ae60; }
+        input.wrong { color: #e74c3c; border-bottom-color: #e74c3c; }
+
+        .hint-text {
+            display: none;
+            color: #27ae60;
+            font-size: 26px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        /* Türkçe Not Etiketleri (Örn: sabah namazı) */
+        .tr-note {
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            background-color: #ecf0f1;
+            color: #7f8c8d;
+            padding: 5px 10px;
+            border-radius: 8px;
+            margin-right: auto; /* Sola yaslamak için */
+            direction: ltr;
+        }
+
+        .buttons-container {
+            display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 40px;
+        }
+
+        button { 
+            padding: 20px 40px; font-size: 24px; border: none; 
+            background-color: #2c3e50; color: white; border-radius: 15px; 
+            cursor: pointer; transition: 0.3s; font-family: 'Poppins'; 
+        }
+        button:hover { transform: scale(1.05); }
+
+        .btn-check { background-color: #27ae60; }
+        .btn-check:hover { background-color: #2ecc71; }
+        .btn-skip { background-color: #3498db; }
+        .btn-skip:hover { background-color: #2980b9; }
+        .btn-retry { background-color: #7f8c8d; }
+        .btn-retry:hover { background-color: #95a5a6; }
+
+        #results { display: none; margin-top: 20px; }
+        .score-text { font-size: 35px; color: #18395b; font-weight: 600; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="exercise-container">
+        <div class="header">B- Sütundan kelime seçerek boş yerlere Fâil olarak koyunuz:</div>
+        
+        <div class="words-box">
+            كَامِلٌ - فَرِيدٌ - عَلِيٌّ - الرَّجُلُ - الْوَلَدُ - سَلِيمٌ - التِّلْمِيذُ - الْمُدَرِّسُ - الْمُدِيرُ - الْمُسْلِمُ - الْأَبُ - الطِّفْلُ - الشَّابُّ - النَّجَّارُ - الْحَدَّادُ
+        </div>
+
+        <div class="list-container" id="quiz-list">
+            
+            <div class="list-row">
+                <span class="row-number">1-</span>
+                <span>كَتَبَ</span>
+                <input type="text" data-answer="كَامِلٌ" autocomplete="off">
+                <span class="hint-text">(كَامِلٌ)</span>
+                <span>الدَّرْسَ.</span>
+            </div>
+
+            <div class="list-row">
+                <span class="row-number">2-</span>
+                <span>أَكَلَ</span>
+                <input type="text" data-answer="فَرِيدٌ" autocomplete="off">
+                <span class="hint-text">(فَرِيدٌ)</span>
+                <span>الْخُبْزَ.</span>
+            </div>
+
+            <div class="list-row">
+                <span class="row-number">3-</span>
+                <span>شَرِبَ</span>
+                <input type="text" data-answer="عَلِيٌّ" autocomplete="off">
+                <span class="hint-text">(عَلِيٌّ)</span>
+                <span>الشَّايَ.</span>
+            </div>
+
+            <div class="list-row">
+                <span class="row-number">4-</span>
+                <span>فَتَحَ</span>
+                <input type="text" data-answer="الرَّجُلُ" autocomplete="off">
+                <span class="hint-text">(الرَّجُلُ)</span>
+                <span>الْكِتَابَ.</span>
+            </div>
+
+            <div class="list-row">
+                <span class="row-number">5-</span>
+                <span>شَرِبَ</span>
+                <input type="text" data-answer="الْوَلَدُ" autocomplete="off">
+                <span class="hint-text">(الْوَلَدُ)</span>
+                <span>الْمَاءَ.</span>
+            </div>
+
+            <div class="list-row">
+                <span class="row-number">6-</span>
+                <span>خَرَجَ</span>
+                <input type="text" data-answer="سَلِيمٌ" autocomplete="off">
+                <span class="hint-text">(سَلِيمٌ)</span>
+                <span>مِنَ الْبَيْتِ.</span>
+            </div>
+
+            <div class="list-row">
+                <span class="row-number">7-</span>
+                <span>وَصَلَ</span>
+                <input type="text" data-answer="التِّلْمِيذُ" autocomplete="off">
+                <span class="hint-text">(التِّلْمِيذُ)</span>
+                <span>إِلَى الْمَدْرَسَةِ.</span>
+            </div>
+
+            <div class="list-row">
+                <span class="row-number">8-</span>
+                <span>دَخَلَ</span>
+                <input type="text" data-answer="الْمُدَرِّسُ" autocomplete="off">
+                <span class="hint-text">(الْمُدَرِّسُ)</span>
+                <span>الصَّفَّ.</span>
+            </div>
+
+            <div class="list-row">
+                <span class="row-number">9-</span>
+                <span>لَبِسَ</span>
+                <input type="text" data-answer="الْمُدِيرُ" autocomplete="off">
+                <span class="hint-text">(الْمُدِيرُ)</span>
+                <span>الثِّيَابَ.</span>
+            </div>
+
+            <div class="list-row">
+                <span class="row-number">10-</span>
+                <span>صَلَّى</span>
+                <input type="text" data-answer="الْمُسْلِمُ" autocomplete="off">
+                <span class="hint-text">(الْمُسْلِمُ)</span>
+                <span>صَلَاةَ الْفَجْرِ.</span>
+                <div class="tr-note">sabah namazı</div>
+            </div>
+
+            <div class="list-row">
+                <span class="row-number">11-</span>
+                <span>صَلَّى</span>
+                <input type="text" data-answer="الْأَبُ" autocomplete="off">
+                <span class="hint-text">(الْأَبُ)</span>
+                <span>صَلَاةَ الظُّهْرِ.</span>
+                <div class="tr-note">öğle namazı</div>
+            </div>
+
+            <div class="list-row">
+                <span class="row-number">12-</span>
+                <span>صَلَّى</span>
+                <input type="text" data-answer="الطِّفْلُ" autocomplete="off">
+                <span class="hint-text">(الطِّفْلُ)</span>
+                <span>صَلَاةَ الْعَصْرِ.</span>
+                <div class="tr-note">ikindi namazı</div>
+            </div>
+
+            <div class="list-row">
+                <span class="row-number">13-</span>
+                <span>صَلَّى</span>
+                <input type="text" data-answer="الشَّابُّ" autocomplete="off">
+                <span class="hint-text">(الشَّابُّ)</span>
+                <span>صَلَاةَ الْمَغْرِبِ.</span>
+                <div class="tr-note">akşam namazı</div>
+            </div>
+
+            <div class="list-row">
+                <span class="row-number">14-</span>
+                <span>صَلَّى</span>
+                <input type="text" data-answer="النَّجَّارُ" autocomplete="off">
+                <span class="hint-text">(النَّجَّارُ)</span>
+                <span>صَلَاةَ الْعِشَاءِ.</span>
+                <div class="tr-note">yatsı namazı</div>
+            </div>
+
+            <div class="list-row">
+                <span class="row-number">15-</span>
+                <span>رَقَدَ</span>
+                <input type="text" data-answer="الْحَدَّادُ" autocomplete="off">
+                <span class="hint-text">(الْحَدَّادُ)</span>
+                <span>بَعْدَ صَلَاةِ الْعِشَاءِ.</span>
+                <div class="tr-note">yattı</div>
+            </div>
+
+        </div>
+
+        <div class="buttons-container">
+            <button id="check-btn" class="btn-check" onclick="checkAllAnswers()">Cevapları Kontrol Et</button>
+            <button class="btn-skip" onclick="location.href='16-antrenman-fiil-cumlesi-3.html'">Sonraki Antrenmana Geç</button>
+        </div>
+
+        <div id="results">
+            <div class="score-text" id="final-score"></div>
+            <button class="btn-retry" onclick="location.reload()">Tekrar Dene</button>
+        </div>
+    </div>
+
+    <script>
+        // Harekeleri silen kod
+        function normalizeArabic(text) {
+            return text.replace(/[\u064B-\u0652]/g, "").trim();
+        }
+
+        function checkAllAnswers() {
+            const inputs = document.querySelectorAll('#quiz-list input');
+            let correctCount = 0;
+
+            inputs.forEach(input => {
+                const rawUserAnswer = input.value.trim();
+                const userAnswer = normalizeArabic(rawUserAnswer);
+                const correctAnswer = normalizeArabic(input.getAttribute('data-answer'));
+                
+                const hintSpan = input.nextElementSibling;
+
+                if (rawUserAnswer === "") {
+                    input.className = "wrong";
+                    if (hintSpan) hintSpan.style.display = "inline";
+                }
+                else if (userAnswer === correctAnswer) {
+                    input.className = "correct";
+                    if (hintSpan) hintSpan.style.display = "none";
+                    correctCount++;
+                } else {
+                    input.className = "wrong";
+                    if (hintSpan) hintSpan.style.display = "inline"; 
+                }
+                
+                input.readOnly = true; 
+            });
+
+            document.getElementById('check-btn').style.display = "none";
+            document.getElementById('results').style.display = "block";
+            document.getElementById('final-score').innerText = `Skor: ${correctCount} / ${inputs.length}`;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>J Alıştırması: İsim Cümlesi Boşluk Doldurma - Arapça Portalı</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Amiri&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f0f4f8; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 40px 20px; }
+        
+        nav { 
+            background-color: #2c3e50; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            display: inline-block; width: 100%; max-width: 1200px; margin-bottom: 20px; overflow: hidden; 
+        }
+        nav a { float: left; color: white; padding: 16px 20px; text-decoration: none; transition: 0.3s; font-weight: 600; }
+        nav a:hover { background-color: #34495e; color: #3498db; }
+
+        .exercise-container { width: 100%; max-width: 1200px; background: white; padding: 50px; border-radius: 30px; box-shadow: 0 15px 50px rgba(0,0,0,0.1); text-align: center; }
+        
+        .main-title { color: #e74c3c; font-size: 32px; font-weight: 600; margin-bottom: 10px; }
+        .instruction { font-size: 18px; color: #7f8c8d; margin-bottom: 30px; font-weight: 600; }
+
+        .grammar-note {
+            background-color: #eafaf1; border-left: 5px solid #27ae60; color: #27ae60;
+            padding: 15px 20px; font-size: 16px; margin: 0 auto 30px auto; border-radius: 8px;
+            display: inline-block; font-weight: 600; text-align: left; max-width: 800px; line-height: 1.6;
+        }
+
+        .example-box {
+            background-color: #fdf2e9; border: 2px dashed #e67e22; border-radius: 15px;
+            padding: 20px; margin-bottom: 40px;
+        }
+        .example-ar { font-family: 'Amiri', serif; font-size: 35px; color: #d35400; margin-bottom: 10px; direction: rtl; }
+        .example-tr { font-family: 'Poppins', sans-serif; font-size: 18px; color: #e67e22; font-weight: 600; }
+
+        .list-container {
+            display: flex; flex-direction: column; gap: 20px; width: 100%; direction: rtl; 
+        }
+
+        .list-row {
+            display: flex; flex-direction: column; gap: 15px;
+            background: #fff; padding: 25px; border-radius: 15px;
+            border: 2px solid #ecf0f1; transition: 0.3s; text-align: right;
+        }
+
+        .list-row:hover { border-color: #bdc3c7; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+
+        .ar-row {
+            display: flex; align-items: center; gap: 15px; font-family: 'Amiri', serif; font-size: 38px; color: #18395b;
+            flex-wrap: wrap;
+        }
+
+        .row-number { font-family: 'Poppins', sans-serif; font-size: 24px; color: #bdc3c7; font-weight: bold; margin-left: 10px; }
+
+        .hint-word { color: #e74c3c; font-size: 32px; margin-right: 10px; }
+
+        input { 
+            width: 150px; padding: 5px 10px; font-size: 35px; font-family: 'Amiri', serif; 
+            text-align: center; border: none; border-bottom: 3px dashed #3498db; 
+            background: transparent; outline: none; transition: 0.3s; direction: rtl;
+            color: #27ae60; font-weight: bold;
+        }
+        input::placeholder { font-family: 'Poppins', sans-serif; font-size: 14px; color: #bdc3c7; font-weight: normal; }
+        input:focus { border-bottom-color: #27ae60; background: #f0f8ff; border-radius: 10px 10px 0 0; }
+        
+        input.correct { border-bottom-color: #27ae60; background-color: #eafaf1; color: #27ae60; }
+        input.wrong { border-bottom-color: #e74c3c; background-color: #fdedec; color: #c0392b; }
+
+        .tr-row {
+            font-family: 'Poppins', sans-serif; font-size: 18px; color: #7f8c8d; direction: ltr; font-weight: 600;
+        }
+
+        .correct-answer-text {
+            display: none; font-family: 'Amiri', serif; font-size: 28px; color: #e74c3c; 
+            margin-top: 10px; font-weight: bold;
+        }
+
+        /* Yönlendirme ve Kontrol Butonları */
+        .controls-wrapper { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 50px; }
+        .action-btn { 
+            padding: 15px 30px; font-size: 20px; border: none; 
+            background-color: #2c3e50; color: white; border-radius: 15px; 
+            cursor: pointer; transition: 0.3s; font-family: 'Poppins'; text-decoration: none;
+        }
+        .action-btn:hover { transform: scale(1.05); }
+        .btn-check { background-color: #27ae60; padding: 15px 50px; font-size: 22px; }
+        .btn-check:hover { background-color: #2ecc71; }
+        .btn-prev { background-color: #7f8c8d; }
+        .btn-prev:hover { background-color: #95a5a6; }
+        .btn-next { background-color: #3498db; }
+        .btn-next:hover { background-color: #2980b9; }
+
+        #results { display: none; margin-top: 30px; font-size: 35px; color: #18395b; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="4-gun-antrenmanlari.html">← 4. Güne Dön</a>
+    </nav>
+
+    <div class="exercise-container">
+        <div class="main-title">J- ALIŞTIRMASI: BOŞLUK DOLDURMA</div>
+        
+        <div class="grammar-note">
+            📌 <b>HATIRLATMA:</b> Düzenli Eril Çoğullar (Cem-i Müzekker Salim) tamlamada *Muzaf* (tamlayan) olduklarında sonlarındaki <b>"nûn" (ن)</b> harfi düşer!
+        </div>
+
+        <div class="instruction">
+            Parantez içindeki kelimeleri çoğul yapıp, kurala uygun şekilde klavyenizle boşluklara yazınız:<br>
+            <span style="font-size: 14px; color:#e74c3c;">(Harekeleri yazmanıza gerek yoktur. Harfleri doğru girmeniz yeterlidir.)</span>
+        </div>
+
+        <div class="example-box">
+            <div class="example-ar">مِثَالٌ: قَصَّابُو السُّوقِ حَاضِرُونَ. (قَصَّابٌ)</div>
+            <div class="example-tr">Örnek: Çarşının kasapları gelmişlerdir.</div>
+        </div>
+        
+        <div class="list-container" id="quiz-list">
+            </div>
+
+        <div class="controls-wrapper" id="check-wrapper">
+            <button class="action-btn btn-check" onclick="checkAllAnswers()">Cevapları Kontrol Et</button>
+        </div>
+
+        <div id="results"></div>
+
+        <div class="controls-wrapper">
+            <a href="15-antrenman-isim-cumlesi-10.html" class="action-btn btn-prev">Önceki Antrenman</a>
+            <a href="15-antrenman-isim-cumlesi-12.html" class="action-btn btn-next">Sonraki Antrenmana Geç</a>
+        </div>
+    </div>
+
+    <script>
+        const exercises = [
+            { id: 1, base: "نَجَّارٌ", rest: "الْمَدِينَةِ مَاهِرُونَ.", tr: "Şehrin marangozları mâhirdirler.", answer: "نَجَّارُو", alt: "نجارو" },
+            { id: 2, base: "صَبَّاغٌ", rest: "السُّوقِ كَثِيرُونَ.", tr: "Çarşının boyacıları çoktur.", answer: "صَبَّاغُو", alt: "صباغو" },
+            { id: 3, base: "حَدَّادٌ", rest: "الْقَرْيَةِ غَائِبُونَ.", tr: "Köyün demircileri kayıptır, ortalıkta yoktur.", answer: "حَدَّادُو", alt: "حدادو" },
+            { id: 4, base: "خَطَّاطٌ", rest: "الْمَدِينَةِ مَشْغُولُونَ.", tr: "Şehrin hattatları meşgûldürler.", answer: "خَطَّاطُو", alt: "خطاطو" },
+            { id: 5, base: "مُصَارِعٌ", rest: "الْمَدْرَسَةِ فَرِحُونَ.", tr: "Okulun güreşçileri sevinçlidirler.", answer: "مُصَارِعُو", alt: "مصارعو" },
+            { id: 6, base: "مُلَاكِمٌ", rest: "الْمَدِينَةِ مُتْعَبُونَ.", tr: "Şehrin boksörleri yorgundurlar.", answer: "مُلَاكِمُو", alt: "ملاكمو" },
+            { id: 7, base: "نَجَّارٌ", rest: "السُّوقِ فِي الْمَسْجِدِ.", tr: "Çarşının marangozları mesciddedirler.", answer: "نَجَّارُو", alt: "نجارو" }
+        ];
+
+        const grid = document.getElementById('quiz-list');
+
+        exercises.forEach((item, index) => {
+            const row = document.createElement('div');
+            row.className = 'list-row';
+            
+            row.innerHTML = `
+                <div class="ar-row">
+                    <span class="row-number">${index + 1}-</span>
+                    <input type="text" id="input-${index}" placeholder="Yazınız..." autocomplete="off">
+                    <span>${item.rest}</span>
+                    <span class="hint-word">(${item.base})</span>
+                </div>
+                <div class="correct-answer-text" id="hint-${index}">Doğru Cevap: ${item.answer}</div>
+                <div class="tr-row">${item.tr}</div>
+            `;
+            grid.appendChild(row);
+        });
+
+        // Harekeleri silip standartlaştıran fonksiyon
+        function normalizeArabic(text) {
+            if (!text) return "";
+            return text
+                .replace(/[\u064B-\u065F\u0670]/g, "") // Harekeleri sil
+                .replace(/[.,!?،؛]/g, "") // Noktalama işaretlerini sil
+                .replace(/أ|إ|آ/g, "ا") 
+                .trim()
+                .replace(/\s+/g, " ");
+        }
+
+        function checkAllAnswers() {
+            let correctCount = 0;
+
+            exercises.forEach((item, index) => {
+                const inputElement = document.getElementById(`input-${index}`);
+                const hintElement = document.getElementById(`hint-${index}`);
+                
+                const rawUserAnswer = inputElement.value;
+                const normalizedUserAnswer = normalizeArabic(rawUserAnswer);
+                const normalizedCorrect = normalizeArabic(item.answer);
+
+                if (rawUserAnswer.trim() === "") {
+                    inputElement.className = "wrong";
+                    hintElement.style.display = "block";
+                }
+                else if (normalizedUserAnswer === normalizedCorrect) {
+                    inputElement.className = "correct";
+                    hintElement.style.display = "none";
+                    correctCount++;
+                } else {
+                    inputElement.className = "wrong";
+                    hintElement.style.display = "block"; 
+                }
+                
+                inputElement.readOnly = true; 
+            });
+
+            document.getElementById('check-wrapper').style.display = "none";
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.style.display = "block";
+            
+            if(correctCount === exercises.length) {
+                resultsDiv.innerHTML = `Mükemmel! Skor: ${correctCount} / ${exercises.length} 🏆`;
+                resultsDiv.style.color = "#27ae60";
+            } else {
+                resultsDiv.innerHTML = `Skor: ${correctCount} / ${exercises.length}`;
+                resultsDiv.style.color = "#e74c3c";
+            }
+
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>I Alıştırması: İsim Cümlesi Eşleştirme - Arapça Portalı</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Amiri&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f0f4f8; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 40px 20px; }
+        
+        nav { 
+            background-color: #2c3e50; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            display: inline-block; width: 100%; max-width: 1200px; margin-bottom: 20px; overflow: hidden; 
+        }
+        nav a { float: left; color: white; padding: 16px 20px; text-decoration: none; transition: 0.3s; font-weight: 600; }
+        nav a:hover { background-color: #34495e; color: #3498db; }
+
+        .exercise-container { width: 100%; max-width: 1200px; background: white; padding: 50px; border-radius: 30px; box-shadow: 0 15px 50px rgba(0,0,0,0.1); text-align: center; }
+        
+        .main-title { color: #e74c3c; font-size: 32px; font-weight: 600; margin-bottom: 10px; }
+        .instruction { font-size: 18px; color: #7f8c8d; margin-bottom: 40px; font-weight: 600; }
+
+        .grammar-note {
+            background-color: #eafaf1; border-left: 5px solid #27ae60; color: #27ae60;
+            padding: 15px 20px; font-size: 16px; margin: 0 auto 30px auto; border-radius: 8px;
+            display: inline-block; font-weight: 600; text-align: left; max-width: 800px; line-height: 1.5;
+        }
+
+        .vocab-helpers {
+            display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; flex-wrap: wrap;
+        }
+        .vocab-badge {
+            background-color: #f8f9fa; border: 1px solid #dcdde1; border-radius: 8px;
+            padding: 8px 15px; font-family: 'Amiri', serif; font-size: 22px; color: #2c3e50;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .vocab-badge span { font-family: 'Poppins', sans-serif; font-size: 14px; color: #7f8c8d; }
+
+        /* Eşleştirme Alanı */
+        .match-container {
+            display: flex; justify-content: space-between; gap: 50px; direction: rtl;
+        }
+
+        .column {
+            flex: 1; display: flex; flex-direction: column; gap: 15px;
+        }
+
+        .col-title {
+            font-size: 24px; color: #2c3e50; font-weight: bold; margin-bottom: 15px;
+        }
+
+        .match-box {
+            background-color: #f8f9fa; border: 3px solid #dcdde1; border-radius: 15px;
+            padding: 15px 20px; font-family: 'Amiri', serif; font-size: 35px; color: #18395b;
+            cursor: pointer; transition: all 0.3s ease; user-select: none;
+        }
+
+        .match-box:hover { border-color: #3498db; transform: scale(1.02); }
+
+        .match-box.selected {
+            border-color: #e74c3c; background-color: #fdedec; transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.2);
+        }
+
+        .controls-wrapper { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 50px; }
+        .action-btn { 
+            padding: 15px 30px; font-size: 20px; border: none; 
+            background-color: #2c3e50; color: white; border-radius: 15px; 
+            cursor: pointer; transition: 0.3s; font-family: 'Poppins'; text-decoration: none;
+        }
+        .action-btn:hover { transform: scale(1.05); }
+        .btn-check { background-color: #27ae60; padding: 15px 50px; font-size: 22px; }
+        .btn-check:hover { background-color: #2ecc71; }
+        .btn-prev { background-color: #7f8c8d; }
+        .btn-prev:hover { background-color: #95a5a6; }
+        .btn-next { background-color: #3498db; }
+        .btn-next:hover { background-color: #2980b9; }
+
+        #results { display: none; margin-top: 30px; font-size: 35px; color: #18395b; font-weight: 600; }
+
+        @media (max-width: 768px) {
+            .match-container { flex-direction: column; gap: 30px; }
+            .ar-text { font-size: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="4-gun-antrenmanlari.html">← 4. Güne Dön</a>
+    </nav>
+
+    <div class="exercise-container">
+        <div class="main-title">I- ALIŞTIRMASI: CÜMLELER YAPINIZ</div>
+        
+        <div class="grammar-note">
+            📌 <b>DİKKAT:</b> İkil (tesniye) olan kelimeler Muzaf olduklarında sonlarındaki <b>"nûn" (ن)</b> harfi düşer (Örn: <i>حَفِيدَانِ -> حَفِيدَا</i>). Haber'in cinsiyeti ise daima birinci kelimenin cinsiyetine uyumlu olmalıdır.
+        </div>
+
+        <div class="vocab-helpers">
+            <div class="vocab-badge">مُزْدَحِمٌ <span>kalabalık</span></div>
+            <div class="vocab-badge">مُنِيرٌ <span>aydınlatıcı</span></div>
+        </div>
+
+        <div class="instruction">
+            Cinsiyet uyumuna (Eril/Dişil) dikkat ederek eşleştirme yapınız.<br>
+            <span style="color:#e74c3c; font-size:14px;">(Eşleşmeyi iptal etmek için eşleşmiş kutuya tekrar tıklayabilirsiniz.)</span>
+        </div>
+        
+        <div class="match-container">
+            <div class="column" id="col-mubteda">
+                <div class="col-title">Mübtedâ (Özne)</div>
+            </div>
+
+            <div class="column" id="col-haber">
+                <div class="col-title">Haber (Yüklem)</div>
+            </div>
+        </div>
+
+        <div class="controls-wrapper" id="check-wrapper">
+            <button class="action-btn btn-check" onclick="checkAnswers()">Cevapları Kontrol Et</button>
+        </div>
+
+        <div id="results"></div>
+
+        <div class="controls-wrapper">
+            <a href="15-antrenman-isim-cumlesi-8.html" class="action-btn btn-prev">Önceki Antrenman</a>
+            <a href="15-antrenman-isim-cumlesi-10.html" class="action-btn btn-next">Sonraki Antrenmana Geç</a>
+        </div>
+    </div>
+
+    <script>
+        // M: Müzekker (9 adet), F: Müennes (5 adet)
+        let mubtedaList = [
+            { id: 'm1', text: 'حَفِيدَا الْمَدِينَةِ' }, { id: 'f1', text: 'حَفِيدَتَا الْبَيْتِ' },
+            { id: 'f2', text: 'مِحْفَظَتَا الْمَدْرَسَةِ' }, { id: 'm2', text: 'بَابَا الْمُدَرِّسِ' },
+            { id: 'f3', text: 'شَجَرَتَا الْجَدِّ' }, { id: 'f4', text: 'عُلْبَتَا الْمُزَارِعِ' },
+            { id: 'm3', text: 'بَيْتَا الْحَدِيقَةِ' }, { id: 'f5', text: 'نَافِذَتَا الْبَقَّالِ' },
+            { id: 'm4', text: 'حَقْلَا التَّاجِرِ' }, { id: 'm5', text: 'دِيكَا الرَّجُلِ' },
+            { id: 'm6', text: 'شَارِعَا الْجَدَّةِ' }, { id: 'm7', text: 'كِتَابَا الْحُجْرَةِ' },
+            { id: 'm8', text: 'مِصْبَاحَا الْقَرْيَةِ' }, { id: 'm9', text: 'كَلْبَا الْمَرِيضِ' }
+        ];
+
+        let haberList = [
+            { id: 'hm1', text: 'طَوِيلَانِ' }, { id: 'hf1', text: 'قَصِيرَتَانِ' },
+            { id: 'hf2', text: 'خَفِيفَتَانِ' }, { id: 'hm2', text: 'مَفْتُوحَانِ' },
+            { id: 'hf3', text: 'مُرْتَفِعَتَانِ' }, { id: 'hf4', text: 'ثَقِيلَتَانِ' },
+            { id: 'hm3', text: 'كَبِيرَانِ' }, { id: 'hf5', text: 'مَفْتُوحَتَانِ' },
+            { id: 'hm4', text: 'وَاسِعَانِ' }, { id: 'hm5', text: 'صَغِيرَانِ' },
+            { id: 'hm6', text: 'مُزْدَحِمَانِ' }, { id: 'hm7', text: 'سَمِيكَانِ' },
+            { id: 'hm8', text: 'مُنِيرَانِ' }, { id: 'hm9', text: 'نَشِيطَانِ' }
+        ];
+
+        // Öğelerin yerlerini her açılışta karıştırmak için
+        mubtedaList = mubtedaList.sort(() => Math.random() - 0.5);
+        haberList = haberList.sort(() => Math.random() - 0.5);
+
+        // 14 Farklı Pastel Renk
+        const colors = [
+            '#ffb3ba', '#ffdfba', '#ffffba', '#baffc9', '#bae1ff', 
+            '#e6e6fa', '#f0e68c', '#ffc0cb', '#dda0dd', '#98fb98', 
+            '#afeeee', '#f5deb3', '#d8bfd8', '#ffdab9'
+        ];
+        
+        let colorIndex = 0;
+        let selectedMubteda = null;
+        let selectedHaber = null;
+        let matches = []; 
+
+        function renderBoxes() {
+            const colM = document.getElementById('col-mubteda');
+            const colH = document.getElementById('col-haber');
+            colM.innerHTML = '<div class="col-title">Mübtedâ (Özne)</div>';
+            colH.innerHTML = '<div class="col-title">Haber (Yüklem)</div>';
+
+            mubtedaList.forEach(item => {
+                const isMatched = matches.find(m => m.mubtedaId === item.id);
+                const isSelected = selectedMubteda === item.id;
+                const bgColor = isMatched ? isMatched.color : (isSelected ? '' : '#f8f9fa');
+                
+                colM.innerHTML += `
+                    <div class="match-box ${isSelected ? 'selected' : ''}" 
+                         style="background-color: ${bgColor};" 
+                         onclick="handleBoxClick('mubteda', '${item.id}')">
+                        ${item.text}
+                    </div>
+                `;
+            });
+
+            haberList.forEach(item => {
+                const isMatched = matches.find(m => m.haberId === item.id);
+                const isSelected = selectedHaber === item.id;
+                const bgColor = isMatched ? isMatched.color : (isSelected ? '' : '#f8f9fa');
+
+                colH.innerHTML += `
+                    <div class="match-box ${isSelected ? 'selected' : ''}" 
+                         style="background-color: ${bgColor};" 
+                         onclick="handleBoxClick('haber', '${item.id}')">
+                        ${item.text}
+                    </div>
+                `;
+            });
+        }
+
+        function handleBoxClick(type, id) {
+            const existingMatchIndex = matches.findIndex(m => m.mubtedaId === id || m.haberId === id);
+            if (existingMatchIndex !== -1) {
+                matches.splice(existingMatchIndex, 1);
+                renderBoxes();
+                return;
+            }
+
+            if (type === 'mubteda') {
+                selectedMubteda = (selectedMubteda === id) ? null : id; 
+            } else {
+                selectedHaber = (selectedHaber === id) ? null : id;
+            }
+
+            if (selectedMubteda && selectedHaber) {
+                matches.push({
+                    mubtedaId: selectedMubteda,
+                    haberId: selectedHaber,
+                    color: colors[colorIndex % colors.length]
+                });
+                colorIndex++;
+                selectedMubteda = null;
+                selectedHaber = null;
+            }
+
+            renderBoxes();
+        }
+
+        function checkAnswers() {
+            if (matches.length < 14) {
+                alert("Lütfen önce tüm kelimeleri eşleştirin!");
+                return;
+            }
+
+            let correctCount = 0;
+            
+            // Cinsiyet uyumu kontrolü (Müzekker ise Müzekker, Müennes ise Müennes seçilmeli)
+            matches.forEach(match => {
+                if (match.mubtedaId.startsWith('m') && match.haberId.startsWith('hm')) {
+                    correctCount++;
+                } else if (match.mubtedaId.startsWith('f') && match.haberId.startsWith('hf')) {
+                    correctCount++;
+                }
+            });
+
+            document.getElementById('check-wrapper').style.display = "none";
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.style.display = "block";
+            
+            if (correctCount === 14) {
+                resultsDiv.innerHTML = `Mükemmel! Cinsiyet uyumlarına tam dikkat ettiniz. 🏆`;
+                resultsDiv.style.color = "#27ae60";
+            } else {
+                resultsDiv.innerHTML = `Skor: ${correctCount} / 14 doğru.<br><span style="font-size:18px; color:#e74c3c;">(Yanlışlarınız var. Eril-Dişil uyumuna dikkat ederek tekrar deneyin.)</span>`;
+                resultsDiv.style.color = "#e74c3c";
+            }
+
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+
+        renderBoxes();
+    </script>
+</body>
+</html>

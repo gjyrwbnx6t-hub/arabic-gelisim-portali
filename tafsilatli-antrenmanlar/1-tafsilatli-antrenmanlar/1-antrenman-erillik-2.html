@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Alıştırma 2: Cümle Uyumları - Arapça Portalı</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Amiri&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f0f4f8; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        
+        .exercise-container { width: 1000px; background: white; padding: 50px; border-radius: 50px; box-shadow: 0 25px 75px rgba(0,0,0,0.1); text-align: center; }
+        
+        .header { color: #d63031; font-size: 32px; font-weight: 600; margin-bottom: 40px; }
+        
+        /* Soru ve Örnek Alanı */
+        .example-box { background: #f8f9fa; padding: 20px; border-radius: 20px; margin-bottom: 30px; font-size: 24px; color: #7f8c8d; }
+        .question-box { font-family: 'Amiri', serif; font-size: 75px; color: #18395b; margin-bottom: 10px; direction: rtl; }
+        
+        .meaning-box { font-size: 35px; color: #2980b9; font-weight: 600; min-height: 50px; margin-bottom: 10px; opacity: 0; transition: 0.3s; }
+        .meaning-box.show { opacity: 1; }
+
+        /* Yeni Eklenen İpucu CSS'i */
+        .hint-text { color: #d35400; font-size: 22px; font-weight: 600; margin-bottom: 20px; display: none; }
+
+        input { 
+            width: 90%; padding: 25px; font-size: 45px; font-family: 'Amiri', serif; 
+            text-align: center; border: 4px solid #f0f4f8; border-radius: 25px; 
+            margin-bottom: 30px; outline: none; transition: 0.3s; direction: rtl;
+        }
+        input:focus { border-color: #2193b0; }
+        input.correct { border-color: #27ae60; background-color: #eafaf1; }
+        input.wrong { border-color: #e74c3c; background-color: #fdedec; }
+
+        .feedback { font-size: 24px; min-height: 60px; margin-bottom: 30px; padding: 0 20px; }
+        .explanation { color: #e67e22; font-weight: 600; display: none; }
+        
+        button { 
+            padding: 25px 70px; font-size: 35px; border: none; 
+            background-color: #2c3e50; color: white; border-radius: 20px; 
+            cursor: pointer; transition: 0.3s; font-family: 'Poppins'; 
+        }
+        button:hover { background-color: #34495e; transform: scale(1.05); }
+
+        #results { display: none; }
+        .score-text { font-size: 60px; color: #18395b; margin-bottom: 30px; }
+        .counter { margin-top: 25px; font-size: 30px; color: #7f8c8d; }
+    </style>
+</head>
+<body>
+
+    <div class="exercise-container" id="game-area">
+        <div class="header">B- Boş yerleri, misâldeki gibi doldurunuz:</div>
+        
+        <div class="example-box">
+            Örnek: الْمُدَرِّسُ ذَكِيٌّ ← الْمُدَرِّسَةُ ذَكِيَّةٌ
+        </div>
+
+        <div id="quiz-part">
+            <div class="counter" id="progress">1 / 10</div>
+            <div class="question-box" id="prompt-sentence">الْمُسْلِمُ قَوِيٌّ</div>
+            
+            <div class="meaning-box" id="word-meaning"></div>
+            
+            <div class="hint-text" id="hint-text"></div>
+            
+            <input type="text" id="user-input" placeholder="Müennes halini yazın..." autocomplete="off">
+            
+            <div class="feedback">
+                <div class="explanation" id="exp-text"></div>
+            </div>
+            
+            <button id="action-btn" onclick="checkAnswer()">Kontrol Et</button>
+        </div>
+
+        <div id="results">
+            <div class="score-text">Mükemmel!</div>
+            <div class="score-text" id="final-score">Skor: 0 / 10</div>
+            <button onclick="location.href='2-antrenman-nisbe.html'">Sıradaki Konuya Geç (Nisbe)</button>
+        </div>
+    </div>
+
+    <script>
+        function normalizeArabic(text) {
+            return text.replace(/[\u064B-\u0652]/g, "").trim();
+        }
+
+        // İlgili sorulara "hint" (kopya) eklendi
+        const questions = [
+            { q: "الْمُسْلِمُ قَوِيٌّ", a: "الْمُسْلِمَةُ قَوِيَّةٌ", tr: "Müslüman güçlüdür." },
+            { q: "الْكَاتِبُ مَشْغُولٌ", a: "الْكَاتِبَةُ مَشْغُولَةٌ", tr: "Yazar meşguldür." },
+            { q: "الْمُوَظَّفُ طَوِيلٌ", a: "الْمُوَظَّفَةُ طَوِيلَةٌ", tr: "Memur uzundur." },
+            { q: "الطَّبَّاخُ مَاهِرٌ", a: "الطَّبَّاخَةُ مَاهِرَةٌ", tr: "Aşçı beceriklidir." },
+            { q: "الرَّجُلُ مَرِيضٌ", a: "الْمَرْأَةُ مَرِيضَةٌ", tr: "Adam/Kadın hastadır.", hint: "الْمَرْأَةُ" },
+            { q: "الطَّالِبُ غَنِيٌّ", a: "الطَّالِبَةُ غَنِيَّةٌ", tr: "Öğrenci zengindir." },
+            { q: "الْقِطَارُ سَرِيعٌ", a: "الْحَافِلَةُ سَرِيعَةٌ", tr: "Tren/Otobüs hızlıdır.", hint: "الْحَافِلَةُ" },
+            { q: "الصَّفُّ وَاسِعٌ", a: "الْحَدِيقَةُ وَاسِعَةٌ", tr: "Sınıf/Bahçe geniştir.", hint: "الْحَدِيقَةُ" },
+            { q: "الْقَلَمُ قَصِيرٌ", a: "الْمِسْطَرَةُ قَصِيرَةٌ", tr: "Kalem/Cetvel kısadır.", hint: "الْمِسْطَرَةُ" },
+            { q: "الْبَابُ مَفْتُوحٌ", a: "النَّافِذَةُ مَفْتُوحَةٌ", tr: "Kapı/Pencere açıktır.", hint: "النَّافِذَةُ" }
+        ];
+
+        let currentIndex = 0;
+        let score = 0;
+        const ruleExplanation = "Cümledeki hem özne hem de yüklem cinsiyet bakımından uyumlu olmalıdır.";
+
+        function checkAnswer() {
+            const input = document.getElementById('user-input');
+            const expText = document.getElementById('exp-text');
+            const meaningBox = document.getElementById('word-meaning');
+            const btn = document.getElementById('action-btn');
+            
+            meaningBox.innerText = `Anlamı: ${questions[currentIndex].tr}`;
+            meaningBox.classList.add('show');
+
+            if (normalizeArabic(input.value) === normalizeArabic(questions[currentIndex].a)) {
+                input.className = "correct";
+                score++;
+                expText.style.display = "none";
+                btn.innerText = "Sıradaki";
+                btn.onclick = nextQuestion;
+            } else {
+                input.className = "wrong";
+                expText.innerText = `Doğru cevap: ${questions[currentIndex].a}. ${ruleExplanation}`;
+                expText.style.display = "block";
+                btn.innerText = "Devam Et";
+                btn.onclick = nextQuestion;
+            }
+        }
+
+        function nextQuestion() {
+            currentIndex++;
+            if (currentIndex < questions.length) {
+                const input = document.getElementById('user-input');
+                input.value = "";
+                input.className = "";
+                document.getElementById('exp-text').style.display = "none";
+                document.getElementById('word-meaning').classList.remove('show');
+                document.getElementById('prompt-sentence').innerText = questions[currentIndex].q;
+                document.getElementById('progress').innerText = `${currentIndex + 1} / ${questions.length}`;
+                
+                // İpucu mantığı eklendi
+                const hintText = document.getElementById('hint-text');
+                if (questions[currentIndex].hint) {
+                    hintText.innerText = `💡 İpucu: Mübteda olarak "${questions[currentIndex].hint}" kelimesini kullanın.`;
+                    hintText.style.display = "block";
+                } else {
+                    hintText.style.display = "none";
+                }
+                
+                const btn = document.getElementById('action-btn');
+                btn.innerText = "Kontrol Et";
+                btn.onclick = checkAnswer;
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quiz-part').style.display = "none";
+            document.querySelector('.example-box').style.display = "none";
+            document.getElementById('results').style.display = "block";
+            document.getElementById('final-score').innerText = `Skor: ${score} / ${questions.length}`;
+        }
+    </script>
+</body>
+</html>

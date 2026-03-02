@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Pusula: Zihin ve Dil Ustalığı - Arapça Portalı</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Poppins', sans-serif; background-color: #f0f4f8; 
+            margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; 
+            min-height: 100vh; overflow-x: hidden;
+        }
+
+        nav { 
+            background-color: #2c3e50; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 100%; max-width: 1300px; margin-bottom: 20px; overflow: hidden; display: flex;
+        }
+        nav a { color: white; padding: 15px 20px; text-decoration: none; transition: 0.3s; font-weight: 600; }
+        nav a:hover { background-color: #34495e; color: #3498db; }
+
+        /* Slider Konteyner */
+        .slider-wrapper {
+            width: 100%; max-width: 1300px; background: white; border-radius: 20px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08); overflow: hidden; position: relative;
+            display: flex; flex-direction: column;
+        }
+
+        .slider-track {
+            display: flex; transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            align-items: stretch;
+        }
+
+        .slide {
+            min-width: 100%; padding: 30px 40px 90px 40px; box-sizing: border-box; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        /* ---------------------------------------------------
+           1. SLAYT: ANA ŞEMA (MINDMAP) TASARIMI
+        --------------------------------------------------- */
+        .mindmap-container {
+            display: flex; align-items: center; justify-content: center; gap: 20px; width: 100%;
+        }
+
+        .mm-column { display: flex; flex-direction: column; gap: 15px; flex: 1; }
+
+        .mm-center {
+            background-color: #3949ab; color: white; padding: 25px 30px; border-radius: 20px;
+            font-size: 24px; font-weight: 700; text-align: center; box-shadow: 0 10px 20px rgba(57, 73, 171, 0.3);
+            z-index: 2; width: 230px; flex-shrink: 0; border: 4px solid #e8eaf6;
+        }
+
+        .mm-card {
+            padding: 12px 18px; border-radius: 15px; color: white; text-align: left;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: 0.3s; cursor: pointer;
+        }
+        .mm-card:hover { transform: translateY(-3px) scale(1.02); }
+        
+        .mm-title { font-size: 15px; font-weight: 700; margin-bottom: 5px; display: flex; align-items: center; gap: 8px;}
+        .mm-desc { font-size: 12px; font-weight: 400; opacity: 0.9; line-height: 1.4; }
+
+        /* Kart Renkleri */
+        .c-red1 { background: #ef4444; } .c-orange1 { background: #f59e0b; }
+        .c-yellow { background: #eab308; } .c-green { background: #10b981; }
+        .c-orange2 { background: #f97316; } .c-red2 { background: #ef4444; }
+        .c-purple { background: #8b5cf6; } .c-blue { background: #3b82f6; }
+
+
+        /* ---------------------------------------------------
+           ALT SLAYTLAR: AĞAÇ (TREE) DİYAGRAMI TASARIMI
+        --------------------------------------------------- */
+        .tree-layout {
+            display: flex; align-items: stretch; justify-content: center; gap: 20px; width: 100%;
+        }
+        
+        /* Sol Ana Başlık Kutusu */
+        .tree-main {
+            background-color: #0f172a; color: white; padding: 25px 20px; border-radius: 15px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; min-width: 210px; max-width: 240px; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2);
+        }
+        .tree-main h3 { margin: 0 0 10px 0; font-size: 20px; line-height: 1.3; }
+        .tree-main p { margin: 0; font-size: 12px; opacity: 0.8; }
+        
+        /* Orta Dallar */
+        .tree-branches {
+            display: flex; flex-direction: column; gap: 15px; justify-content: center; flex: 1;
+        }
+        .tree-branch-group {
+            display: flex; align-items: stretch; gap: 15px;
+        }
+        .tree-branch-title {
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            padding: 12px; border-radius: 10px; color: white; font-weight: 600; width: 150px; flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-size: 13px;
+        }
+        
+        /* Sağ Yapraklar (Maddeler) */
+        .tree-leaves {
+            display: flex; flex-direction: column; gap: 8px; justify-content: center; flex: 1;
+        }
+        .tree-leaf {
+            background: white; border: 2px solid; border-radius: 8px; padding: 10px 12px;
+            font-size: 12px; line-height: 1.4; display: flex; gap: 10px; align-items: flex-start;
+        }
+        .tree-leaf strong { font-size: 13px; color: #2c3e50; }
+        .leaf-icon { font-size: 18px; }
+
+        /* Strateji / Sonuç Kutusu */
+        .tree-strategy {
+            background-color: #0f172a; color: white; padding: 25px 20px; border-radius: 15px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; min-width: 210px; max-width: 240px; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2);
+        }
+        .tree-strategy .s-icon { font-size: 30px; margin-bottom: 12px; }
+        .tree-strategy p { margin: 0; font-size: 12px; line-height: 1.5; }
+
+        /* Dal Renk Sınıfları */
+        .bg-red { background-color: #ef4444; }
+        .border-red { border-color: #fca5a5; background-color: #fef2f2; color: #7f1d1d; }
+        
+        .bg-orange { background-color: #f97316; }
+        .border-orange { border-color: #fdba74; background-color: #fff7ed; color: #7c2d12; }
+        
+        .bg-yellow { background-color: #eab308; }
+        .border-yellow { border-color: #fde047; background-color: #fefce8; color: #713f12; }
+
+        .bg-green { background-color: #10b981; color: white;}
+        .border-green { border-color: #6ee7b7; background-color: #ecfdf5; color: #064e3b; }
+
+
+        /* ---------------------------------------------------
+           YENİ ŞEFFAF YÜZER (FLOATING) KONTROLLER
+        --------------------------------------------------- */
+        .controls {
+            position: absolute;
+            bottom: 25px; 
+            left: 40px; 
+            right: 40px;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            pointer-events: none; /* Boşluklardan arka plana tıklamayı engellemez */
+            z-index: 10;
+        }
+
+        .ctrl-btn {
+            background: rgba(44, 62, 80, 0.85); /* Yarı şeffaf lacivert */
+            color: white; 
+            border: 1px solid rgba(255, 255, 255, 0.2); 
+            padding: 12px 25px;
+            border-radius: 12px; 
+            font-size: 15px; 
+            font-family: 'Poppins'; 
+            cursor: pointer;
+            font-weight: 600; 
+            transition: 0.3s; 
+            pointer-events: auto; /* Tıklanabilir */
+            backdrop-filter: blur(5px); /* Arka planı hafif bulandırır */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .ctrl-btn:hover:not(:disabled) { 
+            background: rgba(52, 152, 219, 0.95); 
+            transform: translateY(-2px); 
+        }
+        /* İlk ve son slaytta gereksiz okları tamamen gizle */
+        .ctrl-btn:disabled { 
+            opacity: 0; 
+            visibility: hidden; 
+        }
+
+        .slide-counter { 
+            font-size: 15px; 
+            font-weight: 600; 
+            color: #2c3e50; 
+            background: rgba(255, 255, 255, 0.9); 
+            padding: 8px 18px; 
+            border-radius: 20px; 
+            pointer-events: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Mobil Uyum */
+        @media (max-width: 1100px) {
+            .mindmap-container { flex-direction: column; }
+            .mm-center { order: -1; margin-bottom: 20px; width: 100%; box-sizing: border-box; }
+            
+            .tree-layout { flex-direction: column; align-items: center; }
+            .tree-main, .tree-strategy { max-width: 100%; width: 100%; box-sizing: border-box; }
+            .tree-branch-group { flex-direction: column; align-items: stretch; }
+            .tree-branch-title { width: 100%; box-sizing: border-box; }
+            
+            .controls { left: 20px; right: 20px; bottom: 15px; }
+            .slide { padding: 20px 20px 80px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="pusula-anasayfa.html">← Pusula'ya Dön</a>
+    </nav>
+
+    <div class="slider-wrapper">
+        <div class="slider-track" id="sliderTrack">
+            
+            <div class="slide">
+                <div class="mindmap-container">
+                    <div class="mm-column">
+                        <div class="mm-card c-orange2" onclick="goToSlide(8)">
+                            <div class="mm-title">🎨 Ders 8: Dil Edinimi ve Eğlence Bilimi</div>
+                            <div class="mm-desc">[Odak: "Öğrenci" Psikolojisinden Çıkmak ve Dopamin Odaklı Süreç]</div>
+                        </div>
+                        <div class="mm-card c-red2" onclick="goToSlide(7)">
+                            <div class="mm-title">🪄 Ders 7: Kaynak Zehirlenmesi ve Akıllı Seçim Stratejisi</div>
+                            <div class="mm-desc">[Odak: Verimlilik, Odaklanma ve Kaynak Yönetimi]</div>
+                        </div>
+                        <div class="mm-card c-purple" onclick="goToSlide(6)">
+                            <div class="mm-title">🧠 Ders 6: Beyin Gelişimi ve Dil Öğrenimi (Nöroplastisite)</div>
+                            <div class="mm-desc">[Odak: Yaş Engelini Aşmak ve Dil Öğreniminin Nörolojik Faydaları]</div>
+                        </div>
+                        <div class="mm-card c-blue" onclick="goToSlide(5)">
+                            <div class="mm-title">🚫 Ders 5: En Büyük Hata ve Odak Kayması</div>
+                            <div class="mm-desc">[Odak: Bilgiyi Uzun Dönem Hafızaya Kaydetme ve Geri Çağırma Antrenmanları]</div>
+                        </div>
+                    </div>
+
+                    <div class="mm-center">
+                        Pusula: Öğrenimde<br>Zihin ve Dil Ustalığı
+                    </div>
+
+                    <div class="mm-column">
+                        <div class="mm-card c-red1" onclick="goToSlide(1)">
+                            <div class="mm-title">💡 Ders 1: İç Motivasyon ve Akıcı Arapçanın Gücü</div>
+                            <div class="mm-desc">[Odak: Motivasyon Kaybını Yönetmek ve Hedef Görselleştirme]</div>
+                        </div>
+                        <div class="mm-card c-orange1" onclick="goToSlide(2)">
+                            <div class="mm-title">🏛️ Ders 2: Geleneksel vs. Meta Arapça Eğitimi</div>
+                            <div class="mm-desc">[Odak: Dil Öğrenme Yaklaşımını Modernleştirmek ve İçselleştirmek]</div>
+                        </div>
+                        <div class="mm-card c-yellow" onclick="goToSlide(3)">
+                            <div class="mm-title">🧠 Ders 3: Kelimeleri Hafızaya Mühürleme Teknikleri</div>
+                            <div class="mm-desc">[Odak: Kelime Unutma Problemini Çözmek ve Bilimsel Hafıza Teknikleri]</div>
+                        </div>
+                        <div class="mm-card c-green" onclick="goToSlide(4)">
+                            <div class="mm-title">💾 Ders 4: Beyni İkna Etme ve 3 Aşamalı Hafıza Sistemi</div>
+                            <div class="mm-desc">[Odak: Bilgiyi Uzun Dönem Hafızaya Kaydetme ve Geri Çağırma Antrenmanları]</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide">
+                <div class="tree-layout">
+                    
+                    <div class="tree-main">
+                        <h3>🌍 Ders 1:<br>İç Motivasyon ve<br>Akıcı Arapçanın Gücü</h3>
+                        <p>[Odak: Motivasyon Kaybını Yönetmek ve Hedef Görselleştirme]</p>
+                    </div>
+
+                    <div class="tree-branches">
+                        
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-red">Motivasyon Tuzağından Kaçın</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-red">
+                                    <div class="leaf-icon">👻</div>
+                                    <div><strong>Doğal Süreç:</strong> Motivasyon kaybı insan olmanın doğasında vardır; bunu bir "bitiş" olarak algılama.</div>
+                                </div>
+                                <div class="tree-leaf border-red">
+                                    <div class="leaf-icon">🧨</div>
+                                    <div><strong>İki Yanlış Yol:</strong> Çalışmayı tamamen bırakmak veya beyni bloke edecek şekilde kendini zorlamak.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-orange">"Üçüncü Seçenek" Stratejisi</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-orange">
+                                    <div class="leaf-icon">⏱️</div>
+                                    <div><strong>Tanım:</strong> Ne erteleme ne de zorlama; sadece neden öğrenmek istediğini kendine hatırlatma süreci.</div>
+                                </div>
+                                <div class="tree-leaf border-orange">
+                                    <div class="leaf-icon">🧪</div>
+                                    <div><strong>İçsel Kaynak:</strong> Motivasyon için başkasına ihtiyaç duymadan, kendi iç yakıtını ortaya çıkarma becerisi.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-yellow">Görselleştirme: Beyni İkna Etme</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-yellow">
+                                    <div class="leaf-icon">📁</div>
+                                    <div><strong>Biyolojik Gerçek:</strong> Beyin, canlı bir hayal ile gerçeklik arasındaki farkı ayırt edemez.</div>
+                                </div>
+                                <div class="tree-leaf border-yellow">
+                                    <div class="leaf-icon">🌡️</div>
+                                    <div><strong>Hormonal Onarım:</strong> Akıcı konuştuğunu hayal edip o duyguyu hissettiğinde, salgılanan hormonlar motivasyonu onarır.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-green">Akıcı Arapça Getirileri (Neden Öğreniyorum?)</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-green">
+                                    <div class="leaf-icon">🌐</div>
+                                    <div><strong>Bilgi Erişimi:</strong> Dünyadaki özellikle de Şer'i bilgi kaynağına doğrudan ve kolaylıkla ulaşabilmek. Bu ilimleri ana dilinden herhangi bir vasıta olmaksızın alabilmek.</div>
+                                </div>
+                                <div class="tree-leaf border-green">
+                                    <div class="leaf-icon">🌅</div>
+                                    <div><strong>Global İletişim ve İrşad:</strong> Özellikle Arap ülkelerinde birçok milletten insanla ortak bir bağ kurabilme ve onların gönlüne dokunabilme gücü.</div>
+                                </div>
+                                <div class="tree-leaf border-green">
+                                    <div class="leaf-icon">🧗</div>
+                                    <div><strong>Hoca Çarpanı:</strong> Alanında en uzman Arap hocalardan ders alabilme ve onları büyük oranda anlayabilme yetisi.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="tree-strategy">
+                        <div class="s-icon">🗺️</div>
+                        <p><strong>Strateji:</strong> "Öğrenme sürecinde seni geri iten engellere değil, akıcı konuşmanın sana kazandıracağı özgürlüğe odaklan. Zorlandığında çalışmayı bırakma; sadece neden başladığını hayal ederek zihnini yeniden programla."</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="slide">
+                <div class="tree-layout">
+                    
+                    <div class="tree-main">
+                        <h3>🏛️ Ders 2:<br>Geleneksel vs.<br>Meta Arapça Eğitimi</h3>
+                        <p>[Odak: Dil Öğrenme Yaklaşımını Modernleştirmek ve İçselleştirmek]</p>
+                    </div>
+
+                    <div class="tree-branches">
+                        
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-red">Geleneksel Dil Eğitiminin Sınırları</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-red">
+                                    <div class="leaf-icon">🗑️</div>
+                                    <div><strong>Ders Odaklı Bakış:</strong> Dilin sadece sınıf içinde, kitaplardan ve öğretmen eşliğinde öğrenilebileceği yanılgısı.</div>
+                                </div>
+                                <div class="tree-leaf border-red">
+                                    <div class="leaf-icon">🖱️</div>
+                                    <div><strong>Pasif Yöntemler:</strong> Boşluk doldurma ve çoktan seçmeli sorular gibi, yetişkinlerin ilgi alanlarından uzak ve verimsiz teknikler.</div>
+                                </div>
+                                <div class="tree-leaf border-red">
+                                    <div class="leaf-icon">🔋</div>
+                                    <div><strong>Zaman Kaybı:</strong> Gerçek hayatta karşılığı olmayan teorik yüklerle enerji tüketimi.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-orange">Meta Arapça: 3 Temel Eğitim Modeli</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-orange">
+                                    <div class="leaf-icon">🧗</div>
+                                    <div><strong>Anlatım Odaklı (İçselleştirme):</strong> "Ezberle-Uygula" yerine "Anla-İçselleştir-Uygula" stratejisi; interaktif videolar ve ses dokümanları kullanımı.</div>
+                                </div>
+                                <div class="tree-leaf border-orange">
+                                    <div class="leaf-icon">🎾</div>
+                                    <div><strong>Eğlence ve Bilgi Odaklı (Entegrasyon):</strong> Arapçayı günlük yaşamın her anına entegre eden, zihin antrenmanları ve yüksek motivasyon odaklı uygulamalar.</div>
+                                </div>
+                                <div class="tree-leaf border-orange">
+                                    <div class="leaf-icon">🗣️</div>
+                                    <div><strong>Sosyal Yaşam Odaklı (Pratik):</strong> Yaşamın içinden popüler diyaloglar, fasih ve ammi lehçe çalışmaları (drill'ler), telaffuz ve dinlemenin eş zamanlı gelişimi.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-yellow">Modern Öğrenme ve Bilimsel Yaklaşım</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-yellow">
+                                    <div class="leaf-icon">🖥️</div>
+                                    <div><strong>Dijital Dil Edinimi:</strong> Teknolojik gelişmelere uygun, informal dijital öğrenme pratiklerinin dil edinimindeki kritik rolü.</div>
+                                </div>
+                                <div class="tree-leaf border-yellow">
+                                    <div class="leaf-icon">🍃</div>
+                                    <div><strong>Doğal Parça:</strong> Dil öğrenmeyi yapay bir çaba olmaktan çıkarıp hayatın doğal bir akışı haline getirme hedefi.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="tree-strategy">
+                        <div class="s-icon">📖</div>
+                        <p><strong>Strateji:</strong> "Arapçayı bir 'ödev' olarak değil, İslami ilimlerin ve irşadın gerektirdiği bir 'iletişim aracı' olarak gör. Başarı, gramer kurallarını ezberlemekte değil; dili hayatına, ilgi alanlarına ve sosyal yaşamına ne kadar entegre ettiğinde saklıdır."</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="slide">
+                <div class="tree-layout">
+                    
+                    <div class="tree-main">
+                        <h3>🧠 Ders 3:<br>Kelimeleri Hafızaya<br>Mühürleme Teknikleri</h3>
+                        <p>[Odak: Kelime Unutma Problemini Çözmek ve Bilimsel Hafıza Teknikleri]</p>
+                    </div>
+
+                    <div class="tree-branches">
+                        
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-red">Hayatla Özdeşleştirme (Kişiselleştirme)</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-red">
+                                    <div class="leaf-icon">📡</div>
+                                    <div><strong>Duygusal Bağ:</strong> Bilgiyi uzun dönemli hafızaya atmanın yolu, onu kişisel yaşantınla ilişkilendirmektir.</div>
+                                </div>
+                                <div class="tree-leaf border-red">
+                                    <div class="leaf-icon">🤔</div>
+                                    <div><strong>Zihin Dili:</strong> Kelimeyi kuru bir liste olarak değil, "hayatımın hangi anında kullanırım?" sorusuyla bir sahneye kodla.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-orange">Analog Not Tutma: Kalem vs. Klavye</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-orange">
+                                    <div class="leaf-icon">🖋️</div>
+                                    <div><strong>Bilimsel Kanıt:</strong> Princeton ve Kaliforniya üniversitelerinin araştırmasına göre; kalemle kâğıda not almak, klavyeye göre çok daha kalıcı öğrenme sağlıyor.</div>
+                                </div>
+                                <div class="tree-leaf border-orange">
+                                    <div class="leaf-icon">🕸️</div>
+                                    <div><strong>Bilişsel Derinlik:</strong> Yazma eylemi beyinde daha güçlü ve kalıcı sinirsel yollar oluşturur.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-yellow">Kas Hafızası ve Kesintisiz Maruziyet</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-yellow">
+                                    <div class="leaf-icon">👂</div>
+                                    <div><strong>İmpuls Tekniği:</strong> Tekrar etmek için unutmayı bekleme; beyni sürekli bu bilgiyle uyar (müzisyen veya dansçı disiplini gibi).</div>
+                                </div>
+                                <div class="tree-leaf border-yellow">
+                                    <div class="leaf-icon">💪</div>
+                                    <div><strong>Üçlü Uyarım:</strong> Kelimeyi söylerken dili, kulağı ve beyni eş zamanlı olarak devreye sokarak kas hafızası oluştur.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-green">Hafıza Sarayı (Mind Palace) Tekniği</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-green">
+                                    <div class="leaf-icon">💻</div>
+                                    <div><strong>Sherlock Usulü Kodlama:</strong> Kelimeleri tanıdığın fiziksel mekanlara (evin bölümleri, odan vb.) görsel olarak yerleştir.</div>
+                                </div>
+                                <div class="tree-leaf border-green">
+                                    <div class="leaf-icon">📸</div>
+                                    <div><strong>Görsel Hafıza Gücü:</strong> Joshua Foer'in önerdiği bu yöntemle soyut kavramları somut mekanlarla eşleştirerek kalıcı hale getir.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="tree-strategy">
+                        <div class="s-icon">📖</div>
+                        <p><strong>Strateji:</strong> "Kelimeleri listelerden kurtar ve hayatının içine yerleştir. Klavyeden uzaklaşıp kalemle bağ kurduğunda ve zihninde bir 'hafıza sarayı' inşa ettiğinde, Allah'ın izniyle unutmak imkânsız hale gelir."</p>
+                    </div>
+
+                </div>
+            </div>
+
+
+
+            <div class="slide">
+                <style>
+                    .bg-blue { background-color: #3b82f6; color: white;}
+                    .border-blue { border-color: #bfdbfe; background-color: #eff6ff; color: #1e3a8a; }
+                    .bg-purple { background-color: #8b5cf6; color: white;}
+                    .border-purple { border-color: #ddd6fe; background-color: #f5f3ff; color: #4c1d95; }
+                </style>
+
+                <div class="tree-layout">
+                    
+                    <div class="tree-main">
+                        <h3>💾 Ders 4:<br>Beyni İkna Etme ve<br>3 Aşamalı Hafıza Sistemi</h3>
+                        <p>[Odak: Bilgiyi Uzun Dönem Hafızaya Kaydetme ve Geri Çağırma Antrenmanları]</p>
+                    </div>
+
+                    <div class="tree-branches">
+                        
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-red">Beynin Bilgi Saklama Mantığı</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-red">
+                                    <div class="leaf-icon">⚙️</div>
+                                    <div><strong>Eleme Sistemi:</strong> Beyin, kullanılmayacak bilgiyi tutmamaya programlıdır; bu yüzden bilginin "gerekli" olduğuna beyni ikna etmek şarttır.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-orange">1. Aşama: Güçlü Kodlama Anı</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-orange">
+                                    <div class="leaf-icon">🧩</div>
+                                    <div><strong>3 Yönlü Kodlama:</strong> Kelimeyi sadece görerek değil; görsel, işitsel ve dokunsal (sesli söyleyerek) olarak kodla.</div>
+                                </div>
+                                <div class="tree-leaf border-orange">
+                                    <div class="leaf-icon">🎤</div>
+                                    <div><strong>Drill Yapmak:</strong> Yeni öğrenilen kalıp veya kelimeyi aralıksız 5-6 kez sesli şekilde tekrarlayarak diline alıştır.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-yellow">2. Aşama: İşleme (Hayali Deneyim)</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-yellow">
+                                    <div class="leaf-icon">💭</div>
+                                    <div><strong>Hayal Gücü:</strong> Kelimeyi kuru bir bilgi olmaktan çıkarıp "Bunu nerede kullanırım?" sorusuyla bir senaryo içine yerleştir.</div>
+                                </div>
+                                <div class="tree-leaf border-yellow">
+                                    <div class="leaf-icon">🌲</div>
+                                    <div><strong>Yapay Anı Oluşturma:</strong> Kelimeyi kullanarak hayali bir anı kur; beyin bu hayali anıyı "deneyimlenmiş gerçek bilgi" olarak kaydeder.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-green">3. Aşama: Recall (Zihinsel Geri Çağırma)</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-green">
+                                    <div class="leaf-icon">✈️</div>
+                                    <div><strong>Masa Başı Olmayan Tekrar:</strong> Bilgiyi çağırmak için sadece deftere bakma; gün içindeki boşlukları zihin antrenmanına dönüştür.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-blue">Pratik Recall Anları:</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-blue">
+                                    <div class="leaf-icon">🎈</div>
+                                    <div>Yolda yürürken kurduğun hayali senaryoyu hatırla.</div>
+                                </div>
+                                <div class="tree-leaf border-blue">
+                                    <div class="leaf-icon">☕</div>
+                                    <div>Çay/kahve molalarında öğrendiğin kalıpları gözden geçir.</div>
+                                </div>
+                                <div class="tree-leaf border-blue">
+                                    <div class="leaf-icon">🕒</div>
+                                    <div>2-3 dakikalık boşluklarda zihninde yapıları geri getir.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-purple">Sonuç: Aktif ve Hazır Hafıza</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-purple">
+                                    <div class="leaf-icon">🔗</div>
+                                    <div><strong>Düşünmeden Kullanım:</strong> Doğru kodlanmış ve işlenmiş bilgi, ihtiyaç anında zihinden otomatik olarak dökülür.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="tree-strategy">
+                        <div class="s-icon">🗺️</div>
+                        <p><strong>Strateji:</strong> "Beynin unutma hazırlığını bozmak için bilgiyi 'işle'. Masa başında ders çalışmak yerine, gün içinde zihninde 'recall' (geri çağırma) antrenmanları yaparak kelimeleri sarsılmaz bir hafıza sistemine dönüştür."</p>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="slide">
+                <style>
+                    .bg-blue { background-color: #3b82f6; color: white;}
+                    .border-blue { border-color: #bfdbfe; background-color: #eff6ff; color: #1e3a8a; }
+                </style>
+
+                <div class="tree-layout">
+                    
+                    <div class="tree-main">
+                        <h3>🚫 Ders 5:<br>En Büyük Hata ve<br>Odak Kayması</h3>
+                        <p>[Odak: Bilgiyi Uzun Dönem Hafızaya Kaydetme ve Geri Çağırma Antrenmanları]</p>
+                    </div>
+
+                    <div class="tree-branches">
+                        
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-red">Yapay Engeller ve Hedef Sapması</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-red">
+                                    <div class="leaf-icon">🌋</div>
+                                    <div><strong>Prosedür Tuzağı:</strong> Arapçayı öğrenirken sınav, mülakat veya terfi gibi aşamaları "ana hedef" haline getirmek, süreci ulaşılamaz ve stresli kılar.</div>
+                                </div>
+                                <div class="tree-leaf border-red">
+                                    <div class="leaf-icon">🧨</div>
+                                    <div><strong>Hata Korkusu:</strong> Sınav odaklı düşünmek, "hata yaparsam başarısız olurum" korkusunu tetikler ve doğal gelişimi engeller.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-orange">Arapça Gerçek Amacı<br>(Neden İsteniyor?)</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-orange">
+                                    <div class="leaf-icon">💼</div>
+                                    <div><strong>İslami İlimler ve Fıkıh:</strong> Fıkıh ve Hadis gibi temel kaynakları aslından analiz ederek akademik derinlik kazanmak ve eğitim projeleri geliştirmek için.</div>
+                                </div>
+                                <div class="tree-leaf border-orange">
+                                    <div class="leaf-icon">📔</div>
+                                    <div><strong>Eğitimde:</strong> Alanında uzmanlaşmak, global kaynaklara ulaşmak ve akademik çevreyle bağ kurabilmek için.</div>
+                                </div>
+                                <div class="tree-leaf border-orange">
+                                    <div class="leaf-icon">🌵</div>
+                                    <div><strong>Tarih ve Bölgesel Uzmanlık:</strong> İslam tarihini birinci elden okumak; Ürdün gibi coğrafyalardaki sosyal ve hukuki süreçleri yerinde, aracısız takip edebilmek için.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-yellow">İki Ana Sütun: İletişim ve Bilgi</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-yellow">
+                                    <div class="leaf-icon">🗣️</div>
+                                    <div><strong>İletişim:</strong> Kendini ifade edebilme ve karşıdakini anlama becerisi.</div>
+                                </div>
+                                <div class="tree-leaf border-yellow">
+                                    <div class="leaf-icon">🌐</div>
+                                    <div><strong>Bilgiye Erişim:</strong> Dünyadaki bilgi birikimine doğrudan ulaşma gücü.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-green">Doğru Yaklaşım: Basitlik İlkesi</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-green">
+                                    <div class="leaf-icon">👨‍🏫</div>
+                                    <div><strong>İletişim Dili:</strong> Arapça bir "ders" değil, bir "iletişim" aracıdır.</div>
+                                </div>
+                                <div class="tree-leaf border-green">
+                                    <div class="leaf-icon">💡</div>
+                                    <div><strong>Basit Konuşma:</strong> En etkin iletişim en basit olandır. Karmaşık yapılar yerine basit düşünmenin ve basit konuşmanın değerini fark et.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-blue">Doğal Başarı Süreci</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-blue">
+                                    <div class="leaf-icon">📬</div>
+                                    <div><strong>Yan Sonuç:</strong> Odak noktası "İletişim ve Bilgi" olduğunda; sınav, mülakat ve sunum gibi aşamalar kendiliğinden başarılan "yan sonuçlar" haline gelir.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="tree-strategy">
+                        <div class="s-icon">📖</div>
+                        <p><strong>Strateji:</strong> "Beynin unutma hazırlığını bozmak için bilgiyi 'işle'. Sadece masa başında ders çalışmak yerine, gün içinde zihninde 'recall' (geri çağırma) antrenmanları yaparak kelimeleri sarsılmaz bir hafıza sistemine dönüştür."</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="slide">
+                <div class="tree-layout">
+                    
+                    <div class="tree-main">
+                        <h3>🧠 Ders 6:<br>Beyin Gelişimi ve<br>Dil Öğrenimi (Nöroplastisite)</h3>
+                        <p>[Odak: Yaş Engelini Aşmak ve Dil Öğreniminin Nörolojik Faydaları]</p>
+                    </div>
+
+                    <div class="tree-branches">
+                        
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-red">Nöroplastisite: Beynin Süper Gücü</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-red">
+                                    <div class="leaf-icon">🧬</div>
+                                    <div><strong>Yaşam Boyu Gelişim:</strong> Beyin sadece çocuklukta değil, ömür boyu yeni bağlantılar kurma, mevcut olanları güçlendirme ve yeni nöron üretme yeteneğine sahiptir.</div>
+                                </div>
+                                <div class="tree-leaf border-red">
+                                    <div class="leaf-icon">🚦</div>
+                                    <div><strong>Bilgi Hacmi:</strong> Öğrenme ivmesi yaşla birlikte yavaşlasa da asla durmaz; beyni bilgiye maruz bırakmak gelişimi tetikler.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-orange">Yaş Efsanesini Çürütmek</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-orange">
+                                    <div class="leaf-icon">❌</div>
+                                    <div><strong>Yanlış İnanç:</strong> "Belli bir yaştan sonra öğrenmek zordur."</div>
+                                </div>
+                                <div class="tree-leaf border-orange">
+                                    <div class="leaf-icon">👻</div>
+                                    <div><strong>Gerçek Nüans:</strong> Zorluk yaştan değil, beynin maruz kaldığı yeni bilgi hacminin azalmasından kaynaklanır. Bilgi akışını artırırsan, beyin de gelişmeye devam eder.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-yellow">Zirvedeki Beyin Geliştirici Aktiviteler</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-yellow">
+                                    <div class="leaf-icon">🌍</div>
+                                    <div><strong>1 Numara:</strong> Dil Öğrenmek: Beyni en etkili şekilde geliştiren ve dönüştüren eylemlerin başında gelir.</div>
+                                </div>
+                                <div class="tree-leaf border-yellow">
+                                    <div class="leaf-icon">🎵</div>
+                                    <div><strong>Motor ve Müzikal Zeka:</strong> Enstrüman çalmak veya dans etmek.</div>
+                                </div>
+                                <div class="tree-leaf border-yellow">
+                                    <div class="leaf-icon">🧗</div>
+                                    <div><strong>Deneyimsel Zeka:</strong> Seyahat etmek ve yeni yerler keşfetmek.</div>
+                                </div>
+                                <div class="tree-leaf border-yellow">
+                                    <div class="leaf-icon">🎨</div>
+                                    <div><strong>Estetik Zeka:</strong> Sanat ve creatif işlerle ilgilenmek.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-green">Keyif Odaklı Meta Yaklaşım</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-green">
+                                    <div class="leaf-icon">🔭</div>
+                                    <div><strong>Gelenekselden Fark:</strong> Zorlama ve ezber yerine, beynin nöroplastisite kapasitesini destekleyen, keyifli bir yöntemle öğrenmek.</div>
+                                </div>
+                                <div class="tree-leaf border-green">
+                                    <div class="leaf-icon">😊</div>
+                                    <div><strong>Süreç Tasarımı:</strong> Eğitimin her gününü keyif alarak geçirmek, kalıcı gelişimin anahtarıdır.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="tree-strategy">
+                        <div class="s-icon">🗺️</div>
+                        <p><strong>Strateji:</strong> "Arapça öğrenmek sadece bir iletişim aracı kazanmak değil, beynini yeniden yapılandırmaktır. Yaş engelini bir kenara bırak; beynine yeni bilgi hacmi sağladığın sürece nöroplastisite senin en büyük müttefiğin olacaktır."</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="slide">
+                <style>
+                    .bg-blue { background-color: #3b82f6; color: white;}
+                    .border-blue { border-color: #bfdbfe; background-color: #eff6ff; color: #1e3a8a; }
+                </style>
+
+                <div class="tree-layout">
+                    
+                    <div class="tree-main">
+                        <h3>🪄 Ders 7:<br>Kaynak Zehirlenmesi ve<br>Akıllı Seçim Stratejisi</h3>
+                        <p>[Odak: Verimlilik, Odaklanma ve Kaynak Yönetimi]</p>
+                    </div>
+
+                    <div class="tree-branches">
+                        
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-red">Dil Öğrenenlerin İki Büyük Hatası</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-red">
+                                    <div class="leaf-icon">🗑️</div>
+                                    <div><strong>Tek Kaynak Tuzağı:</strong> Sadece bir kitaba veya tek bir yönteme bağlı kalarak araçları sınırlamak.</div>
+                                </div>
+                                <div class="tree-leaf border-red">
+                                    <div class="leaf-icon">📚</div>
+                                    <div><strong>Kaynak Biriktirme Sendromu:</strong> Sosyal medyada görülen her kaynağı istifleyip (hoarding) hiçbirini tam bitirmemek; her 2-3 günde bir yeni kaynağa geçmek.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-orange">Kaynak Zehirlenmesi ve Psikolojik Döngü</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-orange">
+                                    <div class="leaf-icon">🧳</div>
+                                    <div><strong>Zihinsel Yük:</strong> Kullanılmayan her kaynak beyinde birer "iş yükü" olarak birikir.</div>
+                                </div>
+                                <div class="tree-leaf border-orange">
+                                    <div class="leaf-icon">↪️</div>
+                                    <div><strong>Kaçınma Mekanizması:</strong> Beyin bu ağır yükten kaçmak için bahaneler üretir.</div>
+                                </div>
+                                <div class="tree-leaf border-orange">
+                                    <div class="leaf-icon">👻</div>
+                                    <div><strong>Tehlikeli Sarmal:</strong> Erteleme → Suçluluk Duygusu → Dilden Uzaklaşma.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-yellow">Doğru Çözüm: Akıllı Kaynak Kullanımı</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-yellow">
+                                    <div class="leaf-icon">⏰</div>
+                                    <div><strong>Kısıtlama Kuralı:</strong> 4 beceriyi 5 duyuyla geliştirebilen, uzun soluklu kullanılabilecek maksimum 2 veya 3 uygulama seç.</div>
+                                </div>
+                                <div class="tree-leaf border-yellow">
+                                    <div class="leaf-icon">👟</div>
+                                    <div><strong>Sadelik:</strong> Çok çalışmak değil, seçilen az sayıda kaynağı "akıllıca ve derinlemesine" kullanmak.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-green">4 Beceri + 5 Duyu Formülü</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-green">
+                                    <div class="leaf-icon">🧩</div>
+                                    <div><strong>4 Temel Beceri:</strong> Konuşma (Speaking), Dinleme (Listening), Okuma (Reading), Yazma (Writing).</div>
+                                </div>
+                                <div class="tree-leaf border-green">
+                                    <div class="leaf-icon">🛰️</div>
+                                    <div><strong>5 Duyu Entegrasyonu:</strong> Bilgiyi sadece görerek değil; işiterek, dokunarak (yazarak/hareketle) ve duygusal bağlam kurarak zihne işleme.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-blue">Altın Kural: Kalite > Kantite</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-blue">
+                                    <div class="leaf-icon">📖</div>
+                                    <div><strong>Derinleşme:</strong> Çok sayıda kaynağa yüzeysel bakmak yerine, nitelikli bir kaynağı özümseyerek ilerle.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="tree-strategy">
+                        <div class="s-icon">🗺️</div>
+                        <p><strong>Strateji:</strong> "Dijital istifçiliği bırak; kaynak kalabalığını temizle. Maksimum 3 güçlü araca odaklan ve bu araçlarla 4 becerini 5 duyunu kullanarak geliştir. Unutma; beyin sadeleştiğinde öğrenmeye başlar."</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="slide">
+                <style>
+                    .bg-blue { background-color: #3b82f6; color: white;}
+                    .border-blue { border-color: #bfdbfe; background-color: #eff6ff; color: #1e3a8a; }
+                </style>
+
+                <div class="tree-layout">
+                    
+                    <div class="tree-main">
+                        <h3>🎨 Ders 8:<br>Dil Edinimi ve<br>Eğlence Bilimi</h3>
+                        <p>[Odak: "Öğrenci" Psikolojisinden Çıkmak ve Dopamin Odaklı Süreç]</p>
+                    </div>
+
+                    <div class="tree-branches">
+                        
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-red">Eğitim Sisteminin Yarattığı Engeli Aş</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-red">
+                                    <div class="leaf-icon">😒</div>
+                                    <div><strong>Zihniyet Değişimi:</strong> Arapçayı bir "ders" olarak görmeyi bırak; bu zihniyet 40 yaşında bile motivasyonu bitiren bir yüktür.</div>
+                                </div>
+                                <div class="tree-leaf border-red">
+                                    <div class="leaf-icon">📖</div>
+                                    <div><strong>Yorucu Ezberlerden Kaçın:</strong> Kitaplara gömülmek ve yazılı alıştırmalarla boğulmak, işi gözünde büyütür ve ertelemeye yol açar.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-orange">Hormon Bilimi: Eğlence = Öğrenme</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-orange">
+                                    <div class="leaf-icon">😬</div>
+                                    <div><strong>Stres Blokesi:</strong> Beynin ön lobu stres altındayken öğrenmeyi durdurur; kendini zorlamak sadece bahaneleri artırır.</div>
+                                </div>
+                                <div class="tree-leaf border-orange">
+                                    <div class="leaf-icon">🎯</div>
+                                    <div><strong>Pozitif Döngü:</strong> Eğlendiğinde salgılanan endorfin ve dopamin, öğrenmeyi kalıcı ve keyifli bir sürece dönüştürür.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-yellow">Eğlenceli Öğrenme Stratejileri</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-yellow">
+                                    <div class="leaf-icon">🎵</div>
+                                    <div><strong>Müzik ve Ritim:</strong> Bol bol Arapça musiki dinle ve bu şarkılara sesli eşlik ederek eşzamanlı öğren.</div>
+                                </div>
+                                <div class="tree-leaf border-yellow">
+                                    <div class="leaf-icon">🎬</div>
+                                    <div><strong>Görsel Medya:</strong> İlgi alanına giren komedi dizileri ve filmler izleyerek dili doğal akışında yakala.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-green">Taklit (Imitation) ve Gelişim</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-green">
+                                    <div class="leaf-icon">🎤</div>
+                                    <div><strong>Abartı İlkesi:</strong> Konuşurken taklit yap; sesin sana "abartılı" geliyorsa doğru yoldasın demektir.</div>
+                                </div>
+                                <div class="tree-leaf border-green">
+                                    <div class="leaf-icon">🕸️</div>
+                                    <div><strong>Nöral Bağlantılar:</strong> Bu abartılı taklit hissi, beyinde yeni nöral yolların kurulduğunun ve gelişimin işaretidir.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tree-branch-group">
+                            <div class="tree-branch-title bg-blue">Bilinçaltı Kodlama</div>
+                            <div class="tree-leaves">
+                                <div class="tree-leaf border-blue">
+                                    <div class="leaf-icon">🤩</div>
+                                    <div><strong>Izdıraptan Keyfe:</strong> Arapçayı bir zorunluluk değil, bir yaşam keyfi olarak kodladığında öğrenme kendiliğinden gerçekleşir.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="tree-strategy">
+                        <div class="s-icon">📖</div>
+                        <p><strong>Final Stratejisi:</strong> "Öğrenci olmayı bırak, dili yaşayan bir maceracı ol. Beynini stresle bloke etmek yerine, dopamin ve keyifle ödüllendir. Unutma; en iyi öğrenme, en çok eğlendiğin andır."</p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="controls">
+            <button class="ctrl-btn" id="prevBtn" onclick="changeSlide(-1)" disabled>◀ Önceki</button>
+            <div class="slide-counter"><span id="currentNum">1</span> / 9</div>
+            <button class="ctrl-btn" id="nextBtn" onclick="changeSlide(1)">Sonraki ▶</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 9;
+        const track = document.getElementById('sliderTrack');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const currentNum = document.getElementById('currentNum');
+
+        function changeSlide(direction) {
+            goToSlide(currentSlide + direction);
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            
+            if (currentSlide < 0) currentSlide = 0;
+            if (currentSlide >= totalSlides) currentSlide = totalSlides - 1;
+
+            track.style.transform = `translateX(-${currentSlide * 100}%)`;
+            
+            currentNum.innerText = currentSlide + 1;
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === totalSlides - 1;
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

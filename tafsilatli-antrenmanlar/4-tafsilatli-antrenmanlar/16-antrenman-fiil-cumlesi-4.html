@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>E Alıştırması: Lâzım ve Müteaddî Fiiller - Arapça Portalı</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Amiri&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f0f4f8; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 40px 20px; }
+        
+        /* Navigasyon (Geri Dön) Çubuğu Tasarımı */
+        nav { 
+            background-color: #2c3e50; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            display: inline-block; 
+            width: 100%; 
+            max-width: 1200px; 
+            margin-bottom: 20px; 
+            overflow: hidden; 
+        }
+        nav a { float: left; color: white; padding: 16px 20px; text-decoration: none; transition: 0.3s; font-weight: 600; }
+        nav a:hover { background-color: #34495e; color: #3498db; }
+
+        .exercise-container { width: 100%; max-width: 1200px; background: white; padding: 50px; border-radius: 30px; box-shadow: 0 15px 50px rgba(0,0,0,0.1); text-align: center; }
+        
+        .main-title { color: #e74c3c; font-size: 32px; font-weight: 600; margin-bottom: 10px; }
+        .instruction { font-size: 20px; color: #7f8c8d; margin-bottom: 40px; font-weight: 600; }
+
+        /* Grid Yapısı (2 Sütunlu Kartlar) */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            direction: rtl; 
+        }
+
+        /* Soru Kartı Tasarımı */
+        .sentence-card {
+            background: #f8f9fa;
+            border: 2px solid #ecf0f1;
+            border-radius: 20px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .sentence-card:hover { border-color: #bdc3c7; box-shadow: 0 10px 20px rgba(0,0,0,0.05); transform: translateY(-5px); }
+
+        .ar-text {
+            font-family: 'Amiri', serif;
+            font-size: 42px;
+            color: #18395b;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .tr-text {
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            color: #95a5a6;
+            margin-bottom: 25px;
+            direction: ltr;
+        }
+
+        /* Fiil Vurgusu ve Çizgi Stilleri */
+        .verb {
+            transition: 0.3s;
+            padding: 0 5px;
+        }
+
+        .line-single {
+            text-decoration: underline;
+            text-decoration-thickness: 4px;
+            text-decoration-color: #27ae60;
+            color: #27ae60;
+        }
+
+        .line-double {
+            text-decoration: underline double;
+            text-decoration-thickness: 4px;
+            text-decoration-color: #27ae60;
+            color: #27ae60;
+        }
+
+        .line-wrong {
+            color: #e74c3c;
+            animation: shake 0.4s;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+
+        /* Seçim Butonları */
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            direction: ltr;
+        }
+
+        .choice-btn {
+            background-color: white;
+            border: 2px solid #3498db;
+            color: #3498db;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+        }
+
+        .choice-btn:hover { background-color: #3498db; color: white; }
+        
+        .choice-btn.correct { background-color: #27ae60; border-color: #27ae60; color: white; pointer-events: none; }
+        .choice-btn.wrong { background-color: #e74c3c; border-color: #e74c3c; color: white; }
+        .choice-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Sonuç Alanı */
+        #results { display: none; margin-top: 40px; }
+        .score-text { font-size: 40px; color: #18395b; font-weight: 600; margin-bottom: 20px; }
+
+        .nav-buttons { display: flex; justify-content: center; gap: 20px; margin-top: 30px; }
+        .action-btn { 
+            padding: 15px 30px; font-size: 20px; border: none; 
+            background-color: #2c3e50; color: white; border-radius: 15px; 
+            cursor: pointer; transition: 0.3s; font-family: 'Poppins'; 
+        }
+        .action-btn:hover { transform: scale(1.05); }
+        .btn-next { background-color: #3498db; }
+        .btn-next:hover { background-color: #2980b9; }
+
+        @media (max-width: 900px) { .grid-container { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="16-antrenman-fiil-cumlesi-4.html">← 4. Güne Dön</a>
+    </nav>
+
+    <div class="exercise-container">
+        <div class="main-title">E- ALIŞTIRMASI</div>
+        <div class="instruction">Şu cümlelerdeki lâzım fiilin altına bir çizgi, muteaddî fiilin altına iki çizgi çiziniz:</div>
+        
+        <div class="grid-container" id="quiz-grid">
+            </div>
+
+        <div id="results">
+            <div class="score-text" id="final-score"></div>
+            <div class="nav-buttons">
+                <button class="action-btn" onclick="location.reload()" style="background-color: #7f8c8d;">Tekrar Dene</button>
+                <button class="action-btn btn-next" onclick="location.href='16-antrenman-fiil-cumlesi-4.html'">4. Güne Dön</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const sentences = [
+            { ar_v: "بَرَدَ", ar_r: "الْجَوُّ.", tr: "Hava soğudu.", type: "lazim" },
+            { ar_v: "سَقَطَ", ar_r: "الْوَلَدُ.", tr: "Çocuk düştü.", type: "lazim" },
+            { ar_v: "شَرِبَ", ar_r: "الرَّجُلُ الْحَلِيبَ.", tr: "Adam sütü içti.", type: "muteaddi" },
+            { ar_v: "نَامَ", ar_r: "الْمَرِيضُ.", tr: "Hasta uyudu.", type: "lazim" },
+            { ar_v: "كَتَبَ", ar_r: "صَادِقٌ دَرْسَهُ.", tr: "Sâdık dersini yazdı.", type: "muteaddi" },
+            { ar_v: "فَتَحَ", ar_r: "خَالِدٌ النَّافِذَةَ.", tr: "Hâlid pencereyi açtı.", type: "muteaddi" },
+            { ar_v: "جَلَسَ", ar_r: "طَاهِرٌ.", tr: "Tâhir oturdu.", type: "lazim" },
+            { ar_v: "بَرِئَ", ar_r: "الْمَرِيضُ.", tr: "Hasta iyileşti.", type: "lazim" },
+            { ar_v: "سَخُنَ", ar_r: "الْمَاءُ.", tr: "Su ısındı.", type: "lazim" },
+            { ar_v: "شَرِبَ", ar_r: "الْوَلَدُ الْمَاءَ.", tr: "Çocuk suyu içti.", type: "muteaddi" },
+            { ar_v: "نَهَضَ", ar_r: "خَالِدٌ.", tr: "Hâlid kalktı.", type: "lazim" },
+            { ar_v: "رَأَى", ar_r: "مَحْمُودٌ طَائِرَةً.", tr: "Mahmûd bir uçak gördü.", type: "muteaddi" },
+            { ar_v: "أَكَلَ", ar_r: "طَاهِرٌ الطَّعَامَ.", tr: "Tâhir yemeği yedi.", type: "muteaddi" },
+            { ar_v: "فَهِمَ", ar_r: "التِّلْمِيذُ الدَّرْسَ.", tr: "Öğrenci dersi anladı.", type: "muteaddi" },
+            { ar_v: "رَكِبَ", ar_r: "خَلِيلٌ الدَّرَّاجَةَ.", tr: "Halîl bisiklete bindi.", type: "muteaddi" },
+            { ar_v: "جَاءَتْ", ar_r: "شَاحِنَةٌ.", tr: "Bir kamyon geldi.", type: "lazim" },
+            { ar_v: "رَكِبَ", ar_r: "الْمُزَارِعُونَ الشَّاحِنَةَ.", tr: "Çiftçiler kamyona bindi.", type: "muteaddi" },
+            { ar_v: "نَزَلَ", ar_r: "الْمَطَرُ.", tr: "Yağmur yağdı.", type: "lazim" },
+            { ar_v: "جَمُدَ", ar_r: "الْمَاءُ.", tr: "Su dondu.", type: "lazim" },
+            { ar_v: "ذَابَ", ar_r: "الثَّلْجُ.", tr: "Kar eridi.", type: "lazim" },
+            { ar_v: "كَتَبَ", ar_r: "طَاهِرٌ دَرْسَهُ.", tr: "Tâhir dersini yazdı.", type: "muteaddi" }
+        ];
+
+        const grid = document.getElementById('quiz-grid');
+        let correctAnswers = 0;
+        let answeredQuestions = 0;
+
+        // Kartları oluştur
+        sentences.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'sentence-card';
+            card.innerHTML = `
+                <div class="ar-text">
+                    <span class="verb" id="verb-${index}">${item.ar_v}</span> ${item.ar_r}
+                </div>
+                <div class="tr-text">${item.tr}</div>
+                <div class="btn-group" id="btn-group-${index}">
+                    <button class="choice-btn" onclick="checkAnswer(${index}, 'lazim', this)">Lâzım (1 Çizgi)</button>
+                    <button class="choice-btn" onclick="checkAnswer(${index}, 'muteaddi', this)">Müteaddî (2 Çizgi)</button>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+
+        function checkAnswer(index, selectedType, btnElement) {
+            const item = sentences[index];
+            const verbSpan = document.getElementById(`verb-${index}`);
+            const btnGroup = document.getElementById(`btn-group-${index}`);
+            const buttons = btnGroup.querySelectorAll('button');
+
+            if (selectedType === item.type) {
+                // Doğru Cevap
+                btnElement.classList.add('correct');
+                if (item.type === 'lazim') {
+                    verbSpan.classList.add('line-single');
+                } else {
+                    verbSpan.classList.add('line-double');
+                }
+                correctAnswers++;
+            } else {
+                // Yanlış Cevap
+                btnElement.classList.add('wrong');
+                verbSpan.classList.add('line-wrong');
+                
+                // Doğru olanı otomatik göster
+                setTimeout(() => {
+                    buttons.forEach(b => {
+                        if(b !== btnElement) b.classList.add('correct');
+                    });
+                    if (item.type === 'lazim') verbSpan.classList.add('line-single');
+                    else verbSpan.classList.add('line-double');
+                    verbSpan.classList.remove('line-wrong');
+                }, 800);
+            }
+
+            // Seçim yapıldıktan sonra butonları kilitle
+            buttons.forEach(b => b.disabled = true);
+            answeredQuestions++;
+
+            // Hepsi bittiyse skoru göster
+            if (answeredQuestions === sentences.length) {
+                setTimeout(() => {
+                    document.getElementById('results').style.display = "block";
+                    let scoreText = document.getElementById('final-score');
+                    if(correctAnswers === sentences.length) {
+                        scoreText.innerHTML = `Mükemmel! Skor: ${correctAnswers} / ${sentences.length} 🏆`;
+                    } else {
+                        scoreText.innerHTML = `Skor: ${correctAnswers} / ${sentences.length}`;
+                    }
+                    // Ekranı aşağı kaydır
+                    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                }, 1000);
+            }
+        }
+    </script>
+</body>
+</html>

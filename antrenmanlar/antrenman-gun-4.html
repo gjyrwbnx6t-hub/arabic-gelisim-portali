@@ -38,6 +38,12 @@
             margin: 0 auto;
         }
 
+        /* Yana açılır menü için kapsayıcı */
+        .card-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
         .topic-card {
             background: white;
             border: 2px solid transparent;
@@ -50,12 +56,65 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            position: relative;
+            z-index: 2;
         }
 
         .topic-card:hover {
             transform: translateX(10px);
             box-shadow: 0 15px 25px rgba(0,0,0,0.15);
             border-color: #2193b0;
+        }
+
+        /* Alt Menü Konteyneri */
+        .sub-menu-container {
+            position: absolute;
+            top: 0;
+            left: 100%; 
+            padding-left: 15px; 
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .card-wrapper:hover .sub-menu-container {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(10px); 
+        }
+
+        /* Alt Menü Tasarımı */
+        .sub-menu {
+            background: white;
+            border: 2px solid #2193b0;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            width: 220px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .sub-menu a {
+            color: #2c3e50;
+            text-decoration: none;
+            padding: 15px 20px;
+            font-size: 16px;
+            text-align: left;
+            border-bottom: 1px solid #f0f4f8;
+            transition: 0.3s;
+            font-weight: 600;
+        }
+
+        .sub-menu a:last-child {
+            border-bottom: none;
+        }
+
+        .sub-menu a:hover {
+            background: #f0f4f8;
+            color: #2193b0;
+            padding-left: 25px; 
         }
 
         .arabic-text {
@@ -83,21 +142,53 @@
     <h1>4. Gün: Fiiller ve Cümle Yapıları</h1>
 
     <div class="topic-container">
-        <a href="15-antrenman-isim-cumlesi.html" class="topic-card">
-            <div style="display: flex; align-items: center;">
-                <span class="icon-small">⚔️</span>
-                <span class="turkish-text">İsim Cümlesi Yapısı</span>
+        
+        <div class="card-wrapper">
+            <a href="../tafsilatli-antrenmanlar/4-tafsilatli-antrenmanlar/15-antrenman-isim-cumlesi-1.html" class="topic-card">
+                <div style="display: flex; align-items: center;">
+                    <span class="icon-small">⚔️</span>
+                    <span class="turkish-text">İsim Cümlesi Yapısı</span>
+                </div>
+                <span class="arabic-text">الْجُمْلَةُ الِاسْمِيَّةُ</span>
+            </a>
+            
+            <div class="sub-menu-container">
+                <div class="sub-menu">
+                    <a href="../tafsilatli-antrenmanlar/4-tafsilatli-antrenmanlar/15-antrenman-isim-cumlesi-1.html">1. Antrenman</a>
+                    <a href="../tafsilatli-antrenmanlar/4-tafsilatli-antrenmanlar/15-antrenman-isim-cumlesi-2.html">2. Antrenman</a>
+                    <a href="../tafsilatli-antrenmanlar/4-tafsilatli-antrenmanlar/15-antrenman-isim-cumlesi-3.html">3. Antrenman</a>
+                    <a href="../tafsilatli-antrenmanlar/4-tafsilatli-antrenmanlar/15-antrenman-isim-cumlesi-4.html">4. Antrenman</a>
+                    <a href="../tafsilatli-antrenmanlar/4-tafsilatli-antrenmanlar/15-antrenman-isim-cumlesi-5.html">5. Antrenman</a>
+                    <a href="../tafsilatli-antrenmanlar/4-tafsilatli-antrenmanlar/15-antrenman-isim-cumlesi-6.html">6. Antrenman</a>
+                    <a href="../tafsilatli-antrenmanlar/4-tafsilatli-antrenmanlar/15-antrenman-isim-cumlesi-7.html">7. Antrenman</a>
+                    <a href="../tafsilatli-antrenmanlar/4-tafsilatli-antrenmanlar/15-antrenman-isim-cumlesi-8.html">8. Antrenman</a>
+                    <a href="../tafsilatli-antrenmanlar/4-tafsilatli-antrenmanlar/15-antrenman-isim-cumlesi-9.html">9. Antrenman</a>
+                    <a href="../tafsilatli-antrenmanlar/4-tafsilatli-antrenmanlar/15-antrenman-isim-cumlesi-10.html">10. Antrenman</a>
+                    <a href="../tafsilatli-antrenmanlar/4-tafsilatli-antrenmanlar/15-antrenman-isim-cumlesi-11.html">11. Antrenman</a>
+                    <a href="../tafsilatli-antrenmanlar/4-tafsilatli-antrenmanlar/15-antrenman-isim-cumlesi-12.html">12. Antrenman</a>
+                </div>
             </div>
-            <span class="arabic-text">الْجُمْلَةُ الِاسْمِيَّةُ</span>
-        </a>
+        </div>
 
-        <a href="16-antrenman-fiil-cumlesi.html" class="topic-card">
-            <div style="display: flex; align-items: center;">
-                <span class="icon-small">⚔️</span>
-                <span class="turkish-text">Fiil Cümlesi Yapısı</span>
+        <div class="card-wrapper">
+            <a href="../tafsilatli-antrenmanlar/4-tafsilatli-antrenmanlar/16-antrenman-fiil-cumlesi-1.html" class="topic-card">
+                <div style="display: flex; align-items: center;">
+                    <span class="icon-small">⚔️</span>
+                    <span class="turkish-text">Fiil Cümlesi Yapısı</span>
+                </div>
+                <span class="arabic-text">الْجُمْلَةُ الْفِعْلِيَّةُ</span>
+            </a>
+            
+            <div class="sub-menu-container">
+                <div class="sub-menu">
+                    <a href="../tafsilatli-antrenmanlar/4-tafsilatli-antrenmanlar/16-antrenman-fiil-cumlesi-1.html">1. Antrenman</a>
+                    <a href="../tafsilatli-antrenmanlar/4-tafsilatli-antrenmanlar/16-antrenman-fiil-cumlesi-2.html">2. Antrenman</a>
+                    <a href="../tafsilatli-antrenmanlar/4-tafsilatli-antrenmanlar/16-antrenman-fiil-cumlesi-3.html">3. Antrenman</a>
+                    <a href="../tafsilatli-antrenmanlar/4-tafsilatli-antrenmanlar/16-antrenman-fiil-cumlesi-4.html">4. Antrenman</a>
+                </div>
             </div>
-            <span class="arabic-text">الْجُمْلَةُ الْفِعْلِيَّةُ</span>
-        </a>
+        </div>
+
     </div>
 
 </body>
