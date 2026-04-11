@@ -1,0 +1,2494 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hadis Sunumu - İnteraktif Arapça</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ========================================================
+           HADİS SUNUMU VE İNTERAKTİF ÇEVİRİ SİSTEMİ
+           ======================================================== */
+        
+        :root {
+            --bg-body: #f0f4f8;
+            --nav-bg: #16a085; /* İslami/Akademik zümrüt yeşili */
+            --card-bg: #ffffff;
+            --text-main: #2c3e50;
+            --accent-gold: #f39c12;
+            --btn-bg: rgba(22, 160, 133, 0.9);
+            --btn-hover: rgba(26, 188, 156, 1);
+        }
+
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: var(--bg-body); 
+            margin: 0; 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh; 
+            overflow-x: hidden;
+        }
+
+        nav { 
+            background-color: var(--nav-bg); 
+            border-radius: 12px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 100%; 
+            max-width: 1100px; 
+            margin-bottom: 20px; 
+            overflow: hidden; 
+            display: flex;
+        }
+        
+        nav a { 
+            color: white; 
+            padding: 15px 20px; 
+            text-decoration: none; 
+            transition: 0.3s; 
+            font-weight: 600; 
+        }
+        
+        nav a:hover { 
+            background-color: #117a65; 
+            color: var(--accent-gold); 
+        }
+
+        /* --- SLIDER SİSTEMİ --- */
+        .slider-wrapper {
+            width: 100%; 
+            max-width: 1100px; 
+            background: var(--card-bg); 
+            border-radius: 20px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08); 
+            overflow: hidden; 
+            position: relative;
+            display: flex; 
+            flex-direction: column;
+            min-height: 600px; 
+        }
+
+        .slider-track {
+            display: flex; 
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            align-items: stretch;
+            height: 100%;
+        }
+
+        .slide {
+            min-width: 100%; 
+            padding: 50px 40px 100px 40px; 
+            box-sizing: border-box; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: flex-start;
+        }
+
+        /* --- HADİS KARTLARI VE İNTERAKTİF METİN SİSTEMİ --- */
+        .hadith-card {
+            width: 100%;
+            max-width: 900px;
+            background: #fdfefe;
+            border: 2px solid #e5e8e8;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+            margin-bottom: 20px;
+        }
+
+        /* Arapça Metin Alanı (Sağdan Sola) */
+        .arabic-text {
+            font-family: 'Amiri', serif;
+            font-size: 38px; /* Okunabilirlik için büyük font */
+            line-height: 2;
+            color: #2c3e50;
+            direction: rtl; /* Sağdan sola akış */
+            text-align: right;
+            margin-bottom: 30px;
+        }
+
+        /* Tıklanabilir Kelimeler */
+        .word {
+            display: inline-block;
+            position: relative;
+            cursor: pointer;
+            padding: 0 5px;
+            transition: color 0.2s;
+            border-bottom: 2px dotted #bdc3c7;
+        }
+
+        .word:hover {
+            color: var(--nav-bg);
+            background-color: rgba(22, 160, 133, 0.05);
+            border-radius: 5px;
+        }
+
+        /* Kelime Çevirisi Baloncuğu (Tooltip) */
+        .word .tooltip {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            bottom: 100%; /* Kelimenin üstünde çıkar */
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background-color: #2c3e50;
+            color: #fff;
+            text-align: center;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+            z-index: 100;
+            transition: all 0.3s ease;
+            direction: ltr; /* Çeviri soldan sağa */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        /* Baloncuğun altındaki küçük ok */
+        .word .tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #2c3e50 transparent transparent transparent;
+        }
+
+        /* Kelimeye tıklanınca baloncuğu göster */
+        .word.active .tooltip {
+            visibility: visible;
+            opacity: 1;
+            transform: translateX(-50%) translateY(-5px);
+        }
+
+        /* --- TAM ÇEVİRİ BUTONU VE KUTUSU --- */
+        .action-area {
+            text-align: left; /* Buton solda dursun */
+            margin-top: 20px;
+            border-top: 1px solid #ecf0f1;
+            padding-top: 20px;
+        }
+
+        .translate-btn {
+            background-color: var(--nav-bg);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .translate-btn:hover {
+            background-color: var(--btn-hover);
+        }
+
+        .full-translation {
+            display: none; /* Başlangıçta gizli */
+            background-color: #f4f6f7;
+            border-left: 4px solid var(--accent-gold);
+            padding: 20px;
+            margin-top: 15px;
+            border-radius: 0 8px 8px 0;
+            font-size: 16px;
+            color: #34495e;
+            line-height: 1.6;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- KONTROLLER (İleri/Geri) --- */
+        .controls {
+            position: absolute;
+            bottom: 20px; 
+            left: 30px; 
+            right: 30px;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            pointer-events: none; 
+            z-index: 10;
+        }
+
+        .ctrl-btn {
+            background: var(--btn-bg); 
+            color: white; 
+            border: 1px solid rgba(255, 255, 255, 0.2); 
+            padding: 10px 20px;
+            border-radius: 12px; 
+            font-size: 14px; 
+            font-family: 'Poppins', sans-serif; 
+            cursor: pointer;
+            font-weight: 600; 
+            transition: 0.3s; 
+            pointer-events: auto; 
+        }
+
+        .ctrl-btn:hover:not(:disabled) { 
+            background: var(--btn-hover); 
+            transform: translateY(-2px); 
+        }
+
+        .ctrl-btn:disabled { 
+            opacity: 0; 
+            visibility: hidden; 
+        }
+
+        .slide-counter { 
+            font-size: 14px; 
+            font-weight: 600; 
+            color: var(--text-main); 
+            background: rgba(255, 255, 255, 0.9); 
+            padding: 6px 15px; 
+            border-radius: 20px; 
+            pointer-events: auto; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 768px) {
+            .arabic-text { font-size: 28px; }
+            .hadith-card { padding: 20px; }
+            .slide { padding: 30px 15px 90px 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="pusula.html">← Ana Menüye Dön</a>
+    </nav>
+
+    <div class="slider-wrapper">
+        <div class="slider-track" id="sliderTrack">
+            
+            <div class="slide">
+                <div class="hadith-card">
+                    <h3 style="color: #7f8c8d; margin-top: 0;">1. Hadis: Niyetlerin Önemi</h3>
+                    
+                    <div class="arabic-text">
+                        <span class="word">إِنَّمَا<span class="tooltip">Şüphesiz, ancak</span></span>
+                        <span class="word">الْأَعْمَالُ<span class="tooltip">Ameller (işler)</span></span>
+                        <span class="word">بِالنِّيَّاتِ<span class="tooltip">Niyetlere göredir</span></span>
+                        <span class="word">، وَإِنَّمَا<span class="tooltip">Ve şüphesiz</span></span>
+                        <span class="word">لِكُلِّ<span class="tooltip">Herkes için</span></span>
+                        <span class="word">امْرِئٍ<span class="tooltip">Kişi</span></span>
+                        <span class="word">مَا<span class="tooltip">Şey vardır</span></span>
+                        <span class="word">نَوَى<span class="tooltip">Niyet ettiği</span></span>
+                    </div>
+
+                    <div class="action-area">
+                        <button class="translate-btn" onclick="toggleTranslation('trans1')">
+                            🇹🇷 Cümlenin Tam Manasını Göster
+                        </button>
+                        <div id="trans1" class="full-translation">
+                            <strong>Hz. Ömer (r.a.)'den rivayet edildiğine göre, Resulullah (s.a.v.) şöyle buyurmuştur:</strong><br>
+                            "Ameller (başka değil) ancak niyetlere göredir; herkesin niyeti ne ise eline geçecek olan da ancak odur." 
+                            <br><br><i>(Buhârî, Bed'ü'l-Vahy, 1; Müslim, İman, 1)</i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide">
+                <div class="hadith-card">
+                    <h3 style="color: #7f8c8d; margin-top: 0;">2. Hadis</h3>
+                    
+                    <div class="arabic-text">
+                        <span class="word">الدِّينُ<span class="tooltip">Din</span></span>
+                        <span class="word">النَّصِيحَةُ<span class="tooltip">Nasihattir (samimiyettir)</span></span>
+                    </div>
+
+                    <div class="action-area">
+                        <button class="translate-btn" onclick="toggleTranslation('trans2')">
+                            🇹🇷 Cümlenin Tam Manasını Göster
+                        </button>
+                        <div id="trans2" class="full-translation">
+                            "Din nasihattir (samimiyettir)." <br><i>(Müslim, İman, 95)</i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide">
+                <style>
+                    /* Şema Konteyneri */
+                    .takhreej-schema-container {
+                        display: flex;
+                        align-items: stretch;
+                        justify-content: center;
+                        gap: 30px;
+                        width: 100%;
+                        max-width: 1100px;
+                        background: #fdfefe;
+                        border: 2px solid #e5e8e8;
+                        border-radius: 15px;
+                        padding: 40px;
+                        box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+                        direction: rtl; /* Şema sağdan sola aksın */
+                    }
+                    
+                    /* Ana Kök */
+                    .schema-root-takhreej {
+                        background-color: #1a365d; /* Koyu Lacivert */
+                        color: white;
+                        padding: 30px 25px;
+                        border-radius: 12px;
+                        text-align: center;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        min-width: 180px;
+                        box-shadow: 0 8px 20px rgba(26, 54, 93, 0.3);
+                    }
+
+                    .schema-branches-takhreej {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 25px;
+                        flex: 1;
+                    }
+
+                    .schema-branch-takhreej {
+                        display: flex;
+                        border-radius: 12px;
+                        overflow: visible; 
+                        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+                        border: 1px solid #eee;
+                    }
+
+                    .branch-head-takhreej {
+                        color: white;
+                        padding: 20px;
+                        width: 220px;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: center;
+                        border-radius: 0 12px 12px 0; 
+                        text-align: center;
+                    }
+
+                    .branch-body-takhreej {
+                        background: white;
+                        padding: 20px;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 12px;
+                        flex: 1;
+                        justify-content: center;
+                        border-radius: 12px 0 0 12px;
+                    }
+
+                    /* Arapça Yazı Tipleri */
+                    .arabic-title {
+                        font-family: 'Amiri', serif;
+                        font-size: 28px;
+                        line-height: 1.6;
+                    }
+
+                    .arabic-text-item {
+                        font-family: 'Amiri', serif;
+                        font-size: 24px;
+                        line-height: 1.8;
+                        color: #2c3e50;
+                        background-color: #f8f9fa;
+                        padding: 15px 20px;
+                        border-radius: 8px;
+                        border-right: 4px solid;
+                        position: relative;
+                    }
+
+                    /* DİKKAT: Noktalı çizgileri kaldıran özel ayar */
+                    .no-dots .word {
+                        border-bottom: none !important; /* Noktaları iptal eder */
+                        padding: 2px 6px;
+                        border-radius: 6px;
+                        transition: all 0.2s;
+                    }
+                    
+                    .no-dots .word:hover {
+                        background-color: rgba(0, 0, 0, 0.05);
+                    }
+
+                    .no-dots .branch-head-takhreej .word:hover {
+                        background-color: rgba(255, 255, 255, 0.2);
+                    }
+
+                    /* =========================================
+                       CÜMLE ÇEVİRİ BUTONU VE KUTUSU
+                       ========================================= */
+                    .mini-trans-btn {
+                        background: #e2e8f0;
+                        border: 1px solid #cbd5e1;
+                        color: #475569;
+                        border-radius: 6px;
+                        padding: 4px 10px;
+                        font-size: 13px;
+                        font-family: 'Poppins', sans-serif;
+                        cursor: pointer;
+                        margin-right: 15px; /* RTL olduğu için sağdan boşluk bırakır */
+                        vertical-align: middle;
+                        transition: 0.2s;
+                        font-weight: 600;
+                    }
+
+                    .mini-trans-btn:hover {
+                        background: #cbd5e1;
+                        color: #1e293b;
+                    }
+
+                    .mini-trans-box {
+                        display: none; /* Başlangıçta gizli */
+                        direction: ltr; /* Türkçe için soldan sağa */
+                        text-align: left;
+                        background: #ffffff;
+                        padding: 12px 15px;
+                        margin-top: 12px;
+                        border-radius: 6px;
+                        font-size: 15px;
+                        font-family: 'Poppins', sans-serif;
+                        color: #334155;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+                        border: 1px solid #e2e8f0;
+                        border-left: 4px solid; /* Renk inline olarak verilecek */
+                    }
+
+                    /* Kategori Renkleri */
+                    .bg-luga { background-color: #27ae60; } /* Yeşil - Sözlük Anlamı */
+                    .border-luga { border-right-color: #27ae60; }
+
+                    .bg-istilah { background-color: #8e44ad; } /* Mor/Mürdüm - Istılah Anlamı */
+                    .border-istilah { border-right-color: #8e44ad; }
+
+                    /* Mobil Uyumluluk */
+                    @media (max-width: 992px) {
+                        .takhreej-schema-container { flex-direction: column; align-items: center; }
+                        .branch-head-takhreej { border-radius: 12px 12px 0 0; width: 100%; box-sizing: border-box; }
+                        .branch-body-takhreej { border-radius: 0 0 12px 12px; }
+                        .schema-branch-takhreej { flex-direction: column; width: 100%; }
+                    }
+                </style>
+
+                <div class="takhreej-schema-container no-dots">
+                    
+                    <div class="schema-root-takhreej arabic-title">
+                        <div>
+                            <span class="word">تَعْرِيفُ<span class="tooltip">Tanımı</span></span><br>
+                            <span class="word" style="font-size: 34px; font-weight: bold;">التَّخْرِيجِ<span class="tooltip">Tahricin</span></span>
+                        </div>
+                    </div>
+
+                    <div class="schema-branches-takhreej">
+                        
+                        <div class="schema-branch-takhreej">
+                            <div class="branch-head-takhreej bg-luga arabic-title">
+                                <span class="word">التَّخْرِيجُ<span class="tooltip">Tahric</span></span>
+                                <span class="word">فِي<span class="tooltip">-de / İçinde</span></span>
+                                <span class="word">اللُّغَةِ<span class="tooltip">Sözlükte (Dilde)</span></span>
+                            </div>
+                            <div class="branch-body-takhreej">
+                                
+                                <div class="arabic-text-item border-luga">
+                                    <span class="word" style="font-weight: bold; color: #27ae60;">الأَصْلُ:<span class="tooltip">Kökeni:</span></span>
+                                    <span class="word">مِنْ<span class="tooltip">-den / -dan</span></span>
+                                    <span class="word">(خَرَجَ)<span class="tooltip">Çıktı</span></span>
+                                    <span class="word">ضِدُّ<span class="tooltip">Zıddıdır</span></span>
+                                    <span class="word">(دَخَلَ)<span class="tooltip">Girdi</span></span>
+                                    <button class="mini-trans-btn" onclick="toggleTranslation('takhreej-luga-1')">🇹🇷 Çeviri</button>
+                                    <div id="takhreej-luga-1" class="mini-trans-box" style="border-left-color: #27ae60;">
+                                        <strong>Kökeni:</strong> "Girdi" (dahale) kelimesinin zıddı olan "çıktı" (harace) fiilinden türemiştir.
+                                    </div>
+                                </div>
+
+                                <div class="arabic-text-item border-luga">
+                                    <span class="word" style="font-weight: bold; color: #27ae60;">الإِبْرَازُ وَالإِظْهَارُ:<span class="tooltip">Öne çıkarma ve gösterme:</span></span>
+                                    <span class="word">"أَخْرَجَ<span class="tooltip">Çıkardı</span></span>
+                                    <span class="word">الشَّيْءَ"<span class="tooltip">Şeyi</span></span>
+                                    <span class="word">أَيْ<span class="tooltip">Yani</span></span>
+                                    <span class="word">أَظْهَرَهُ<span class="tooltip">Onu gösterdi</span></span>
+                                    <button class="mini-trans-btn" onclick="toggleTranslation('takhreej-luga-2')">🇹🇷 Çeviri</button>
+                                    <div id="takhreej-luga-2" class="mini-trans-box" style="border-left-color: #27ae60;">
+                                        <strong>Öne Çıkarma ve Gösterme:</strong> Arapçada "bir şeyi çıkardı" denildiğinde, "onu açığa çıkardı ve gösterdi" manası kastedilir.
+                                    </div>
+                                </div>
+
+                                <div class="arabic-text-item border-luga">
+                                    <span class="word" style="font-weight: bold; color: #27ae60;">الاسْتِنْبَاطُ:<span class="tooltip">Hüküm çıkarma:</span></span>
+                                    <span class="word">اسْتِخْرَاجُ<span class="tooltip">Çıkarılmasıdır</span></span>
+                                    <span class="word">الْمَعَانِي<span class="tooltip">Anlamların</span></span>
+                                    <span class="word">وَالنَّتَائِجِ<span class="tooltip">Ve sonuçların</span></span>
+                                    <button class="mini-trans-btn" onclick="toggleTranslation('takhreej-luga-3')">🇹🇷 Çeviri</button>
+                                    <div id="takhreej-luga-3" class="mini-trans-box" style="border-left-color: #27ae60;">
+                                        <strong>İstinbat (Hüküm Çıkarma):</strong> Metinlerden anlamların ve sonuçların titizlikle çıkarılması işlemidir.
+                                    </div>
+                                </div>
+
+                                <div class="arabic-text-item border-luga">
+                                    <span class="word" style="font-weight: bold; color: #27ae60;">التَّدْرِيبُ وَالتَّرْبِيَةُ:<span class="tooltip">Eğitim ve Terbiye:</span></span>
+                                    <span class="word">وَمِنْهُ<span class="tooltip">Bumdandır ki (denilir)</span></span>
+                                    <span class="word">خِرِّيجُ<span class="tooltip">Mezunudur</span></span>
+                                    <span class="word">جَامِعَةِ<span class="tooltip">Üniversitesinin</span></span>
+                                    <span class="word">كَذَا<span class="tooltip">Falanca</span></span>
+                                    <button class="mini-trans-btn" onclick="toggleTranslation('takhreej-luga-4')">🇹🇷 Çeviri</button>
+                                    <div id="takhreej-luga-4" class="mini-trans-box" style="border-left-color: #27ae60;">
+                                        <strong>Eğitim ve Terbiye:</strong> Eğitilip ortaya çıkarılan kişi anlamında "Falanca üniversitenin mezunudur (harici)" ifadesi buradan gelir.
+                                    </div>
+                                </div>
+
+                                <div class="arabic-text-item border-luga">
+                                    <span class="word" style="font-weight: bold; color: #27ae60;">التَّوْجِيهُ:<span class="tooltip">Yönlendirme:</span></span>
+                                    <span class="word">بَيَانُ<span class="tooltip">Açıklanmasıdır</span></span>
+                                    <span class="word">وَجْهِ<span class="tooltip">Yönünün</span></span>
+                                    <span class="word">الْمَسْأَلَةِ<span class="tooltip">Meselenin</span></span>
+                                    <button class="mini-trans-btn" onclick="toggleTranslation('takhreej-luga-5')">🇹🇷 Çeviri</button>
+                                    <div id="takhreej-luga-5" class="mini-trans-box" style="border-left-color: #27ae60;">
+                                        <strong>Tevcih (Yönlendirme):</strong> Kapalı bir meselenin yönünün açıklanması ve netleştirilmesidir.
+                                    </div>
+                                </div>
+
+                                <div class="arabic-text-item border-luga">
+                                    <span class="word" style="font-weight: bold; color: #27ae60;">الْمَخْرَجُ:<span class="tooltip">Çıkış Yeri:</span></span>
+                                    <span class="word">مَوْضِعُ<span class="tooltip">Yeridir</span></span>
+                                    <span class="word">خُرُوجِ<span class="tooltip">Çıkış</span></span>
+                                    <span class="word">الْحَدِيثِ<span class="tooltip">Hadisin</span></span>
+                                    <span class="word" style="font-size: 18px; color: #7f8c8d;">(أَيْ رِجَالُ السَّنَدِ)<span class="tooltip">(Yani senedin ravileri)</span></span>
+                                    <button class="mini-trans-btn" onclick="toggleTranslation('takhreej-luga-6')">🇹🇷 Çeviri</button>
+                                    <div id="takhreej-luga-6" class="mini-trans-box" style="border-left-color: #27ae60;">
+                                        <strong>Mahrec (Çıkış Yeri):</strong> Muhaddislere göre hadisin çıkış yeri, yani senedi oluşturan râviler zinciri kastedilir.
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="schema-branch-takhreej">
+                            <div class="branch-head-takhreej bg-istilah arabic-title">
+                                <span class="word">التَّخْرِيجُ<span class="tooltip">Tahric</span></span>
+                                <span class="word">فِي<span class="tooltip">-de / İçinde</span></span>
+                                <span class="word">الاصْطِلَاحِ<span class="tooltip">Istılahta (Terim olarak)</span></span>
+                            </div>
+                            <div class="branch-body-takhreej">
+                                
+                                <div class="arabic-text-item border-istilah">
+                                    <span class="word" style="font-weight: bold; color: #8e44ad;">الْمَعْنَى الْقَدِيمُ:<span class="tooltip">Eski Anlamı:</span></span>
+                                    <span class="word">إِبْرَازُ<span class="tooltip">Öne çıkarmasıdır</span></span>
+                                    <span class="word">الْمُحَدِّثِ<span class="tooltip">Muhaddisin</span></span>
+                                    <span class="word">لِلْحَدِيثِ<span class="tooltip">Hadisi</span></span>
+                                    <span class="word">وَرِوَايَتُهُ<span class="tooltip">Ve onu rivayet etmesidir</span></span>
+                                    <span class="word">بِإِسْنَادِهِ<span class="tooltip">Kendi senediyle</span></span>
+                                    <span class="word">فِي<span class="tooltip">İçinde</span></span>
+                                    <span class="word">كِتَابِهِ<span class="tooltip">Kendi kitabının</span></span>
+                                    <button class="mini-trans-btn" onclick="toggleTranslation('takhreej-istilah-1')">🇹🇷 Çeviri</button>
+                                    <div id="takhreej-istilah-1" class="mini-trans-box" style="border-left-color: #8e44ad;">
+                                        <strong>Eski Anlamı:</strong> Muhaddisin bir hadisi öne çıkararak (Müsned ve Sünen sahiplerinin yaptığı gibi) kendi senediyle kitabında rivayet etmesidir.
+                                    </div>
+                                </div>
+
+                                <div class="arabic-text-item border-istilah">
+                                    <span class="word" style="font-weight: bold; color: #8e44ad;">الْمَعْنَى الْحَدِيثُ:<span class="tooltip">Modern Anlamı:</span></span>
+                                    <span class="word">الْكَشْفُ<span class="tooltip">Ortaya çıkarmaktır</span></span>
+                                    <span class="word">عَنْ<span class="tooltip">-den / -dan</span></span>
+                                    <span class="word">مَظَانِّ<span class="tooltip">Bulunduğu yerleri</span></span>
+                                    <span class="word">الْحَدِيثِ<span class="tooltip">Hadisin</span></span>
+                                    <span class="word">مِنْ<span class="tooltip">-den</span></span>
+                                    <span class="word">مَصَادِرِهِ<span class="tooltip">Kaynakların</span></span>
+                                    <span class="word">الأَصْلِيَّةِ<span class="tooltip">Orijinal</span></span>
+                                    <button class="mini-trans-btn" onclick="toggleTranslation('takhreej-istilah-2')">🇹🇷 Çeviri</button>
+                                    <div id="takhreej-istilah-2" class="mini-trans-box" style="border-left-color: #8e44ad;">
+                                        <strong>Modern (Kapsamlı) Anlamı:</strong> Hadisin, doğrudan rivayete dayanan orijinal kaynaklarındaki yerini tespit etmek, o kaynağa atıfta bulunmak ve ravilerin durumunu inceledikten sonra hadis hakkında hüküm vermektir.
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="slide">
+                <style>
+                    /* Şema Konteyneri */
+                    .takhreej-schema-container {
+                        display: flex;
+                        align-items: stretch;
+                        justify-content: center;
+                        gap: 30px;
+                        width: 100%;
+                        max-width: 1100px;
+                        background: #fdfefe;
+                        border: 2px solid #e5e8e8;
+                        border-radius: 15px;
+                        padding: 40px;
+                        box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+                        direction: rtl; /* Şema sağdan sola aksın */
+                    }
+                    
+                    /* Ana Kök */
+                    .schema-root-takhreej {
+                        background-color: #1a365d; /* Koyu Lacivert */
+                        color: white;
+                        padding: 30px 25px;
+                        border-radius: 12px;
+                        text-align: center;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        min-width: 180px;
+                        box-shadow: 0 8px 20px rgba(26, 54, 93, 0.3);
+                    }
+
+                    .schema-branches-takhreej {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 25px;
+                        flex: 1;
+                    }
+
+                    .schema-branch-takhreej {
+                        display: flex;
+                        border-radius: 12px;
+                        overflow: visible; 
+                        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+                        border: 1px solid #eee;
+                    }
+
+                    .branch-head-takhreej {
+                        color: white;
+                        padding: 20px;
+                        width: 220px;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: center;
+                        border-radius: 0 12px 12px 0; 
+                        text-align: center;
+                    }
+
+                    .branch-body-takhreej {
+                        background: white;
+                        padding: 20px;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 12px;
+                        flex: 1;
+                        justify-content: center;
+                        border-radius: 12px 0 0 12px;
+                    }
+
+                    /* Arapça Yazı Tipleri */
+                    .arabic-title {
+                        font-family: 'Amiri', serif;
+                        font-size: 28px;
+                        line-height: 1.6;
+                    }
+
+                    .arabic-text-item {
+                        font-family: 'Amiri', serif;
+                        font-size: 24px;
+                        line-height: 1.8;
+                        color: #2c3e50;
+                        background-color: #f8f9fa;
+                        padding: 15px 20px;
+                        border-radius: 8px;
+                        border-right: 4px solid;
+                        position: relative;
+                    }
+
+                    /* Noktalı çizgileri kaldıran ayar */
+                    .no-dots .word {
+                        border-bottom: none !important; 
+                        padding: 2px 6px;
+                        border-radius: 6px;
+                        transition: all 0.2s;
+                    }
+                    
+                    .no-dots .word:hover {
+                        background-color: rgba(0, 0, 0, 0.05);
+                    }
+
+                    .no-dots .branch-head-takhreej .word:hover {
+                        background-color: rgba(255, 255, 255, 0.2);
+                    }
+
+                    /* Cümle Çeviri Butonu ve Kutusu */
+                    .mini-trans-btn {
+                        background: #e2e8f0;
+                        border: 1px solid #cbd5e1;
+                        color: #475569;
+                        border-radius: 6px;
+                        padding: 4px 10px;
+                        font-size: 13px;
+                        font-family: 'Poppins', sans-serif;
+                        cursor: pointer;
+                        margin-right: 15px; 
+                        vertical-align: middle;
+                        transition: 0.2s;
+                        font-weight: 600;
+                    }
+
+                    .mini-trans-btn:hover {
+                        background: #cbd5e1;
+                        color: #1e293b;
+                    }
+
+                    .mini-trans-box {
+                        display: none; 
+                        direction: ltr; 
+                        text-align: left;
+                        background: #ffffff;
+                        padding: 12px 15px;
+                        margin-top: 12px;
+                        border-radius: 6px;
+                        font-size: 15px;
+                        font-family: 'Poppins', sans-serif;
+                        color: #334155;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+                        border: 1px solid #e2e8f0;
+                        border-left: 4px solid; 
+                    }
+
+                    /* Kategori Renkleri */
+                    .bg-def { background-color: #d35400; } /* Kiremit/Turuncu - Tanım */
+                    .border-def { border-right-color: #d35400; }
+
+                    .bg-fawaid { background-color: #2980b9; } /* Mavi - Faydalar */
+                    .border-fawaid { border-right-color: #2980b9; }
+
+                    /* Mobil Uyumluluk */
+                    @media (max-width: 992px) {
+                        .takhreej-schema-container { flex-direction: column; align-items: center; }
+                        .branch-head-takhreej { border-radius: 12px 12px 0 0; width: 100%; box-sizing: border-box; }
+                        .branch-body-takhreej { border-radius: 0 0 12px 12px; }
+                        .schema-branch-takhreej { flex-direction: column; width: 100%; }
+                    }
+                </style>
+
+                <div class="takhreej-schema-container no-dots">
+                    
+                    <div class="schema-root-takhreej arabic-title">
+                        <div>
+                            <span class="word">ثَانِياً:<span class="tooltip">İkinci Olarak:</span></span><br>
+                            <span class="word" style="font-size: 34px; font-weight: bold;">الِاسْتِخْرَاجُ<span class="tooltip">İstihrac</span></span><br>
+                            <span class="word" style="font-size: 22px;">أَوِ "الْمُسْتَخْرَجَات"<span class="tooltip">Veya "Müstahreclat"</span></span>
+                        </div>
+                    </div>
+
+                    <div class="schema-branches-takhreej">
+                        
+                        <div class="schema-branch-takhreej">
+                            <div class="branch-head-takhreej bg-def arabic-title">
+                                <span class="word">التَّعْرِيفُ<span class="tooltip">Tanım</span></span>
+                                <span class="word">الْمَنْهَجِيُّ<span class="tooltip">Sistematik / Metodolojik</span></span>
+                            </div>
+                            <div class="branch-body-takhreej">
+                                <div class="arabic-text-item border-def">
+                                    <span class="word">أَنْ<span class="tooltip">Şu ki / -mesi</span></span>
+                                    <span class="word">يَأْتِيَ<span class="tooltip">Gelmesi (Yönelmesi)</span></span>
+                                    <span class="word">الْمُصَنِّفُ<span class="tooltip">Yazarın (Musannifin)</span></span>
+                                    <span class="word">إِلَى<span class="tooltip">-e / -a</span></span>
+                                    <span class="word">كِتَابٍ<span class="tooltip">Bir kitaba</span></span>
+                                    <span class="word">لِغَيْرِهِ<span class="tooltip">Başkasına ait</span></span>
+                                    <span class="word">(كَالْبُخَارِيِّ<span class="tooltip">(Buhârî gibi)</span></span>
+                                    <span class="word">أَوْ<span class="tooltip">Veya</span></span>
+                                    <span class="word">مُسْلِمٍ)<span class="tooltip">Müslim)</span></span>
+                                    <br>
+                                    <span class="word">فَيُخْرِجَ<span class="tooltip">Ve tahric etmesi (çıkarması)</span></span>
+                                    <span class="word">أَحَادِيثَهُ<span class="tooltip">Onun hadislerini</span></span>
+                                    <span class="word">بِأَسَانِيدَ<span class="tooltip">Senedlerle</span></span>
+                                    <span class="word">لِنَفْسِهِ<span class="tooltip">Kendisine ait</span></span>
+                                    <span class="word">مِنْ<span class="tooltip">-den / -dan</span></span>
+                                    <span class="word">غَيْرِ<span class="tooltip">Dışından / Olmaksan</span></span>
+                                    <span class="word">طَرِيقِ<span class="tooltip">Yolu</span></span>
+                                    <span class="word">صَاحِبِ<span class="tooltip">Sahibinin</span></span>
+                                    <span class="word">الْكِتَابِ،<span class="tooltip">Kitabın</span></span>
+                                    <br>
+                                    <span class="word">لِيَلْتَقِيَ<span class="tooltip">Buluşmak (kesişmek) için</span></span>
+                                    <span class="word">مَعَهُ<span class="tooltip">Onunla</span></span>
+                                    <span class="word">فِي<span class="tooltip">-de / İçinde</span></span>
+                                    <span class="word">شَيْخِهِ<span class="tooltip">Onun hocasında</span></span>
+                                    <span class="word">أَوْ<span class="tooltip">Veya</span></span>
+                                    <span class="word">مَنْ<span class="tooltip">Kimsede</span></span>
+                                    <span class="word">فَوْقَهُ<span class="tooltip">Onun üstündeki</span></span>
+                                    
+                                    <button class="mini-trans-btn" onclick="toggleTranslation('mustakhraj-def-1')">🇹🇷 Çeviri</button>
+                                    <div id="mustakhraj-def-1" class="mini-trans-box" style="border-left-color: #d35400;">
+                                        <strong>Sistematik Tanım:</strong> Bir yazarın, başkasına ait bir kitaptaki (Buhârî veya Müslim gibi) hadisleri, asıl yazarın senedi dışındaki kendi senediyle, o yazarın hocasında veya seneddeki daha üst bir râvide kesişecek şekilde yeniden tahric etmesidir (çıkarmasıdır).
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="schema-branch-takhreej">
+                            <div class="branch-head-takhreej bg-fawaid arabic-title">
+                                <span class="word">فَوَائِدُ<span class="tooltip">Faydaları</span></span>
+                                <span class="word">الْمُسْتَخْرَجَاتِ<span class="tooltip">Müstahreclatın</span></span>
+                            </div>
+                            <div class="branch-body-takhreej">
+                                
+                                <div class="arabic-text-item border-fawaid">
+                                    <span class="word" style="font-weight: bold; color: #2980b9;">١.<span class="tooltip">1.</span></span>
+                                    <span class="word">عُلُوُّ<span class="tooltip">Yüksekliği (Âlî oluşu)</span></span>
+                                    <span class="word">الْإِسْنَادِ<span class="tooltip">İsnadın</span></span>
+                                    <span class="word" style="font-size: 18px; color: #7f8c8d;">(تَقْلِيلُ عَدَدِ الرُّوَاةِ)<span class="tooltip">(Râvi sayısını azaltmak)</span></span>
+                                    <button class="mini-trans-btn" onclick="toggleTranslation('mustakhraj-faw-1')">🇹🇷 Çeviri</button>
+                                    <div id="mustakhraj-faw-1" class="mini-trans-box" style="border-left-color: #2980b9;">
+                                        <strong>1. Fayda:</strong> İsnadın âlî (yüksek) olması sağlanır. Yani Hz. Peygamber (s.a.v) ile râvi arasındaki kişi sayısının azalması (kısa sened) elde edilir.
+                                    </div>
+                                </div>
+
+                                <div class="arabic-text-item border-fawaid">
+                                    <span class="word" style="font-weight: bold; color: #2980b9;">٢.<span class="tooltip">2.</span></span>
+                                    <span class="word">زِيَادَةُ<span class="tooltip">Artması (Fazlalığı)</span></span>
+                                    <span class="word">الْأَلْفَاظِ<span class="tooltip">Lafızların</span></span>
+                                    <span class="word">الصَّحِيحَةِ<span class="tooltip">Sahih</span></span>
+                                    <span class="word">فِي<span class="tooltip">-de / İçinde</span></span>
+                                    <span class="word">الْمَتْنِ<span class="tooltip">Metinde</span></span>
+                                    <button class="mini-trans-btn" onclick="toggleTranslation('mustakhraj-faw-2')">🇹🇷 Çeviri</button>
+                                    <div id="mustakhraj-faw-2" class="mini-trans-box" style="border-left-color: #2980b9;">
+                                        <strong>2. Fayda:</strong> Hadis metninde asıl kitapta bulunmayan fakat sahih olan ilave lafızların (ziyadelerin) elde edilmesi.
+                                    </div>
+                                </div>
+
+                                <div class="arabic-text-item border-fawaid">
+                                    <span class="word" style="font-weight: bold; color: #2980b9;">٣.<span class="tooltip">3.</span></span>
+                                    <span class="word">بَيَانُ<span class="tooltip">Açıklanması</span></span>
+                                    <span class="word">الْمُهْمَلِ<span class="tooltip">İhmal edilmişin</span></span>
+                                    <span class="word">وَتَعْيِينُ<span class="tooltip">Ve belirlenmesi</span></span>
+                                    <span class="word">الْمُبْهَمِ<span class="tooltip">Kapalı olanın</span></span>
+                                    <span class="word">مِنَ<span class="tooltip">-den</span></span>
+                                    <span class="word">الرُّوَاةِ<span class="tooltip">Râvilerden</span></span>
+                                    <button class="mini-trans-btn" onclick="toggleTranslation('mustakhraj-faw-3')">🇹🇷 Çeviri</button>
+                                    <div id="mustakhraj-faw-3" class="mini-trans-box" style="border-left-color: #2980b9;">
+                                        <strong>3. Fayda:</strong> Asıl senedde tam adı verilmeyen (mühmel) veya kapalı bırakılan (mübhem) râvilerin diğer yollar sayesinde tespit edilip açıklığa kavuşturulması.
+                                    </div>
+                                </div>
+
+                                <div class="arabic-text-item border-fawaid">
+                                    <span class="word" style="font-weight: bold; color: #2980b9;">٤.<span class="tooltip">4.</span></span>
+                                    <span class="word">تَقْوِيَةُ<span class="tooltip">Güçlendirilmesi</span></span>
+                                    <span class="word">الْحَدِيثِ<span class="tooltip">Hadisin</span></span>
+                                    <span class="word">بِمُتَابَعَاتٍ<span class="tooltip">Mütâbaatlarla (destekleyici rivayetlerle)</span></span>
+                                    <span class="word">وَطُرُقٍ<span class="tooltip">Ve yollarla</span></span>
+                                    <span class="word">جَدِيدَةٍ<span class="tooltip">Yeni</span></span>
+                                    <button class="mini-trans-btn" onclick="toggleTranslation('mustakhraj-faw-4')">🇹🇷 Çeviri</button>
+                                    <div id="mustakhraj-faw-4" class="mini-trans-box" style="border-left-color: #2980b9;">
+                                        <strong>4. Fayda:</strong> Hadisin yeni yollar (tarikler) ve mütâbaatlar (destekleyici rivayetler) bulunarak daha da güçlendirilmesi.
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+           <div class="slide">
+                <style>
+                    /* Şema Konteyneri */
+                    .takhreej-schema-container {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: flex-start;
+                        gap: 30px;
+                        width: 100%;
+                        max-width: 1100px;
+                        background: #fdfefe;
+                        border: 2px solid #e5e8e8;
+                        border-radius: 15px;
+                        padding: 40px;
+                        box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+                        direction: rtl; /* Şema sağdan sola aksın */
+                    }
+                    
+                    /* Ana Kök (Başlık) */
+                    .schema-root-benefits {
+                        background-color: #16a085; /* Zümrüt Yeşili */
+                        color: white;
+                        padding: 20px 40px;
+                        border-radius: 12px;
+                        text-align: center;
+                        box-shadow: 0 8px 20px rgba(22, 160, 133, 0.3);
+                        width: fit-content;
+                    }
+
+                    /* 7 Madde için Izgara (Grid) Yapısı */
+                    .benefits-grid {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 20px;
+                        width: 100%;
+                    }
+
+                    /* Son maddeyi ortalamak için */
+                    .benefits-grid .full-width-item {
+                        grid-column: 1 / -1;
+                        max-width: 50%;
+                        justify-self: center;
+                    }
+
+                    /* Arapça Yazı Tipleri */
+                    .arabic-title {
+                        font-family: 'Amiri', serif;
+                        font-size: 28px;
+                        line-height: 1.6;
+                    }
+
+                    .arabic-text-item {
+                        font-family: 'Amiri', serif;
+                        font-size: 22px;
+                        line-height: 1.8;
+                        color: #2c3e50;
+                        background-color: #f8f9fa;
+                        padding: 15px 20px;
+                        border-radius: 8px;
+                        border-right: 4px solid #16a085; /* Kenar çizgisi yeşil */
+                        position: relative;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+                        transition: transform 0.2s;
+                    }
+
+                    .arabic-text-item:hover {
+                        transform: translateY(-2px);
+                        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+                    }
+
+                    /* Noktalı çizgileri kaldıran ayar */
+                    .no-dots .word {
+                        border-bottom: none !important; 
+                        padding: 2px 6px;
+                        border-radius: 6px;
+                        transition: all 0.2s;
+                    }
+                    
+                    .no-dots .word:hover {
+                        background-color: rgba(22, 160, 133, 0.08); /* Hover efekti yeşil tonu */
+                    }
+
+                    .no-dots .schema-root-benefits .word:hover {
+                        background-color: rgba(255, 255, 255, 0.2);
+                    }
+
+                    /* Cümle Çeviri Butonu ve Kutusu */
+                    .mini-trans-btn {
+                        background: #e2e8f0;
+                        border: 1px solid #cbd5e1;
+                        color: #475569;
+                        border-radius: 6px;
+                        padding: 4px 10px;
+                        font-size: 13px;
+                        font-family: 'Poppins', sans-serif;
+                        cursor: pointer;
+                        margin-right: 15px; 
+                        vertical-align: middle;
+                        transition: 0.2s;
+                        font-weight: 600;
+                    }
+
+                    .mini-trans-btn:hover {
+                        background: #cbd5e1;
+                        color: #1e293b;
+                    }
+
+                    .mini-trans-box {
+                        display: none; 
+                        direction: ltr; 
+                        text-align: left;
+                        background: #ffffff;
+                        padding: 12px 15px;
+                        margin-top: 12px;
+                        border-radius: 6px;
+                        font-size: 14px;
+                        font-family: 'Poppins', sans-serif;
+                        color: #334155;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+                        border: 1px solid #e2e8f0;
+                        border-left: 4px solid #16a085; 
+                    }
+
+                    /* Mobil Uyumluluk */
+                    @media (max-width: 992px) {
+                        .benefits-grid { grid-template-columns: 1fr; }
+                        .benefits-grid .full-width-item { max-width: 100%; }
+                    }
+                </style>
+
+                <div class="takhreej-schema-container no-dots">
+                    
+                    <div class="schema-root-benefits arabic-title">
+                        <span class="word">ثَالِثاً:<span class="tooltip">Üçüncü Olarak:</span></span>
+                        <span class="word" style="font-size: 34px; font-weight: bold;">أَهَمِّيَّةُ<span class="tooltip">Önemi</span></span>
+                        <span class="word" style="font-size: 34px; font-weight: bold;">التَّخْرِيجِ<span class="tooltip">Tahricin</span></span>
+                        <span class="word" style="font-size: 34px; font-weight: bold;">وَفَوَائِدُهُ<span class="tooltip">Ve Faydaları</span></span>
+                    </div>
+
+                    <div class="benefits-grid">
+                        
+                        <div class="arabic-text-item">
+                            <span class="word" style="font-weight: bold; color: #16a085;">١. التَّوْثِيقُ:<span class="tooltip">1. Belgelendirme:</span></span>
+                            <span class="word">عَزْوُ<span class="tooltip">Dayandırmak / Nispet etmek</span></span>
+                            <span class="word">الْحَدِيثِ<span class="tooltip">Hadisi</span></span>
+                            <span class="word">لِمَصَادِرِهِ<span class="tooltip">Kaynaklarına</span></span>
+                            <span class="word">الْأَصْلِيَّةِ<span class="tooltip">Orijinal</span></span>
+                            <span class="word">وَالتَّحَقُّقُ<span class="tooltip">Ve doğrulamak</span></span>
+                            <span class="word">مِنْ<span class="tooltip">-den</span></span>
+                            <span class="word">وُجُودِهِ<span class="tooltip">Onun varlığını</span></span>
+                            
+                            <button class="mini-trans-btn" onclick="toggleTranslation('benefit-1')">🇹🇷 Çeviri</button>
+                            <div id="benefit-1" class="mini-trans-box">
+                                <strong>1. Belgelendirme (Tevsik):</strong> Hadisi orijinal kaynaklarına dayandırmak ve (o kaynakta) varlığını doğrulamaktır.
+                            </div>
+                        </div>
+
+                        <div class="arabic-text-item">
+                            <span class="word" style="font-weight: bold; color: #16a085;">٢. دِرَاسَةُ السَّنَدِ:<span class="tooltip">2. Senedin İncelenmesi:</span></span>
+                            <span class="word">مَعْرِفَةُ<span class="tooltip">Bilinmesi</span></span>
+                            <span class="word">اتِّصَالِ<span class="tooltip">Bitişikliğinin</span></span>
+                            <span class="word">السَّنَدِ<span class="tooltip">Senedin</span></span>
+                            <span class="word">أَوْ<span class="tooltip">Veya</span></span>
+                            <span class="word">انْقِطَاعِهِ<span class="tooltip">Kopukluğunun</span></span>
+                            <span class="word" style="font-size: 16px; color: #7f8c8d;">(كَشْفُ الإِرْسَالِ وَالتَّدْلِيسِ)<span class="tooltip">(İrsal ve tedlisi ortaya çıkarmak)</span></span>
+                            
+                            <button class="mini-trans-btn" onclick="toggleTranslation('benefit-2')">🇹🇷 Çeviri</button>
+                            <div id="benefit-2" class="mini-trans-box">
+                                <strong>2. Senedin İncelenmesi:</strong> Senedin bitişik (muttasıl) veya kopuk (munkatı') olduğunun bilinmesi, böylece irsal ve tedlis kusurlarının ortaya çıkarılmasıdır.
+                            </div>
+                        </div>
+
+                        <div class="arabic-text-item">
+                            <span class="word" style="font-weight: bold; color: #16a085;">٣. مَعْرِفَةُ حَالِ الرُّوَاةِ:<span class="tooltip">3. Râvilerin Durumunun Bilinmesi:</span></span>
+                            <span class="word">تَمْيِيزُ<span class="tooltip">Ayırt etmek</span></span>
+                            <span class="word">الثِّقَاتِ<span class="tooltip">Güvenilirleri</span></span>
+                            <span class="word">مِنَ<span class="tooltip">-den</span></span>
+                            <span class="word">الضُّعَفَاءِ<span class="tooltip">Zayıflardan</span></span>
+                            <span class="word" style="font-size: 16px; color: #7f8c8d;">(الْجَرْحُ وَالتَّعْدِيلُ)<span class="tooltip">(Cerh ve Ta'dil)</span></span>
+                            
+                            <button class="mini-trans-btn" onclick="toggleTranslation('benefit-3')">🇹🇷 Çeviri</button>
+                            <div id="benefit-3" class="mini-trans-box">
+                                <strong>3. Râvilerin Durumunun Bilinmesi:</strong> Güvenilir (sika) râvileri zayıf olanlardan ayırt etmektir (Bkz. Cerh ve Ta'dil ilmi).
+                            </div>
+                        </div>
+
+                        <div class="arabic-text-item">
+                            <span class="word" style="font-weight: bold; color: #16a085;">٤. نَقْدُ الْمَتْنِ:<span class="tooltip">4. Metnin Eleştirisi:</span></span>
+                            <span class="word">الْوُقُوفُ<span class="tooltip">Tespit etmek / Üzerinde durmak</span></span>
+                            <span class="word">عَلَى<span class="tooltip">-e / -a</span></span>
+                            <span class="word">الزِّيَادَاتِ،<span class="tooltip">Fazlalıkları</span></span>
+                            <span class="word">الْإِدْرَاجِ،<span class="tooltip">Eklemeleri (İdrac)</span></span>
+                            <span class="word">الشُّذُوذِ،<span class="tooltip">Şâzlığı</span></span>
+                            <span class="word">أَوِ<span class="tooltip">Veya</span></span>
+                            <span class="word">النَّكَارَةِ<span class="tooltip">Münkerliği (Reddedilmişliği)</span></span>
+                            
+                            <button class="mini-trans-btn" onclick="toggleTranslation('benefit-4')">🇹🇷 Çeviri</button>
+                            <div id="benefit-4" class="mini-trans-box">
+                                <strong>4. Metnin Eleştirisi (Tenkidi):</strong> Metindeki fazlalıkların (ziyade), araya sıkıştırılan sözlerin (idrac), şâzlık veya nekâret (kabul edilemezlik) durumlarının tespit edilmesidir.
+                            </div>
+                        </div>
+
+                        <div class="arabic-text-item">
+                            <span class="word" style="font-weight: bold; color: #16a085;">٥. تَحْدِيدُ دَرَجَةِ الْحَدِيثِ:<span class="tooltip">5. Hadisin Derecesinin Belirlenmesi:</span></span>
+                            <span class="word">الْحُكْمُ<span class="tooltip">Hüküm vermek</span></span>
+                            <span class="word">عَلَى<span class="tooltip">Üzerine</span></span>
+                            <span class="word">الْحَدِيثِ<span class="tooltip">Hadis</span></span>
+                            <span class="word">بِالصِّحَّةِ<span class="tooltip">Sahihlikle</span></span>
+                            <span class="word">أَوِ<span class="tooltip">Veya</span></span>
+                            <span class="word">الْحُسْنِ<span class="tooltip">Hasenlikle</span></span>
+                            <span class="word">أَوِ<span class="tooltip">Veya</span></span>
+                            <span class="word">الضَّعْفِ<span class="tooltip">Zayıflıkla</span></span>
+                            
+                            <button class="mini-trans-btn" onclick="toggleTranslation('benefit-5')">🇹🇷 Çeviri</button>
+                            <div id="benefit-5" class="mini-trans-box">
+                                <strong>5. Hadisin Derecesinin Belirlenmesi:</strong> İncelemeler sonucunda hadisin sahih, hasen veya zayıf olduğuna dair nihai hükmün verilmesidir.
+                            </div>
+                        </div>
+
+                        <div class="arabic-text-item">
+                            <span class="word" style="font-weight: bold; color: #16a085;">٦. حَصْرُ الطُّرُقِ:<span class="tooltip">6. Tariklerin Tespiti:</span></span>
+                            <span class="word">مَعْرِفَةُ<span class="tooltip">Bilinmesi</span></span>
+                            <span class="word">نَوْعِ<span class="tooltip">Türünün</span></span>
+                            <span class="word">الْحَدِيثِ<span class="tooltip">Hadisin</span></span>
+                            <span class="word" style="font-size: 16px; color: #7f8c8d;">(مُتَوَاتِر، مَشْهُور، عَزِيز، غَرِيب)<span class="tooltip">(Mütevatir, meşhur, aziz, garib)</span></span>
+                            
+                            <button class="mini-trans-btn" onclick="toggleTranslation('benefit-6')">🇹🇷 Çeviri</button>
+                            <div id="benefit-6" class="mini-trans-box">
+                                <strong>6. Tariklerin (Yolların) Tespiti:</strong> Rivayet yollarının sayısı belirlenerek hadisin türünün (Mütevatir, meşhur, azîz veya garîb) bilinmesidir.
+                            </div>
+                        </div>
+
+                        <div class="arabic-text-item full-width-item">
+                            <span class="word" style="font-weight: bold; color: #16a085;">٧. ضَبْطُ الْأَلْفَاظِ:<span class="tooltip">7. Lafızların Korunması:</span></span>
+                            <span class="word">تَمْيِيزُ<span class="tooltip">Ayırt etmek</span></span>
+                            <span class="word">الرِّوَايَاتِ<span class="tooltip">Rivayetleri</span></span>
+                            <span class="word">الضَّعِيفَةِ<span class="tooltip">Zayıf</span></span>
+                            <span class="word">بِالْمَعْنَى<span class="tooltip">Mana ile olan</span></span>
+                            <span class="word">مِنَ<span class="tooltip">-den</span></span>
+                            <span class="word">الرِّوَايَاتِ<span class="tooltip">Rivayetlerden</span></span>
+                            <span class="word">اللَّفْظِيَّةِ<span class="tooltip">Lafzi</span></span>
+                            <span class="word">الصَّحِيحَةِ<span class="tooltip">Sahih</span></span>
+                            
+                            <button class="mini-trans-btn" onclick="toggleTranslation('benefit-7')">🇹🇷 Çeviri</button>
+                            <div id="benefit-7" class="mini-trans-box">
+                                <strong>7. Lafızların Zaptı (Doğru Tespiti):</strong> Sadece mana ile yapılmış olan zayıf rivayetlerin, harfi harfine yapılmış (lafzi) sahih rivayetlerden ayırt edilmesidir.
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+           <div class="slide">
+                <style>
+                    /* Şema Konteyneri */
+                    .takhreej-schema-container {
+                        display: flex;
+                        align-items: stretch;
+                        justify-content: center;
+                        gap: 30px;
+                        width: 100%;
+                        max-width: 1100px;
+                        background: #fdfefe;
+                        border: 2px solid #e5e8e8;
+                        border-radius: 15px;
+                        padding: 40px;
+                        box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+                        direction: rtl; /* Şema sağdan sola aksın */
+                    }
+                    
+                    /* Ana Kök */
+                    .schema-root-takhreej {
+                        background-color: #1a365d; /* Koyu Lacivert */
+                        color: white;
+                        padding: 30px 25px;
+                        border-radius: 12px;
+                        text-align: center;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        min-width: 180px;
+                        box-shadow: 0 8px 20px rgba(26, 54, 93, 0.3);
+                    }
+
+                    .schema-branches-takhreej {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 25px;
+                        flex: 1;
+                    }
+
+                    .schema-branch-takhreej {
+                        display: flex;
+                        border-radius: 12px;
+                        overflow: visible; 
+                        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+                        border: 1px solid #eee;
+                    }
+
+                    .branch-head-takhreej {
+                        color: white;
+                        padding: 20px;
+                        width: 220px;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: center;
+                        border-radius: 0 12px 12px 0; 
+                        text-align: center;
+                    }
+
+                    .branch-body-takhreej {
+                        background: white;
+                        padding: 20px;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 12px;
+                        flex: 1;
+                        justify-content: center;
+                        border-radius: 12px 0 0 12px;
+                    }
+
+                    /* Arapça Yazı Tipleri */
+                    .arabic-title {
+                        font-family: 'Amiri', serif;
+                        font-size: 26px;
+                        line-height: 1.6;
+                    }
+
+                    .arabic-text-item {
+                        font-family: 'Amiri', serif;
+                        font-size: 22px;
+                        line-height: 1.8;
+                        color: #2c3e50;
+                        background-color: #f8f9fa;
+                        padding: 15px 20px;
+                        border-radius: 8px;
+                        border-right: 4px solid;
+                        position: relative;
+                        margin-bottom: 10px;
+                    }
+
+                    /* Noktalı çizgileri kaldıran ayar */
+                    .no-dots .word {
+                        border-bottom: none !important; 
+                        padding: 2px 6px;
+                        border-radius: 6px;
+                        transition: all 0.2s;
+                    }
+                    
+                    .no-dots .word:hover {
+                        background-color: rgba(0, 0, 0, 0.05);
+                    }
+
+                    .no-dots .branch-head-takhreej .word:hover {
+                        background-color: rgba(255, 255, 255, 0.2);
+                    }
+
+                    /* Cümle Çeviri Butonu ve Kutusu */
+                    .mini-trans-btn {
+                        background: #e2e8f0;
+                        border: 1px solid #cbd5e1;
+                        color: #475569;
+                        border-radius: 6px;
+                        padding: 4px 10px;
+                        font-size: 13px;
+                        font-family: 'Poppins', sans-serif;
+                        cursor: pointer;
+                        margin-right: 15px; 
+                        vertical-align: middle;
+                        transition: 0.2s;
+                        font-weight: 600;
+                        display: inline-block;
+                        margin-top: 10px;
+                    }
+
+                    .mini-trans-btn:hover {
+                        background: #cbd5e1;
+                        color: #1e293b;
+                    }
+
+                    .mini-trans-box {
+                        display: none; 
+                        direction: ltr; 
+                        text-align: left;
+                        background: #ffffff;
+                        padding: 12px 15px;
+                        margin-top: 12px;
+                        border-radius: 6px;
+                        font-size: 14px;
+                        font-family: 'Poppins', sans-serif;
+                        color: #334155;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+                        border: 1px solid #e2e8f0;
+                        border-left: 4px solid; 
+                    }
+
+                    /* Kategori Renkleri - Kronolojik (Zaman Çizelgesi) Hissi */
+                    .bg-hist1 { background-color: #d35400; } /* Turuncu */
+                    .border-hist1 { border-right-color: #d35400; }
+
+                    .bg-hist2 { background-color: #16a085; } /* Turkuaz/Yeşil */
+                    .border-hist2 { border-right-color: #16a085; }
+
+                    .bg-hist3 { background-color: #8e44ad; } /* Mor */
+                    .border-hist3 { border-right-color: #8e44ad; }
+
+                    .bg-hist4 { background-color: #2980b9; } /* Mavi */
+                    .border-hist4 { border-right-color: #2980b9; }
+
+                    .bg-hist5 { background-color: #c0392b; } /* Kırmızı */
+                    .border-hist5 { border-right-color: #c0392b; }
+
+                    /* Mobil Uyumluluk */
+                    @media (max-width: 992px) {
+                        .takhreej-schema-container { flex-direction: column; align-items: center; }
+                        .branch-head-takhreej { border-radius: 12px 12px 0 0; width: 100%; box-sizing: border-box; }
+                        .branch-body-takhreej { border-radius: 0 0 12px 12px; }
+                        .schema-branch-takhreej { flex-direction: column; width: 100%; }
+                    }
+                </style>
+
+                <div class="takhreej-schema-container no-dots">
+                    
+                    <div class="schema-root-takhreej arabic-title">
+                        <div>
+                            <span class="word">رَابِعاً:<span class="tooltip">Dördüncü Olarak:</span></span><br>
+                            <span class="word" style="font-size: 34px; font-weight: bold;">تَارِيخُ<span class="tooltip">Tarihi</span></span>
+                            <span class="word" style="font-size: 34px; font-weight: bold;">التَّخْرِيجِ<span class="tooltip">Tahricin</span></span><br>
+                            <span class="word" style="font-size: 26px;">وَتَطَوُّرُهُ<span class="tooltip">Ve Gelişimi</span></span>
+                        </div>
+                    </div>
+
+                    <div class="schema-branches-takhreej">
+                        
+                        <div class="schema-branch-takhreej">
+                            <div class="branch-head-takhreej bg-hist1 arabic-title">
+                                <span class="word">مَرْحَلَةُ<span class="tooltip">Dönemi</span></span>
+                                <span class="word">الْمُتَقَدِّمِينَ<span class="tooltip">Mütekaddimûn (Öncekiler)</span></span>
+                                <span class="word" style="font-size: 16px; opacity: 0.8;">(الْقُرُونُ الْأُولَى)<span class="tooltip">(İlk Asırlar)</span></span>
+                            </div>
+                            <div class="branch-body-takhreej">
+                                <div class="arabic-text-item border-hist1">
+                                    <span class="word">لَمْ تَكُنِ<span class="tooltip">Değildi / Yoktu</span></span>
+                                    <span class="word">الْحَاجَةُ<span class="tooltip">İhtiyaç</span></span>
+                                    <span class="word">قَائِمَةً<span class="tooltip">Mevcut</span></span>
+                                    <span class="word">لِقَوَاعِدِ<span class="tooltip">Kurallarına</span></span>
+                                    <span class="word">التَّخْرِيجِ<span class="tooltip">Tahricin</span></span>
+                                    <br>
+                                    <span class="word">اَلِاعْتِمَادُ<span class="tooltip">Dayanılıyordu</span></span>
+                                    <span class="word">عَلَى<span class="tooltip">-e / -a</span></span>
+                                    <span class="word">الْحِفْظِ<span class="tooltip">Hafızaya</span></span>
+                                    <span class="word">الْقَوِيِّ<span class="tooltip">Güçlü</span></span>
+                                    <span class="word">وَاتِّصَالِ<span class="tooltip">Ve bitişikliğine</span></span>
+                                    <span class="word">الْأَسَانِيدِ<span class="tooltip">Senedlerin</span></span>
+                                    <span class="word">الْمُبَاشِرَةِ<span class="tooltip">Doğrudan</span></span>
+                                    
+                                    <button class="mini-trans-btn" onclick="toggleTranslation('history-1')">🇹🇷 Çeviri</button>
+                                    <div id="history-1" class="mini-trans-box" style="border-left-color: #d35400;">
+                                        <strong>Mütekaddimûn (İlk Asırlar) Dönemi:</strong> Bu dönemde tahric kurallarına ihtiyaç yoktu. Zira doğrudan sened bitişikliğine ve ravilerin güçlü hafızalarına güveniliyordu.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="schema-branch-takhreej">
+                            <div class="branch-head-takhreej bg-hist2 arabic-title">
+                                <span class="word">مَرْحَلَةُ<span class="tooltip">Dönemi</span></span>
+                                <span class="word">الْحَاجَةِ<span class="tooltip">İhtiyaç</span></span>
+                                <span class="word">وَالتَّدْوِينِ<span class="tooltip">Ve Tedvin (Yazıya Geçirme)</span></span>
+                                <span class="word" style="font-size: 16px; opacity: 0.8;">(عَصْرُ الِانْفِصَالِ)<span class="tooltip">(Ayrışma Asrı)</span></span>
+                            </div>
+                            <div class="branch-body-takhreej">
+                                <div class="arabic-text-item border-hist2">
+                                    <span class="word">ظُهُورُ<span class="tooltip">Ortaya çıkması</span></span>
+                                    <span class="word">مُصَنَّفَاتٍ<span class="tooltip">Eserlerin</span></span>
+                                    <span class="word">فِي<span class="tooltip">-de / İçinde</span></span>
+                                    <span class="word">الْفِقْهِ<span class="tooltip">Fıkıh</span></span>
+                                    <span class="word">وَالتَّفْسِيرِ<span class="tooltip">Tefsir</span></span>
+                                    <span class="word">وَالتَّارِيخِ<span class="tooltip">Ve Tarih</span></span>
+                                    <span class="word">بِدُونِ<span class="tooltip">Olmadan</span></span>
+                                    <span class="word">أَسَانِيدَ<span class="tooltip">Senedler</span></span>
+                                    <br>
+                                    <span class="word">دُخُولُ<span class="tooltip">Girmesi</span></span>
+                                    <span class="word">الْأَحَادِيثِ<span class="tooltip">Hadislerin</span></span>
+                                    <span class="word">الضَّعِيفَةِ<span class="tooltip">Zayıf</span></span>
+                                    <span class="word">وَالْمَوْضُوعَةِ<span class="tooltip">Ve uydurma</span></span>
+                                    <span class="word">لِعَدَمِ<span class="tooltip">Olmadığı için</span></span>
+                                    <span class="word">التَّثَبُّتِ<span class="tooltip">Doğrulama (Tahkik)</span></span>
+                                    
+                                    <button class="mini-trans-btn" onclick="toggleTranslation('history-2')">🇹🇷 Çeviri</button>
+                                    <div id="history-2" class="mini-trans-box" style="border-left-color: #16a085;">
+                                        <strong>İhtiyaç ve Tedvin (Ayrışma) Dönemi:</strong> Fıkıh, tefsir ve tarih gibi alanlarda senedsiz eserler ortaya çıkmıştır. Doğrulama (tahkik) yapılmadığı için zayıf ve uydurma hadisler bu eserlere girmiştir.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="schema-branch-takhreej">
+                            <div class="branch-head-takhreej bg-hist3 arabic-title">
+                                <span class="word">نَشْأَةُ<span class="tooltip">Doğuşu</span></span>
+                                <span class="word">فَنِّ<span class="tooltip">İlminin</span></span>
+                                <span class="word">التَّخْرِيجِ<span class="tooltip">Tahric</span></span>
+                                <span class="word" style="font-size: 16px; opacity: 0.8;">(كَمُؤَلَّفَاتٍ مُسْتَقِلَّةٍ)<span class="tooltip">(Müstakil eserler olarak)</span></span>
+                            </div>
+                            <div class="branch-body-takhreej">
+                                <div class="arabic-text-item border-hist3">
+                                    <span class="word">الْبِدَايَةُ<span class="tooltip">Başlangıç</span></span>
+                                    <span class="word">مَعَ<span class="tooltip">İle</span></span>
+                                    <span class="word">الْخَطِيبِ<span class="tooltip">Hatîb</span></span>
+                                    <span class="word">الْبَغْدَادِيِّ<span class="tooltip">El-Bağdâdî</span></span>
+                                    <span class="word" style="font-size: 16px; color: #7f8c8d;">(ت 463هـ)<span class="tooltip">(Ö. 463)</span></span>
+                                    <br>
+                                    <span class="word">تَطَوَّرَ<span class="tooltip">Gelişti</span></span>
+                                    <span class="word">الْفَنُّ<span class="tooltip">Bu ilim</span></span>
+                                    <span class="word">لِتَخْرِيجِ<span class="tooltip">Tahric etmek için</span></span>
+                                    <span class="word">أَحَادِيثِ<span class="tooltip">Hadislerini</span></span>
+                                    <span class="word">كُتُبٍ<span class="tooltip">Kitapların</span></span>
+                                    <span class="word">مُعَيَّنَةٍ<span class="tooltip">Belirli</span></span>
+                                    
+                                    <button class="mini-trans-btn" onclick="toggleTranslation('history-3')">🇹🇷 Çeviri</button>
+                                    <div id="history-3" class="mini-trans-box" style="border-left-color: #8e44ad;">
+                                        <strong>Tahric İlminin Doğuşu:</strong> Bu ilim müstakil eserler olarak Hatîb el-Bağdâdî (ö. 463) ile başlamış; daha sonra belirli kitapların hadislerini tahric etmek (kaynaklarını bulmak) üzere gelişmiştir.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="schema-branch-takhreej">
+                            <div class="branch-head-takhreej bg-hist4 arabic-title">
+                                <span class="word">أَبْرَزُ<span class="tooltip">Öne çıkan</span></span>
+                                <span class="word">مَدَارِسَ<span class="tooltip">Ekoller</span></span>
+                                <span class="word">وَأَئِمَّةِ<span class="tooltip">Ve İmamları</span></span>
+                                <span class="word">التَّخْرِيجِ<span class="tooltip">Tahricin</span></span>
+                            </div>
+                            <div class="branch-body-takhreej">
+                                <div class="arabic-text-item border-hist4">
+                                    <span class="word" style="font-weight: bold; color: #2980b9;">فِي الْفِقْهِ:<span class="tooltip">Fıkıhta:</span></span>
+                                    <span class="word">الْإِمَامُ الزَّيْلَعِيُّ<span class="tooltip">İmam Zeylaî</span></span>
+                                    <span class="word" style="font-size: 16px; color: #7f8c8d;">(نَصْبُ الرَّايَةِ)،<span class="tooltip">(Nasbu'r-Râye)</span></span>
+                                    <span class="word">الْحَافِظُ ابْنُ حَجَرٍ<span class="tooltip">Hafız İbn Hacer</span></span>
+                                    <span class="word" style="font-size: 16px; color: #7f8c8d;">(التَّلْخِيصُ الْحَبِيرُ)<span class="tooltip">(Et-Telhîsu'l-Habîr)</span></span>
+                                </div>
+                                <div class="arabic-text-item border-hist4">
+                                    <span class="word" style="font-weight: bold; color: #2980b9;">فِي التَّفْسِيرِ:<span class="tooltip">Tefsirde:</span></span>
+                                    <span class="word">الْحَافِظُ ابْنُ حَجَرٍ<span class="tooltip">Hafız İbn Hacer</span></span>
+                                    <span class="word" style="font-size: 16px; color: #7f8c8d;">(الْكَافُ الشَّافُ...)<span class="tooltip">(El-Kâfi'ş-Şâf...)</span></span>
+                                </div>
+                                <div class="arabic-text-item border-hist4">
+                                    <span class="word" style="font-weight: bold; color: #2980b9;">فِي السُّلُوكِ وَالزُّهْدِ:<span class="tooltip">Ahlak ve Zühd'de:</span></span>
+                                    <span class="word">الْإِمَامُ الْعِرَاقِيُّ<span class="tooltip">İmam Irâkî</span></span>
+                                    <span class="word" style="font-size: 16px; color: #7f8c8d;">(الْمُغْنِي عَنْ حَمْلِ الْأَسْفَارِ)<span class="tooltip">(El-Muğnî...)</span></span>
+                                    
+                                    <button class="mini-trans-btn" onclick="toggleTranslation('history-4')">🇹🇷 Çeviri</button>
+                                    <div id="history-4" class="mini-trans-box" style="border-left-color: #2980b9;">
+                                        <strong>Öne Çıkan Ekoller ve İmamlar:</strong> Fıkıh alanında İmam Zeylaî ve İbn Hacer; Tefsir alanında İbn Hacer; Tasavvuf/Ahlak alanında ise İmam Irâkî'nin eserleri tahric ilminin zirveleridir.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="schema-branch-takhreej">
+                            <div class="branch-head-takhreej bg-hist5 arabic-title">
+                                <span class="word">الْعَصْرُ<span class="tooltip">Dönem / Çağ</span></span>
+                                <span class="word">الْحَدِيثُ<span class="tooltip">Modern</span></span>
+                            </div>
+                            <div class="branch-body-takhreej">
+                                <div class="arabic-text-item border-hist5">
+                                    <span class="word">ظُهُورُ<span class="tooltip">Ortaya çıkması</span></span>
+                                    <span class="word">الْكُتُبِ<span class="tooltip">Kitapların</span></span>
+                                    <span class="word">الْمَنْهَجِيَّةِ<span class="tooltip">Sistematik</span></span>
+                                    <span class="word">التَّعْلِيمِيَّةِ<span class="tooltip">Eğitim (Ders)</span></span>
+                                    <span class="word" style="font-size: 16px; color: #7f8c8d;">(مِثْلَ عَمَلِ د. مَحْمُود الطَّحَّان)<span class="tooltip">(Dr. Mahmud et-Tahhân'ın eseri gibi)</span></span>
+                                    <br>
+                                    <span class="word">دُخُولُ<span class="tooltip">Girmesi</span></span>
+                                    <span class="word">عَصْرِ<span class="tooltip">Çağına</span></span>
+                                    <span class="word">التِّقْنِيَةِ<span class="tooltip">Teknoloji</span></span>
+                                    <span class="word">وَالْمَوْسُوعَاتِ<span class="tooltip">Ve Ansiklopedilerin</span></span>
+                                    <span class="word">الْإِلِكْتُرُونِيَّةِ<span class="tooltip">Elektronik</span></span>
+                                    <span class="word" style="font-size: 16px; color: #7f8c8d;">(تَسْهِيلُ سُرْعَةِ الْوُصُولِ)<span class="tooltip">(Erişim hızını kolaylaştırması)</span></span>
+                                    
+                                    <button class="mini-trans-btn" onclick="toggleTranslation('history-5')">🇹🇷 Çeviri</button>
+                                    <div id="history-5" class="mini-trans-box" style="border-left-color: #c0392b;">
+                                        <strong>Modern Dönem:</strong> Dr. Mahmud et-Tahhân'ın eseri gibi sistematik ders kitapları ortaya çıkmış; teknoloji ve elektronik ansiklopediler çağına girilerek hadislere erişim hızı inanılmaz derecede kolaylaşmıştır.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="slide">
+                <style>
+                    /* Bölüm Kapağı Özel Tasarımı */
+                    .chapter-cover-container {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        width: 100%;
+                        max-width: 900px;
+                        background: linear-gradient(135deg, #1a365d 0%, #2874a6 100%);
+                        border-radius: 20px;
+                        padding: 70px 40px;
+                        box-shadow: 0 15px 40px rgba(26, 54, 93, 0.25);
+                        direction: rtl;
+                        text-align: center;
+                        color: white;
+                    }
+
+                    /* Koyu zemin üzerinde kelime stilleri */
+                    .chapter-cover-container .word {
+                        color: white;
+                    }
+
+                    /* Baloncukların koyu zeminde zıt (beyaz) görünmesi için ayar */
+                    .chapter-cover-container .tooltip {
+                        background-color: white;
+                        color: #1a365d;
+                        font-weight: 700;
+                    }
+                    .chapter-cover-container .tooltip::after {
+                        border-color: white transparent transparent transparent;
+                    }
+
+                    .chapter-number {
+                        font-size: 32px;
+                        margin-bottom: 20px;
+                        color: #f1c40f; /* Altın sarısı vurgu */
+                        font-weight: bold;
+                    }
+
+                    .chapter-title {
+                        font-size: 46px;
+                        font-weight: bold;
+                        line-height: 1.6;
+                        margin-bottom: 40px;
+                    }
+
+                    /* Karanlık zemin için buton ve çeviri kutusu uyarlaması */
+                    .cover-trans-btn {
+                        background: rgba(255,255,255,0.1);
+                        border: 1px solid rgba(255,255,255,0.3);
+                        color: white;
+                        border-radius: 8px;
+                        padding: 10px 20px;
+                        font-size: 15px;
+                        font-family: 'Poppins', sans-serif;
+                        cursor: pointer;
+                        transition: 0.3s;
+                        font-weight: 600;
+                    }
+                    
+                    .cover-trans-btn:hover {
+                        background: rgba(255,255,255,0.25);
+                        transform: translateY(-2px);
+                    }
+
+                    .cover-trans-box {
+                        display: none; 
+                        direction: ltr; 
+                        background: white;
+                        padding: 15px 20px;
+                        margin-top: 25px;
+                        border-radius: 8px;
+                        font-size: 16px;
+                        font-family: 'Poppins', sans-serif;
+                        color: #1a365d;
+                        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+                        border-left: 5px solid #f1c40f;
+                        text-align: left;
+                    }
+
+                    @media (max-width: 768px) {
+                        .chapter-title { font-size: 32px; }
+                        .chapter-number { font-size: 24px; }
+                        .chapter-cover-container { padding: 40px 20px; }
+                    }
+                </style>
+
+                <div class="chapter-cover-container no-dots">
+                    
+                    <div class="chapter-number arabic-title">
+                        <span class="word" style="color: #f1c40f;">الْفَصْلُ<span class="tooltip">Bölüm</span></span>
+                        <span class="word" style="color: #f1c40f;">الثَّانِي:<span class="tooltip">İkinci</span></span>
+                    </div>
+                    
+                    <div class="chapter-title arabic-title">
+                        <span class="word">التَّخْرِيجُ<span class="tooltip">Tahric</span></span>
+                        <span class="word">عَنْ<span class="tooltip">Yoluyla (Vasıtasıyla)</span></span>
+                        <span class="word">طَرِيقِ<span class="tooltip">Yolu</span></span>
+                        <span class="word">مَعْرِفَةِ<span class="tooltip">Bilinmesi</span></span>
+                        <br>
+                        <span class="word">الرَّاوِي<span class="tooltip">Râvinin</span></span>
+                        <span class="word">الْأَعْلَى<span class="tooltip">En Üstteki (İlk)</span></span>
+                        <span class="word" style="color: #bdc3c7;">(الصَّحَابِيِّ)<span class="tooltip">(Sahabinin)</span></span>
+                    </div>
+
+                    <div>
+                        <button class="cover-trans-btn" onclick="toggleTranslation('chapter-2-trans')">🇹🇷 Bölüm Çevirisini Göster</button>
+                        <div id="chapter-2-trans" class="cover-trans-box">
+                            <strong>İkinci Bölüm:</strong> En Üst Râvinin (Sahabinin) Bilinmesi Yoluyla Tahric Edilmesi
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="slide">
+                <style>
+                    /* Şema Konteyneri */
+                    .takhreej-schema-container {
+                        display: flex;
+                        align-items: stretch;
+                        justify-content: center;
+                        gap: 30px;
+                        width: 100%;
+                        max-width: 1100px;
+                        background: #fdfefe;
+                        border: 2px solid #e5e8e8;
+                        border-radius: 15px;
+                        padding: 40px;
+                        box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+                        direction: rtl; /* Şema sağdan sola aksın */
+                    }
+                    
+                    /* Ana Kök */
+                    .schema-root-takhreej {
+                        background-color: #1a365d; /* Koyu Lacivert */
+                        color: white;
+                        padding: 30px 25px;
+                        border-radius: 12px;
+                        text-align: center;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        min-width: 180px;
+                        box-shadow: 0 8px 20px rgba(26, 54, 93, 0.3);
+                    }
+
+                    .schema-branches-takhreej {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 25px;
+                        flex: 1;
+                    }
+
+                    .schema-branch-takhreej {
+                        display: flex;
+                        border-radius: 12px;
+                        overflow: visible; 
+                        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+                        border: 1px solid #eee;
+                    }
+
+                    .branch-head-takhreej {
+                        color: white;
+                        padding: 20px;
+                        width: 220px;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: center;
+                        border-radius: 0 12px 12px 0; 
+                        text-align: center;
+                    }
+
+                    .branch-body-takhreej {
+                        background: white;
+                        padding: 20px;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 12px;
+                        flex: 1;
+                        justify-content: center;
+                        border-radius: 12px 0 0 12px;
+                    }
+
+                    /* Arapça Yazı Tipleri */
+                    .arabic-title {
+                        font-family: 'Amiri', serif;
+                        font-size: 26px;
+                        line-height: 1.6;
+                    }
+
+                    .arabic-text-item {
+                        font-family: 'Amiri', serif;
+                        font-size: 24px;
+                        line-height: 1.8;
+                        color: #2c3e50;
+                        background-color: #f8f9fa;
+                        padding: 15px 20px;
+                        border-radius: 8px;
+                        border-right: 4px solid;
+                        position: relative;
+                    }
+
+                    /* Noktalı çizgileri kaldıran ayar */
+                    .no-dots .word {
+                        border-bottom: none !important; 
+                        padding: 2px 6px;
+                        border-radius: 6px;
+                        transition: all 0.2s;
+                    }
+                    
+                    .no-dots .word:hover {
+                        background-color: rgba(0, 0, 0, 0.05);
+                    }
+
+                    .no-dots .branch-head-takhreej .word:hover {
+                        background-color: rgba(255, 255, 255, 0.2);
+                    }
+
+                    /* Cümle Çeviri Butonu ve Kutusu */
+                    .mini-trans-btn {
+                        background: #e2e8f0;
+                        border: 1px solid #cbd5e1;
+                        color: #475569;
+                        border-radius: 6px;
+                        padding: 4px 10px;
+                        font-size: 13px;
+                        font-family: 'Poppins', sans-serif;
+                        cursor: pointer;
+                        margin-right: 15px; 
+                        vertical-align: middle;
+                        transition: 0.2s;
+                        font-weight: 600;
+                        display: inline-block;
+                        margin-top: 10px;
+                    }
+
+                    .mini-trans-btn:hover {
+                        background: #cbd5e1;
+                        color: #1e293b;
+                    }
+
+                    .mini-trans-box {
+                        display: none; 
+                        direction: ltr; 
+                        text-align: left;
+                        background: #ffffff;
+                        padding: 12px 15px;
+                        margin-top: 12px;
+                        border-radius: 6px;
+                        font-size: 15px;
+                        font-family: 'Poppins', sans-serif;
+                        color: #334155;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+                        border: 1px solid #e2e8f0;
+                        border-left: 4px solid; 
+                    }
+
+                    /* Kategori Renkleri */
+                    .bg-goal { background-color: #27ae60; } /* Yeşil - Hedef */
+                    .border-goal { border-right-color: #27ae60; }
+
+                    .bg-condition { background-color: #8e44ad; } /* Mor - Şart */
+                    .border-condition { border-right-color: #8e44ad; }
+
+                    .bg-source { background-color: #2980b9; } /* Mavi - Kaynaklar */
+                    .border-source { border-right-color: #2980b9; }
+
+                    /* Mobil Uyumluluk */
+                    @media (max-width: 992px) {
+                        .takhreej-schema-container { flex-direction: column; align-items: center; }
+                        .branch-head-takhreej { border-radius: 12px 12px 0 0; width: 100%; box-sizing: border-box; }
+                        .branch-body-takhreej { border-radius: 0 0 12px 12px; }
+                        .schema-branch-takhreej { flex-direction: column; width: 100%; }
+                    }
+                </style>
+
+                <div class="takhreej-schema-container no-dots">
+                    
+                    <div class="schema-root-takhreej arabic-title">
+                        <div>
+                            <span class="word">أَوَّلاً:<span class="tooltip">İlk Olarak:</span></span><br>
+                            <span class="word" style="font-size: 34px; font-weight: bold;">مَاهِيَّةُ<span class="tooltip">Mahiyeti (Nedir)</span></span><br>
+                            <span class="word" style="font-size: 34px; font-weight: bold;">الطَّرِيقَةِ<span class="tooltip">Yöntemin</span></span>
+                        </div>
+                    </div>
+
+                    <div class="schema-branches-takhreej">
+                        
+                        <div class="schema-branch-takhreej">
+                            <div class="branch-head-takhreej bg-goal arabic-title">
+                                <span class="word" style="font-size: 28px; font-weight: bold;">الْهَدَفُ<span class="tooltip">Hedef</span></span>
+                            </div>
+                            <div class="branch-body-takhreej">
+                                <div class="arabic-text-item border-goal">
+                                    <span class="word">الْوُصُولُ<span class="tooltip">Ulaşmak</span></span>
+                                    <span class="word">لِلْحَدِيثِ<span class="tooltip">Hadise</span></span>
+                                    <span class="word">عَنْ طَرِيقِ<span class="tooltip">Yoluyla</span></span>
+                                    <span class="word">اسْمِ<span class="tooltip">İsmi</span></span>
+                                    <span class="word">الصَّحَابِيِّ<span class="tooltip">Sahabinin</span></span>
+                                    <span class="word" style="font-size: 18px; color: #7f8c8d;">(أَوِ التَّابِعِيِّ فِي الْمُرْسَلِ)<span class="tooltip">(Veya Mürsel'de Tabiinin)</span></span>
+                                    
+                                    <button class="mini-trans-btn" onclick="toggleTranslation('method-goal')">🇹🇷 Çeviri</button>
+                                    <div id="method-goal" class="mini-trans-box" style="border-left-color: #27ae60;">
+                                        <strong>Hedef:</strong> Hadise, onu rivayet eden sahabinin (veya mürsel hadislerde tabiinin) ismi üzerinden ulaşmaktır.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="schema-branch-takhreej">
+                            <div class="branch-head-takhreej bg-condition arabic-title">
+                                <span class="word">شَرْطُ<span class="tooltip">Şartı</span></span>
+                                <span class="word">الِاسْتِخْدَامِ<span class="tooltip">Kullanım</span></span>
+                            </div>
+                            <div class="branch-body-takhreej">
+                                <div class="arabic-text-item border-condition">
+                                    <span class="word">وُجُودُ<span class="tooltip">Bulunması</span></span>
+                                    <span class="word">اسْمِ<span class="tooltip">İsminin</span></span>
+                                    <span class="word">الرَّاوِي<span class="tooltip">Râvinin</span></span>
+                                    <span class="word">الْأَعْلَى<span class="tooltip">En üstteki</span></span>
+                                    <span class="word">فِي<span class="tooltip">-de / İçinde</span></span>
+                                    <span class="word">السَّنَدِ<span class="tooltip">Senedde</span></span>
+                                    <span class="word">الْمُتَوَفِّرِ<span class="tooltip">Mevcut olan</span></span>
+                                    <span class="word">لَدَى<span class="tooltip">Yanında (Elinde)</span></span>
+                                    <span class="word">الْبَاحِثِ<span class="tooltip">Araştırmacının</span></span>
+                                    
+                                    <button class="mini-trans-btn" onclick="toggleTranslation('method-condition')">🇹🇷 Çeviri</button>
+                                    <div id="method-condition" class="mini-trans-box" style="border-left-color: #8e44ad;">
+                                        <strong>Kullanım Şartı:</strong> Araştırmacının elindeki mevcut senedde, en üst râvinin (sahabinin) adının mutlaka bulunması gerekir.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="schema-branch-takhreej">
+                            <div class="branch-head-takhreej bg-source arabic-title">
+                                <span class="word">طَبِيعَةُ<span class="tooltip">Doğası (Yapısı)</span></span>
+                                <span class="word">الْمَصَادِرِ<span class="tooltip">Kaynakların</span></span>
+                            </div>
+                            <div class="branch-body-takhreej">
+                                <div class="arabic-text-item border-source">
+                                    <span class="word">كُتُبٌ<span class="tooltip">Kitaplardır</span></span>
+                                    <span class="word">رُتِّبَتْ<span class="tooltip">Düzenlenmiş</span></span>
+                                    <span class="word">أَحَادِيثُهَا<span class="tooltip">Hadisleri</span></span>
+                                    <span class="word">بِنَاءً عَلَى<span class="tooltip">Dayanarak (-e göre)</span></span>
+                                    <span class="word">الْمَسَانِيدِ<span class="tooltip">Müsnedlere</span></span>
+                                    <span class="word">لَا<span class="tooltip">Değil</span></span>
+                                    <span class="word">الْأَبْوَابِ<span class="tooltip">Bablarına</span></span>
+                                    <span class="word">الْفِقْهِيَّةِ<span class="tooltip">Fıkhî</span></span>
+                                    
+                                    <button class="mini-trans-btn" onclick="toggleTranslation('method-source')">🇹🇷 Çeviri</button>
+                                    <div id="method-source" class="mini-trans-box" style="border-left-color: #2980b9;">
+                                        <strong>Kaynakların Yapısı:</strong> Bu yöntemde kullanılan kaynaklar, hadisleri fıkhî konulara (bablarına) göre değil; müsnedlere (râvilere/sahabilere) göre düzenlemiş olan kitaplardır.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="slide">
+                <style>
+                    /* Şema Konteyneri */
+                    .takhreej-schema-container {
+                        display: flex;
+                        align-items: stretch;
+                        justify-content: center;
+                        gap: 30px;
+                        width: 100%;
+                        max-width: 1100px;
+                        background: #fdfefe;
+                        border: 2px solid #e5e8e8;
+                        border-radius: 15px;
+                        padding: 40px;
+                        box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+                        direction: rtl; /* Şema sağdan sola aksın */
+                    }
+                    
+                    /* Ana Kök */
+                    .schema-root-takhreej {
+                        background-color: #1a365d; /* Koyu Lacivert */
+                        color: white;
+                        padding: 30px 25px;
+                        border-radius: 12px;
+                        text-align: center;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        min-width: 180px;
+                        box-shadow: 0 8px 20px rgba(26, 54, 93, 0.3);
+                    }
+
+                    .schema-branches-takhreej {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 25px;
+                        flex: 1;
+                    }
+
+                    .schema-branch-takhreej {
+                        display: flex;
+                        border-radius: 12px;
+                        overflow: visible; 
+                        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+                        border: 1px solid #eee;
+                    }
+
+                    .branch-head-takhreej {
+                        color: white;
+                        padding: 20px;
+                        width: 220px;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: center;
+                        border-radius: 0 12px 12px 0; 
+                        text-align: center;
+                    }
+
+                    .branch-body-takhreej {
+                        background: white;
+                        padding: 20px;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 12px;
+                        flex: 1;
+                        justify-content: center;
+                        border-radius: 12px 0 0 12px;
+                    }
+
+                    /* Arapça Yazı Tipleri */
+                    .arabic-title {
+                        font-family: 'Amiri', serif;
+                        font-size: 26px;
+                        line-height: 1.6;
+                    }
+
+                    .arabic-text-item {
+                        font-family: 'Amiri', serif;
+                        font-size: 24px;
+                        line-height: 1.8;
+                        color: #2c3e50;
+                        background-color: #f8f9fa;
+                        padding: 15px 20px;
+                        border-radius: 8px;
+                        border-right: 4px solid;
+                        position: relative;
+                    }
+
+                    /* Noktalı çizgileri kaldıran ayar */
+                    .no-dots .word {
+                        border-bottom: none !important; 
+                        padding: 2px 6px;
+                        border-radius: 6px;
+                        transition: all 0.2s;
+                    }
+                    
+                    .no-dots .word:hover {
+                        background-color: rgba(0, 0, 0, 0.05);
+                    }
+
+                    .no-dots .branch-head-takhreej .word:hover {
+                        background-color: rgba(255, 255, 255, 0.2);
+                    }
+
+                    /* Cümle Çeviri Butonu ve Kutusu */
+                    .mini-trans-btn {
+                        background: #e2e8f0;
+                        border: 1px solid #cbd5e1;
+                        color: #475569;
+                        border-radius: 6px;
+                        padding: 4px 10px;
+                        font-size: 13px;
+                        font-family: 'Poppins', sans-serif;
+                        cursor: pointer;
+                        margin-right: 15px; 
+                        vertical-align: middle;
+                        transition: 0.2s;
+                        font-weight: 600;
+                        display: inline-block;
+                        margin-top: 10px;
+                    }
+
+                    .mini-trans-btn:hover {
+                        background: #cbd5e1;
+                        color: #1e293b;
+                    }
+
+                    .mini-trans-box {
+                        display: none; 
+                        direction: ltr; 
+                        text-align: left;
+                        background: #ffffff;
+                        padding: 12px 15px;
+                        margin-top: 12px;
+                        border-radius: 6px;
+                        font-size: 14px;
+                        font-family: 'Poppins', sans-serif;
+                        color: #334155;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+                        border: 1px solid #e2e8f0;
+                        border-left: 4px solid; 
+                    }
+
+                    /* Kategori Renkleri */
+                    .bg-def { background-color: #d35400; } /* Turuncu - Tanım */
+                    .border-def { border-right-color: #d35400; }
+
+                    .bg-ahmad { background-color: #27ae60; } /* Yeşil - Müsned Ahmed */
+                    .border-ahmad { border-right-color: #27ae60; }
+
+                    .bg-tayalisi { background-color: #8e44ad; } /* Mor - Müsned Tayalisi */
+                    .border-tayalisi { border-right-color: #8e44ad; }
+
+                    .bg-others { background-color: #2980b9; } /* Mavi - Diğerleri */
+                    .border-others { border-right-color: #2980b9; }
+
+                    /* Mobil Uyumluluk */
+                    @media (max-width: 992px) {
+                        .takhreej-schema-container { flex-direction: column; align-items: center; }
+                        .branch-head-takhreej { border-radius: 12px 12px 0 0; width: 100%; box-sizing: border-box; }
+                        .branch-body-takhreej { border-radius: 0 0 12px 12px; }
+                        .schema-branch-takhreej { flex-direction: column; width: 100%; }
+                    }
+                </style>
+
+                <div class="takhreej-schema-container no-dots">
+                    
+                    <div class="schema-root-takhreej arabic-title">
+                        <div>
+                            <span class="word">ثَانِياً:<span class="tooltip">İkinci Olarak:</span></span><br>
+                            <span class="word" style="font-size: 34px; font-weight: bold;">الْمَسَانِيدُ<span class="tooltip">Müsnedler</span></span>
+                        </div>
+                    </div>
+
+                    <div class="schema-branches-takhreej">
+                        
+                        <div class="schema-branch-takhreej">
+                            <div class="branch-head-takhreej bg-def arabic-title">
+                                <span class="word" style="font-size: 26px; font-weight: bold;">تَعْرِيفُ<span class="tooltip">Tanımı</span></span>
+                                <span class="word" style="font-size: 26px; font-weight: bold;">الْمُسْنَدِ<span class="tooltip">Müsned'in</span></span>
+                            </div>
+                            <div class="branch-body-takhreej">
+                                <div class="arabic-text-item border-def">
+                                    <span class="word">الْكِتَابُ<span class="tooltip">Kitaptır</span></span>
+                                    <span class="word">الَّذِي<span class="tooltip">O ki</span></span>
+                                    <span class="word">تُذْكَرُ<span class="tooltip">Zikredilir (Anlatılır)</span></span>
+                                    <span class="word">فِيهِ<span class="tooltip">İçinde</span></span>
+                                    <span class="word">الْأَحَادِيثُ<span class="tooltip">Hadisler</span></span>
+                                    <span class="word">عَلَى<span class="tooltip">Üzere (Göre)</span></span>
+                                    <span class="word">تَرْتِيبِ<span class="tooltip">Sıralamasına</span></span>
+                                    <span class="word">الصَّحَابَةِ<span class="tooltip">Sahabenin</span></span>
+                                    
+                                    <button class="mini-trans-btn" onclick="toggleTranslation('masanid-def')">🇹🇷 Çeviri</button>
+                                    <div id="masanid-def" class="mini-trans-box" style="border-left-color: #d35400;">
+                                        <strong>Müsned'in Tanımı:</strong> Hadislerin konularına göre değil, onları rivayet eden sahabe isimlerinin sıralamasına göre toplandığı ve zikredildiği kitap türüdür.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="schema-branch-takhreej">
+                            <div class="branch-head-takhreej bg-ahmad arabic-title">
+                                <span class="word">مُسْنَدُ<span class="tooltip">Müsnedi</span></span>
+                                <span class="word">الْإِمَامِ<span class="tooltip">İmam</span></span>
+                                <span class="word">أَحْمَدَ<span class="tooltip">Ahmed'in</span></span>
+                            </div>
+                            <div class="branch-body-takhreej">
+                                <div class="arabic-text-item border-ahmad">
+                                    <span class="word" style="font-weight: bold; color: #27ae60;">الْخَصَائِصُ:<span class="tooltip">Özellikleri:</span></span>
+                                    <span class="word">أَضْخَمُ<span class="tooltip">En hacimli</span></span>
+                                    <span class="word">مَرْجَعٍ<span class="tooltip">Kaynaktır</span></span>
+                                    <span class="word" style="font-size: 16px; color: #7f8c8d;">(28 أَلْفَ حَدِيثٍ تَقْرِيباً)<span class="tooltip">(Yaklaşık 28 bin hadis)</span></span>
+                                    <br>
+                                    <span class="word" style="font-weight: bold; color: #27ae60;">التَّرْتِيبُ:<span class="tooltip">Sıralaması:</span></span>
+                                    <span class="word">رَتَّبَهُ<span class="tooltip">Onu sıraladı</span></span>
+                                    <span class="word">بِنَاءً عَلَى<span class="tooltip">Dayanarak</span></span>
+                                    <span class="word">الْفَضْلِ<span class="tooltip">Fazilete</span></span>
+                                    <span class="word" style="font-size: 16px; color: #7f8c8d;">(الْعَشَرَةُ، أَهْلُ الْبَيْتِ، الْمُكْثِرُونَ)<span class="tooltip">(Aşere, Ehl-i Beyt, Çok rivayet edenler)</span></span>
+                                    
+                                    <button class="mini-trans-btn" onclick="toggleTranslation('masanid-ahmad')">🇹🇷 Çeviri</button>
+                                    <div id="masanid-ahmad" class="mini-trans-box" style="border-left-color: #27ae60;">
+                                        <strong>İmam Ahmed b. Hanbel'in Müsnedi:</strong> Kendi türünün en hacimli kaynağıdır (içinde yaklaşık 28 bin hadis bulunur). Sahabeleri fazilet derecelerine göre sıralamıştır (Önce cennetle müjdelenen on sahabe, sonra Ehl-i Beyt, sonra da en çok hadis rivayet edenler).
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="schema-branch-takhreej">
+                            <div class="branch-head-takhreej bg-tayalisi arabic-title">
+                                <span class="word">مُسْنَدُ<span class="tooltip">Müsnedi</span></span>
+                                <span class="word">الطَّيَالِسِيِّ<span class="tooltip">Tayâlisî'nin</span></span>
+                            </div>
+                            <div class="branch-body-takhreej">
+                                <div class="arabic-text-item border-tayalisi">
+                                    <span class="word" style="font-weight: bold; color: #8e44ad;">الْخَصَائِصُ:<span class="tooltip">Özellikleri:</span></span>
+                                    <span class="word">مِنْ<span class="tooltip">-den / -dan</span></span>
+                                    <span class="word">أَقْدَمِ<span class="tooltip">En eski</span></span>
+                                    <span class="word">الْمَسَانِيدِ،<span class="tooltip">Müsnedlerdendir</span></span>
+                                    <span class="word">يُقَدِّمُ<span class="tooltip">Öne alır</span></span>
+                                    <span class="word">أَحَادِيثَ<span class="tooltip">Hadislerini</span></span>
+                                    <span class="word">الْعَشَرَةِ<span class="tooltip">Aşere'nin (On kişinin)</span></span>
+                                    <span class="word">وَالْأَنْصَارِ<span class="tooltip">Ve Ensâr'ın</span></span>
+                                    
+                                    <button class="mini-trans-btn" onclick="toggleTranslation('masanid-tayalisi')">🇹🇷 Çeviri</button>
+                                    <div id="masanid-tayalisi" class="mini-trans-box" style="border-left-color: #8e44ad;">
+                                        <strong>Ebû Dâvûd et-Tayâlisî'nin Müsnedi:</strong> Müsned türünün en eski örneklerinden biridir. Kitabında Aşere-i Mübeşşere (cennetle müjdelenen on sahabi) ve Ensâr'ın rivayet ettiği hadisleri öne almıştır.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="schema-branch-takhreej">
+                            <div class="branch-head-takhreej bg-others arabic-title">
+                                <span class="word">مَسَانِيدُ<span class="tooltip">Müsnedler</span></span>
+                                <span class="word">أُخْرَى<span class="tooltip">Diğer</span></span>
+                            </div>
+                            <div class="branch-body-takhreej">
+                                <div class="arabic-text-item border-others">
+                                    <span class="word">مُسْنَدُ<span class="tooltip">Müsnedi</span></span>
+                                    <span class="word">الْحُمَيْدِيِّ،<span class="tooltip">Humeydî'nin</span></span>
+                                    <span class="word">مُسْنَدُ<span class="tooltip">Müsnedi</span></span>
+                                    <span class="word">الْبَزَّارِ،<span class="tooltip">Bezzâr'ın</span></span>
+                                    <span class="word">مُسْنَدُ<span class="tooltip">Müsnedi</span></span>
+                                    <span class="word">أَبِي<span class="tooltip">Ebû</span></span>
+                                    <span class="word">يَعْلَى<span class="tooltip">Ya'lâ</span></span>
+                                    <span class="word">الْمَوْصِلِيِّ<span class="tooltip">el-Mevsılî'nin</span></span>
+                                    
+                                    <button class="mini-trans-btn" onclick="toggleTranslation('masanid-others')">🇹🇷 Çeviri</button>
+                                    <div id="masanid-others" class="mini-trans-box" style="border-left-color: #2980b9;">
+                                        <strong>Diğer Önemli Müsnedler:</strong> Humeydî'nin Müsnedi, Bezzâr'ın Müsnedi ve Ebû Ya'lâ el-Mevsılî'nin Müsnedi bu alandaki diğer önemli ve temel eserlerdir.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="slide">
+                <style>
+                    /* Şema Konteyneri */
+                    .takhreej-schema-container {
+                        display: flex;
+                        align-items: stretch;
+                        justify-content: center;
+                        gap: 30px;
+                        width: 100%;
+                        max-width: 1100px;
+                        background: #fdfefe;
+                        border: 2px solid #e5e8e8;
+                        border-radius: 15px;
+                        padding: 40px;
+                        box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+                        direction: rtl; /* Şema sağdan sola aksın */
+                    }
+                    
+                    /* Ana Kök */
+                    .schema-root-takhreej {
+                        background-color: #1a365d; /* Koyu Lacivert */
+                        color: white;
+                        padding: 30px 25px;
+                        border-radius: 12px;
+                        text-align: center;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        min-width: 180px;
+                        box-shadow: 0 8px 20px rgba(26, 54, 93, 0.3);
+                    }
+
+                    .schema-branches-takhreej {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 25px;
+                        flex: 1;
+                    }
+
+                    .schema-branch-takhreej {
+                        display: flex;
+                        border-radius: 12px;
+                        overflow: visible; 
+                        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+                        border: 1px solid #eee;
+                    }
+
+                    .branch-head-takhreej {
+                        color: white;
+                        padding: 20px;
+                        width: 220px;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: center;
+                        border-radius: 0 12px 12px 0; 
+                        text-align: center;
+                    }
+
+                    .branch-body-takhreej {
+                        background: white;
+                        padding: 20px;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 12px;
+                        flex: 1;
+                        justify-content: center;
+                        border-radius: 12px 0 0 12px;
+                    }
+
+                    /* Arapça Yazı Tipleri */
+                    .arabic-title {
+                        font-family: 'Amiri', serif;
+                        font-size: 26px;
+                        line-height: 1.6;
+                    }
+
+                    .arabic-text-item {
+                        font-family: 'Amiri', serif;
+                        font-size: 24px;
+                        line-height: 1.8;
+                        color: #2c3e50;
+                        background-color: #f8f9fa;
+                        padding: 15px 20px;
+                        border-radius: 8px;
+                        border-right: 4px solid;
+                        position: relative;
+                    }
+
+                    /* Noktalı çizgileri kaldıran ayar */
+                    .no-dots .word {
+                        border-bottom: none !important; 
+                        padding: 2px 6px;
+                        border-radius: 6px;
+                        transition: all 0.2s;
+                    }
+                    
+                    .no-dots .word:hover {
+                        background-color: rgba(0, 0, 0, 0.05);
+                    }
+
+                    .no-dots .branch-head-takhreej .word:hover {
+                        background-color: rgba(255, 255, 255, 0.2);
+                    }
+
+                    /* Cümle Çeviri Butonu ve Kutusu */
+                    .mini-trans-btn {
+                        background: #e2e8f0;
+                        border: 1px solid #cbd5e1;
+                        color: #475569;
+                        border-radius: 6px;
+                        padding: 4px 10px;
+                        font-size: 13px;
+                        font-family: 'Poppins', sans-serif;
+                        cursor: pointer;
+                        margin-right: 15px; 
+                        vertical-align: middle;
+                        transition: 0.2s;
+                        font-weight: 600;
+                        display: inline-block;
+                        margin-top: 10px;
+                    }
+
+                    .mini-trans-btn:hover {
+                        background: #cbd5e1;
+                        color: #1e293b;
+                    }
+
+                    .mini-trans-box {
+                        display: none; 
+                        direction: ltr; 
+                        text-align: left;
+                        background: #ffffff;
+                        padding: 12px 15px;
+                        margin-top: 12px;
+                        border-radius: 6px;
+                        font-size: 14px;
+                        font-family: 'Poppins', sans-serif;
+                        color: #334155;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+                        border: 1px solid #e2e8f0;
+                        border-left: 4px solid; 
+                    }
+
+                    /* Kategori Renkleri */
+                    .bg-def { background-color: #d35400; } /* Turuncu - Tanım */
+                    .border-def { border-right-color: #d35400; }
+
+                    .bg-kabeer { background-color: #27ae60; } /* Yeşil - El-Kebir */
+                    .border-kabeer { border-right-color: #27ae60; }
+
+                    .bg-awsat { background-color: #2980b9; } /* Mavi - El-Evsat ve Sağir */
+                    .border-awsat { border-right-color: #2980b9; }
+
+                    /* Mobil Uyumluluk */
+                    @media (max-width: 992px) {
+                        .takhreej-schema-container { flex-direction: column; align-items: center; }
+                        .branch-head-takhreej { border-radius: 12px 12px 0 0; width: 100%; box-sizing: border-box; }
+                        .branch-body-takhreej { border-radius: 0 0 12px 12px; }
+                        .schema-branch-takhreej { flex-direction: column; width: 100%; }
+                    }
+                </style>
+
+                <div class="takhreej-schema-container no-dots">
+                    
+                    <div class="schema-root-takhreej arabic-title">
+                        <div>
+                            <span class="word">ثَالِثاً:<span class="tooltip">Üçüncü Olarak:</span></span><br>
+                            <span class="word" style="font-size: 34px; font-weight: bold;">الْمَعَاجِمُ<span class="tooltip">Mu'cemler</span></span>
+                        </div>
+                    </div>
+
+                    <div class="schema-branches-takhreej">
+                        
+                        <div class="schema-branch-takhreej">
+                            <div class="branch-head-takhreej bg-def arabic-title">
+                                <span class="word" style="font-size: 26px; font-weight: bold;">تَعْرِيفُ<span class="tooltip">Tanımı</span></span>
+                                <span class="word" style="font-size: 26px; font-weight: bold;">الْمُعْجَمِ<span class="tooltip">Mu'cem'in</span></span>
+                            </div>
+                            <div class="branch-body-takhreej">
+                                <div class="arabic-text-item border-def">
+                                    <span class="word">كِتَابٌ<span class="tooltip">Kitaptır</span></span>
+                                    <span class="word">تُرَتَّبُ<span class="tooltip">Sıralanır</span></span>
+                                    <span class="word">فِيهِ<span class="tooltip">İçinde</span></span>
+                                    <span class="word">الْأَحَادِيثُ<span class="tooltip">Hadisler</span></span>
+                                    <span class="word">حَسَبَ<span class="tooltip">Göre</span></span>
+                                    <span class="word">أَسْمَاءِ<span class="tooltip">İsimlerine</span></span>
+                                    <span class="word">الصَّحَابَةِ<span class="tooltip">Sahabenin</span></span>
+                                    <span class="word">أَوِ<span class="tooltip">Veya</span></span>
+                                    <span class="word">الشُّيُوخِ<span class="tooltip">Hocaların (Şuyûhun)</span></span>
+                                    <span class="word">عَلَى<span class="tooltip">Üzere (Göre)</span></span>
+                                    <span class="word">حُرُوفِ<span class="tooltip">Harflerine</span></span>
+                                    <span class="word">الْمُعْجَمِ<span class="tooltip">Alfabenin (Sözlüğün)</span></span>
+                                    
+                                    <button class="mini-trans-btn" onclick="toggleTranslation('mojam-def')">🇹🇷 Çeviri</button>
+                                    <div id="mojam-def" class="mini-trans-box" style="border-left-color: #d35400;">
+                                        <strong>Mu'cem'in Tanımı:</strong> İçindeki hadislerin, sahabe veya hocaların (şuyûh) isimlerine göre alfabetik sırayla (sözlük harflerine göre) düzenlendiği kitaptır.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="schema-branch-takhreej">
+                            <div class="branch-head-takhreej bg-kabeer arabic-title">
+                                <span class="word">الْمُعْجَمُ<span class="tooltip">Mu'cem</span></span>
+                                <span class="word">الْكَبِيرُ<span class="tooltip">el-Kebîr</span></span>
+                                <span class="word" style="font-size: 16px; opacity: 0.9;">لِلطَّبَرَانِيِّ<span class="tooltip">Taberânî'nin</span></span>
+                            </div>
+                            <div class="branch-body-takhreej">
+                                <div class="arabic-text-item border-kabeer">
+                                    <span class="word" style="font-weight: bold; color: #27ae60;">النِّطَاقُ:<span class="tooltip">Kapsamı:</span></span>
+                                    <span class="word">يَجْمَعُ<span class="tooltip">Toplar</span></span>
+                                    <span class="word">أَحَادِيثَ<span class="tooltip">Hadislerini</span></span>
+                                    <span class="word">الصَّحَابَةِ<span class="tooltip">Sahabenin</span></span>
+                                    <span class="word" style="font-size: 16px; color: #7f8c8d;">(عَدَا مُسْنَدَ أَبِي هُرَيْرَةَ لِإِفْرَادِهِ فِي كِتَابٍ مُسْتَقِلٍّ)<span class="tooltip">(Ebu Hureyre'nin müsnedini müstakil bir kitaba ayırdığı için hariç tutmuştur)</span></span>
+                                    <br>
+                                    <span class="word" style="font-weight: bold; color: #27ae60;">التَّرْتِيبُ:<span class="tooltip">Sıralaması:</span></span>
+                                    <span class="word">هِجَائِيٌّ<span class="tooltip">Alfabetiktir</span></span>
+                                    <span class="word" style="font-size: 16px; color: #7f8c8d;">(أَلِف، بَاء، تَاء...)<span class="tooltip">(Elif, Bâ, Tâ...)</span></span>
+                                    
+                                    <button class="mini-trans-btn" onclick="toggleTranslation('mojam-kabeer')">🇹🇷 Çeviri</button>
+                                    <div id="mojam-kabeer" class="mini-trans-box" style="border-left-color: #27ae60;">
+                                        <strong>Taberânî'nin el-Mu'cemu'l-Kebîr'i:</strong> Sahabenin rivayet ettiği hadisleri kapsar (ancak Ebû Hureyre'nin rivayetlerini çok olduğu için müstakil bir kitaba ayırmış, bu esere dahil etmemiştir). Sıralaması sahabe isimlerine göre alfabetiktir (Elif, Bâ, Tâ şeklinde).
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="schema-branch-takhreej">
+                            <div class="branch-head-takhreej bg-awsat arabic-title">
+                                <span class="word">الْمُعْجَمُ الْأَوْسَطُ<span class="tooltip">el-Mu'cemu'l-Evsat</span></span><br>
+                                <span class="word">وَالْمُعْجَمُ الصَّغِيرُ<span class="tooltip">Ve el-Mu'cemu's-Sağîr</span></span>
+                            </div>
+                            <div class="branch-body-takhreej">
+                                <div class="arabic-text-item border-awsat">
+                                    <span class="word">مُرَتَّبَةٌ<span class="tooltip">Sıralanmıştır</span></span>
+                                    <span class="word">حَسَبَ<span class="tooltip">Göre</span></span>
+                                    <span class="word">شُيُوخِ<span class="tooltip">Hocalarına</span></span>
+                                    <span class="word">الطَّبَرَانِيِّ<span class="tooltip">Taberânî'nin</span></span>
+                                    
+                                    <button class="mini-trans-btn" onclick="toggleTranslation('mojam-awsat')">🇹🇷 Çeviri</button>
+                                    <div id="mojam-awsat" class="mini-trans-box" style="border-left-color: #2980b9;">
+                                        <strong>el-Mu'cemu'l-Evsat ve el-Mu'cemu's-Sağîr:</strong> Bu iki eser ise sahabe isimlerine göre değil, doğrudan İmam Taberânî'nin kendi hocalarının (şuyûhunun) isimlerine göre alfabetik olarak sıralanmıştır.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">11. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">12. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">13. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">14. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">15. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">16. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">17. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">18. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">19. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">20. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">21. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">22. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">23. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">24. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">25. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">26. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">27. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">28. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">29. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">30. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">31. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">32. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">33. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">34. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">35. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">36. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">37. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">38. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">39. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">40. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">41. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">42. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">43. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">44. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">45. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">46. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">47. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">48. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">49. Sayfa</div></div>
+            <div class="slide"><div style="color: #bdc3c7; font-size: 20px;">50. Sayfa</div></div>
+
+        </div>
+
+        <div class="controls">
+            <button class="ctrl-btn" id="prevBtn" onclick="changeSlide(-1)" disabled>◀ Önceki Hadis</button>
+            <div class="slide-counter"><span id="currentNum">1</span> / 50</div>
+            <button class="ctrl-btn" id="nextBtn" onclick="changeSlide(1)">Sonraki Hadis ▶</button>
+        </div>
+    </div>
+
+    <script>
+        /* --- SLIDER YÖNETİMİ --- */
+        let currentSlide = 0;
+        const totalSlides = 50;
+        const track = document.getElementById('sliderTrack');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const currentNum = document.getElementById('currentNum');
+
+        function changeSlide(direction) {
+            goToSlide(currentSlide + direction);
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            if (currentSlide < 0) currentSlide = 0;
+            if (currentSlide >= totalSlides) currentSlide = totalSlides - 1;
+
+            track.style.transform = `translateX(-${currentSlide * 100}%)`;
+            currentNum.innerText = currentSlide + 1;
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === totalSlides - 1;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /* --- KELİME ÇEVİRİSİ (TOOLTIP) YÖNETİMİ --- */
+        // Kelimelere tıklandığında baloncuğu açıp kapatan sistem
+        document.querySelectorAll('.word').forEach(word => {
+            word.addEventListener('click', function(e) {
+                // Tıklanan dışındaki diğer tüm açık baloncukları kapat
+                document.querySelectorAll('.word').forEach(w => {
+                    if(w !== this) w.classList.remove('active');
+                });
+                // Tıklanan kelimenin baloncuğunu aç/kapat
+                this.classList.toggle('active');
+                e.stopPropagation(); // Boşluğa tıklanma eventini engeller
+            });
+        });
+
+        // Sayfada boş bir yere tıklandığında tüm baloncukları gizle
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.word').forEach(w => w.classList.remove('active'));
+        });
+
+        /* --- TAM ÇEVİRİ KUTUSU AÇ/KAPA --- */
+        function toggleTranslation(id) {
+            const transBox = document.getElementById(id);
+            if (transBox.style.display === "none" || transBox.style.display === "") {
+                transBox.style.display = "block";
+            } else {
+                transBox.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
